@@ -33,6 +33,7 @@ docs/
 - React
 - TypeScript
 - Vite
+- React Router v7
 - Tailwind CSS v4
 - TanStack Query
 - Zustand
@@ -69,13 +70,15 @@ docs/
 
 AI Agent에게도 `apps/web`, `apps/api`, `packages/domain`, `packages/db`처럼 작업 경계를 명확히 줄 수 있다.
 
-### React, TypeScript, Vite
+### React, TypeScript, Vite, React Router
 
 React는 실무에서 널리 쓰이며 Figma 화면을 컴포넌트로 옮기는 연습에 적합하다.
 
 TypeScript는 프론트엔드, 백엔드, 도메인, 데이터베이스 계층의 계약을 명확히 드러내기 위해 사용한다.
 
 Vite는 작은 프론트엔드 앱을 빠르게 개발하고 테스트하기에 적합하다.
+
+React Router v7은 실제 Todo 앱 화면과 디자인 시스템 showcase 페이지를 분리하기 위해 사용한다.
 
 ### Tailwind CSS v4와 class 유틸리티
 

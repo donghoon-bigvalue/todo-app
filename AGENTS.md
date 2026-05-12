@@ -52,6 +52,16 @@ Figma 파일을 생성, 수정, 검토할 때는 로컬 skill 문서를 따른�
 
 - `.codex/skills/figma-design-sync/SKILL.md`
 
+## 구현 작업 규칙
+
+기능 구현, 버그 수정, 리팩터링을 할 때는 TDD와 클린 아키텍처 로컬 skill 문서를 따른다.
+
+- `.codex/skills/tdd-clean-architecture/SKILL.md`
+
+Figma 컴포넌트를 코드 디자인 시스템으로 옮기거나 showcase 페이지를 수정할 때는 디자인 시스템 showcase 로컬 skill 문서를 따른다.
+
+- `.codex/skills/design-system-showcase/SKILL.md`
+
 ## 완료 보고 규칙
 
 작업을 마칠 때는 다음을 포함한다.
