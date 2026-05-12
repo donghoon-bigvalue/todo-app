@@ -46,6 +46,12 @@
 - 기계적으로 검증 가능한 규칙은 hook 후보로 본다.
 - 여러 프로젝트에서 재사용 가능한 절차는 skill 후보로 본다.
 
+## Figma 작업 규칙
+
+Figma 파일을 생성, 수정, 검토할 때는 로컬 skill 문서를 따른다.
+
+- `.codex/skills/figma-design-sync/SKILL.md`
+
 ## 완료 보고 규칙
 
 작업을 마칠 때는 다음을 포함한다.
