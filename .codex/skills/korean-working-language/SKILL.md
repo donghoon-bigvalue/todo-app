@@ -17,6 +17,7 @@ description: Use for this project when writing documentation, issues, PRs, revie
 - 코드 리뷰 코멘트
 - Agent의 작업 요약
 - 사용자에게 전달하는 작업 결과
+- 테스트 코드 설명문
 
 ## 영어로 작성한다
 
