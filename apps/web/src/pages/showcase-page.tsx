@@ -1,4 +1,4 @@
-import { Button } from "../shared/ui";
+import { Button, Checkbox, TextInput } from "../shared/ui";
 
 export function ShowcasePage() {
   return (
@@ -20,6 +20,44 @@ export function ShowcasePage() {
             <Button variant="accent">추가</Button>
             <Button variant="danger">삭제</Button>
             <Button disabled>비활성</Button>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <div>
+            <h2 className="text-base font-semibold">Text Input</h2>
+            <p className="mt-1 text-sm text-[#6B7280]">할 일을 입력할 때 사용한다.</p>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold" htmlFor="showcase-text-input-default">
+                기본
+              </label>
+              <TextInput id="showcase-text-input-default" placeholder="할 일을 입력하세요" />
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold" htmlFor="showcase-text-input-error">
+                에러
+              </label>
+              <TextInput
+                aria-invalid
+                id="showcase-text-input-error"
+                placeholder="할 일을 입력하세요"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <div>
+            <h2 className="text-base font-semibold">Checkbox</h2>
+            <p className="mt-1 text-sm text-[#6B7280]">할 일 완료 상태를 변경할 때 사용한다.</p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4">
+            <Checkbox label="미체크" />
+            <Checkbox checked label="체크" readOnly />
           </div>
         </section>
       </div>
