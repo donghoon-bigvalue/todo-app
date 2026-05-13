@@ -9,8 +9,11 @@
   ],
   "scripts": {
     "api:dev": "npm --workspace @todo-app/api run dev",
+    "api:start": "npm --workspace @todo-app/api run start",
+    "e2e": "playwright test",
     "web:build": "npm --workspace @todo-app/web run build",
     "web:dev": "npm --workspace @todo-app/web run dev",
+    "web:e2e": "npm --workspace @todo-app/web run dev -- --port 5173 --strictPort",
     "check": "npm run workspaces:list && npm run format:check && npm run lint && npm run typecheck && npm run test",
     "format": "biome format --write .",
     "format:check": "biome format .",
@@ -22,6 +25,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.15",
     "@nestjs/testing": "^11.1.19",
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/vite": "^4.3.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
