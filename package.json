@@ -8,6 +8,14 @@
     "packages/*"
   ],
   "scripts": {
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "lint": "biome lint .",
+    "typecheck": "tsc --noEmit",
     "workspaces:list": "npm --workspaces pkg get name"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.15",
+    "typescript": "6.0.3"
   }
 }
