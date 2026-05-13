@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button, EmptyState, ErrorMessage, TextInput, TodoItem } from "../shared/ui";
-import { createTodo, listTodos } from "../shared/api";
+import { createTodo, deleteTodo, listTodos, updateTodoCompleted } from "../shared/api";
 
 const todoFormSchema = z.object({
   title: todoTitleSchema,
@@ -28,6 +28,19 @@ export function TodoPage() {
     mutationFn: (values: TodoFormValues) => createTodo(values),
     onSuccess: async () => {
       form.reset();
+      await queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
+  const updateTodoCompletedMutation = useMutation({
+    mutationFn: ({ completed, id }: { readonly completed: boolean; readonly id: string }) =>
+      updateTodoCompleted(id, { completed }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
+  const deleteTodoMutation = useMutation({
+    mutationFn: (id: string) => deleteTodo(id),
+    onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["todos"] });
     },
   });
@@ -74,6 +87,12 @@ export function TodoPage() {
           {createTodoMutation.isError ? (
             <ErrorMessage>할 일을 추가하지 못했습니다.</ErrorMessage>
           ) : null}
+          {updateTodoCompletedMutation.isError ? (
+            <ErrorMessage>할 일 상태를 변경하지 못했습니다.</ErrorMessage>
+          ) : null}
+          {deleteTodoMutation.isError ? (
+            <ErrorMessage>할 일을 삭제하지 못했습니다.</ErrorMessage>
+          ) : null}
         </form>
 
         <section aria-label="할 일 목록" className="space-y-3">
@@ -85,7 +104,15 @@ export function TodoPage() {
             <EmptyState />
           ) : null}
           {todos.map((todo) => (
-            <TodoItem completed={todo.completed} key={todo.id} title={todo.title} />
+            <TodoItem
+              completed={todo.completed}
+              key={todo.id}
+              onCompletedChange={(completed) =>
+                updateTodoCompletedMutation.mutate({ completed, id: todo.id })
+              }
+              onDelete={() => deleteTodoMutation.mutate(todo.id)}
+              title={todo.title}
+            />
           ))}
         </section>
       </div>
