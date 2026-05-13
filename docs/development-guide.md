@@ -67,3 +67,15 @@ npm run lint
 Biome recommended rule을 기준으로 검사한다.
 
 규칙을 완화하거나 추가해야 하면 작업 중 임의로 바꾸지 않고, 이유를 문서화한 뒤 변경한다.
+
+## Database migration
+
+현재 migration은 `packages/db/drizzle` 아래의 SQL 파일과 Drizzle journal 파일로 관리한다.
+
+- SQL 파일은 실제 적용할 DDL을 담는다.
+- `packages/db/drizzle/meta/_journal.json`은 Drizzle migrator가 적용 순서를 읽기 위해 사용한다.
+- migration 적용은 `packages/db/src/migrate.ts`의 `applyMigrations`를 사용한다.
+
+Todo table schema는 `packages/db/src/schema.ts`의 Drizzle schema와 SQL migration을 함께 수정한다.
+
+schema 변경이 반복되어 수동 관리 비용이 커지면 `drizzle-kit` 도입을 별도 task로 검토한다.
