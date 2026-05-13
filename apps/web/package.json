@@ -1,5 +1,9 @@
 {
   "name": "@todo-app/web",
   "version": "0.0.0",
-  "private": true
+  "private": true,
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite --host 127.0.0.1"
+  }
 }

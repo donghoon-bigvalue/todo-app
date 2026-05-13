@@ -9,6 +9,8 @@
   ],
   "scripts": {
     "api:dev": "npm --workspace @todo-app/api run dev",
+    "web:build": "npm --workspace @todo-app/web run build",
+    "web:dev": "npm --workspace @todo-app/web run dev",
     "check": "npm run workspaces:list && npm run format:check && npm run lint && npm run typecheck && npm run test",
     "format": "biome format --write .",
     "format:check": "biome format .",
@@ -20,9 +22,16 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.15",
     "@nestjs/testing": "^11.1.19",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^25.7.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "jsdom": "^29.1.1",
     "tsx": "^4.21.0",
     "typescript": "6.0.3",
+    "vite": "^8.0.12",
     "vitest": "^4.1.6"
   },
   "dependencies": {
@@ -31,6 +40,9 @@
     "@nestjs/core": "^11.1.19",
     "@nestjs/platform-express": "^11.1.19",
     "drizzle-orm": "^0.45.2",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "react-router": "^7.15.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "zod": "^4.4.3"
