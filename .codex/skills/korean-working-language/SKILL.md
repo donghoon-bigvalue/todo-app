@@ -17,7 +17,7 @@ description: Use for this project when writing documentation, issues, PRs, revie
 - 코드 리뷰 코멘트
 - Agent의 작업 요약
 - 사용자에게 전달하는 작업 결과
-- 테스트 코드 설명문
+- 테스트 suite/case 설명문 (`describe`, `it`, `test`의 사람이 읽는 설명)
 
 ## 영어로 작성한다
 
@@ -27,7 +27,6 @@ description: Use for this project when writing documentation, issues, PRs, revie
 - 브랜치 이름
 - 패키지명
 - 외부 API 명세와 직접 맞닿는 값
-- 테스트 이름 중 코드 동작을 짧게 설명하는 문장
 
 ## 영어를 유지한다
 
