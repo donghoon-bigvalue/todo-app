@@ -20,6 +20,21 @@ Figma에는 다음을 만든다.
 Todo App MVP
 ```
 
+## Figma 파일 참조
+
+실제 Figma 파일:
+
+- [Todo App](https://www.figma.com/design/LMJjjtgzzuwDDthcxS8p4I/Todo-App?node-id=4-2&p=f&m=dev)
+
+페이지별 기준 node:
+
+- [Cover](https://www.figma.com/design/LMJjjtgzzuwDDthcxS8p4I/Todo-App?node-id=4-2&p=f&m=dev)
+- [Design System](https://www.figma.com/design/LMJjjtgzzuwDDthcxS8p4I/Todo-App?node-id=4-3&p=f&m=dev)
+- [Components](https://www.figma.com/design/LMJjjtgzzuwDDthcxS8p4I/Todo-App?node-id=4-4&p=f&m=dev)
+- [Screens](https://www.figma.com/design/LMJjjtgzzuwDDthcxS8p4I/Todo-App?node-id=4-5&p=f&m=dev)
+
+Figma 컴포넌트를 코드로 옮길 때는 `Components` 페이지를 먼저 확인하고, 화면 구현을 할 때는 `Screens` 페이지를 기준으로 삼는다.
+
 ## 페이지 구성
 
 ### 1. Cover
