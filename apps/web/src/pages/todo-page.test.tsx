@@ -72,6 +72,19 @@ describe("TodoPage", () => {
     expect(createTodo).not.toHaveBeenCalled();
   });
 
+  it("Todo 입력 행을 Figma 화면 폭과 버튼 위치에 맞춘다", async () => {
+    vi.mocked(listTodos).mockResolvedValue([]);
+
+    renderTodoPage();
+
+    const titleInput = screen.getByRole("textbox", { name: "할 일" });
+    const submitButton = screen.getByRole("button", { name: "추가" });
+
+    expect(await screen.findByText("아직 할 일이 없습니다.")).toBeInTheDocument();
+    expect(titleInput.parentElement).toHaveClass("w-[250px]");
+    expect(submitButton).toHaveClass("mt-[6px]", "w-[58px]");
+  });
+
   it("유효한 제목을 제출하면 Todo를 생성하고 목록을 다시 조회한다", async () => {
     vi.mocked(listTodos)
       .mockResolvedValueOnce([])

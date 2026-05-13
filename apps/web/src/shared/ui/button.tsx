@@ -4,7 +4,7 @@ import { cn } from "../lib/cn";
 
 const buttonVariants = cva(
   [
-    "inline-flex items-center justify-center rounded-[8px] font-semibold leading-none",
+    "inline-flex items-center justify-center whitespace-nowrap rounded-[8px] font-semibold",
     "border border-transparent transition-colors",
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2563EB]",
     "disabled:cursor-not-allowed disabled:border-transparent disabled:bg-[#F3F4F6] disabled:text-[#9CA3AF]",
@@ -18,8 +18,8 @@ const buttonVariants = cva(
         dangerSoft: "bg-[#FEE2E2] text-[#DC2626] hover:bg-[#FECACA]",
       },
       size: {
-        default: "px-4 py-[10px] text-[14px]",
-        sm: "h-7 px-[10px] py-1.5 text-[13px]",
+        default: "h-[37px] px-4 text-[14px] leading-[17px]",
+        sm: "h-7 px-[10px] text-[13px] leading-4",
       },
     },
     defaultVariants: {

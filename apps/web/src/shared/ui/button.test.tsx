@@ -16,6 +16,15 @@ describe("Button", () => {
     expect(screen.getByRole("button", { name: "추가" })).toBeInTheDocument();
   });
 
+  it("기본 크기를 Figma Button 높이에 맞춘다", () => {
+    render(<Button>추가</Button>);
+
+    expect(screen.getByRole("button", { name: "추가" })).toHaveClass(
+      "h-[37px]",
+      "whitespace-nowrap",
+    );
+  });
+
   it("variant에 맞는 className을 적용한다", () => {
     render(<Button variant="danger">삭제</Button>);
 

@@ -47,19 +47,26 @@ export function TodoPage() {
           className="space-y-2"
           onSubmit={form.handleSubmit((values) => createTodoMutation.mutate(values))}
         >
-          <div className="flex gap-2">
-            <label className="sr-only" htmlFor="todo-title">
-              할 일
-            </label>
-            <TextInput
-              aria-describedby={titleError ? "todo-title-error" : undefined}
-              aria-invalid={Boolean(titleError)}
-              id="todo-title"
-              placeholder="할 일을 입력하세요"
-              state={titleError ? "error" : "default"}
-              {...form.register("title")}
-            />
-            <Button disabled={createTodoMutation.isPending} type="submit" variant="primary">
+          <div className="flex w-[316px] items-start gap-2">
+            <div className="w-[250px] shrink-0">
+              <label className="sr-only" htmlFor="todo-title">
+                할 일
+              </label>
+              <TextInput
+                aria-describedby={titleError ? "todo-title-error" : undefined}
+                aria-invalid={Boolean(titleError)}
+                id="todo-title"
+                placeholder="할 일을 입력하세요"
+                state={titleError ? "error" : "default"}
+                {...form.register("title")}
+              />
+            </div>
+            <Button
+              className="mt-[6px] w-[58px] shrink-0"
+              disabled={createTodoMutation.isPending}
+              type="submit"
+              variant="primary"
+            >
               추가
             </Button>
           </div>
