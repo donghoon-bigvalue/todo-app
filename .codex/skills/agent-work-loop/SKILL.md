@@ -65,7 +65,9 @@ description: Use in this Todo App project when turning chat ideas into implement
 
 ## 커밋과 푸시
 
-- 커밋은 사용자가 요청했을 때만 수행한다.
+- 각 task는 완료 후 검증을 통과하면 하나의 커밋으로 기록한다.
+- 커밋은 task의 완료 기록이며, 다음 task로 넘어가기 전에 수행한다.
+- 사용자가 커밋 보류를 요청한 경우에는 커밋하지 않는다.
 - 푸시는 사용자가 요청했을 때만 수행한다.
 - 커밋 전에는 변경 범위와 검증 결과를 확인한다.
 - 커밋 메시지는 `git-conventional-commits` skill을 따른다.
