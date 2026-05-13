@@ -1,5 +1,8 @@
 {
   "name": "@todo-app/api",
   "version": "0.0.0",
-  "private": true
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/main.ts"
+  }
 }

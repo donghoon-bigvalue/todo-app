@@ -8,6 +8,7 @@
     "packages/*"
   ],
   "scripts": {
+    "api:dev": "npm --workspace @todo-app/api run dev",
     "check": "npm run workspaces:list && npm run format:check && npm run lint && npm run typecheck && npm run test",
     "format": "biome format --write .",
     "format:check": "biome format .",
@@ -18,12 +19,20 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.15",
+    "@nestjs/testing": "^11.1.19",
+    "@types/node": "^25.7.0",
+    "tsx": "^4.21.0",
     "typescript": "6.0.3",
     "vitest": "^4.1.6"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.4.5",
+    "@nestjs/common": "^11.1.19",
+    "@nestjs/core": "^11.1.19",
+    "@nestjs/platform-express": "^11.1.19",
     "drizzle-orm": "^0.45.2",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
     "zod": "^4.4.3"
   }
 }
