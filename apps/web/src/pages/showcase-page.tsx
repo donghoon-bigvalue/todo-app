@@ -1,4 +1,4 @@
-import { Button, Checkbox, TextInput } from "../shared/ui";
+import { Button, Checkbox, EmptyState, ErrorMessage, TextInput, TodoItem } from "../shared/ui";
 
 export function ShowcasePage() {
   return (
@@ -70,6 +70,32 @@ export function ShowcasePage() {
           <div className="flex flex-wrap items-center gap-4">
             <Checkbox hideLabel label="미체크" />
             <Checkbox checked hideLabel label="체크" readOnly />
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <div>
+            <h2 className="text-base font-semibold">Todo Item</h2>
+            <p className="mt-1 text-sm text-[#6B7280]">할 일 항목의 상태별 표현</p>
+          </div>
+
+          <div className="flex flex-wrap items-start gap-6">
+            <TodoItem completed={false} title="장보기" />
+            <TodoItem completed title="이메일 답장하기" />
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <div>
+            <h2 className="text-base font-semibold">Feedback</h2>
+            <p className="mt-1 text-sm text-[#6B7280]">
+              빈 상태와 입력 오류처럼 사용자에게 상태를 알려주는 요소
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-start gap-6">
+            <EmptyState />
+            <ErrorMessage>할 일을 입력해주세요.</ErrorMessage>
           </div>
         </section>
       </div>
