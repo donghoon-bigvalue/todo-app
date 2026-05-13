@@ -8,9 +8,12 @@ import {
 } from "@todo-app/db";
 import type { TodoRepository } from "@todo-app/domain";
 import type { Provider } from "@nestjs/common";
+import { fileURLToPath } from "node:url";
 import { DRIZZLE_CLIENT, PGLITE_CLIENT, TODO_REPOSITORY } from "../todos.tokens";
 
-const migrationsFolder = "packages/db/drizzle";
+const migrationsFolder = fileURLToPath(
+  new URL("../../../../../packages/db/drizzle", import.meta.url),
+);
 
 export const todoDatabaseProviders: Provider[] = [
   {
