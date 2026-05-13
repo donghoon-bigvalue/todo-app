@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { EmptyState, TodoItem } from "../shared/ui";
+import { EmptyState, ErrorMessage, TodoItem } from "../shared/ui";
 import { listTodos } from "../shared/api";
 
 export function TodoPage() {
@@ -20,7 +20,12 @@ export function TodoPage() {
 
         <section aria-label="할 일 목록" className="space-y-3">
           {todosQuery.isLoading ? <p className="text-sm text-[#6B7280]">불러오는 중...</p> : null}
-          {!todosQuery.isLoading && todos.length === 0 ? <EmptyState /> : null}
+          {todosQuery.isError ? (
+            <ErrorMessage>할 일 목록을 불러오지 못했습니다.</ErrorMessage>
+          ) : null}
+          {!todosQuery.isLoading && !todosQuery.isError && todos.length === 0 ? (
+            <EmptyState />
+          ) : null}
           {todos.map((todo) => (
             <TodoItem completed={todo.completed} key={todo.id} title={todo.title} />
           ))}

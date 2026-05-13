@@ -27,7 +27,13 @@ export class ApiError extends Error {
 }
 
 export async function listTodos(client: AxiosInstance = apiClient): Promise<TodoDto[]> {
-  return request(() => client.get<TodoDto[]>("/todos"));
+  const todos = await request(() => client.get<unknown>("/todos"));
+
+  if (!Array.isArray(todos)) {
+    throw new ApiError("Todo 목록 응답 형식이 올바르지 않습니다.", 0);
+  }
+
+  return todos.map(toTodoDto);
 }
 
 export async function createTodo(
@@ -92,4 +98,27 @@ function toErrorMessage(message: unknown): string {
   }
 
   return "요청을 처리하지 못했습니다.";
+}
+
+function toTodoDto(value: unknown): TodoDto {
+  if (!isTodoDto(value)) {
+    throw new ApiError("Todo 항목 응답 형식이 올바르지 않습니다.", 0);
+  }
+
+  return value;
+}
+
+function isTodoDto(value: unknown): value is TodoDto {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const todo = value as Partial<TodoDto>;
+
+  return (
+    typeof todo.id === "string" &&
+    typeof todo.title === "string" &&
+    typeof todo.completed === "boolean" &&
+    typeof todo.createdAt === "string"
+  );
 }

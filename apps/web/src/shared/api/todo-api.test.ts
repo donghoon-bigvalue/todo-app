@@ -112,4 +112,14 @@ describe("todo-api", () => {
       new ApiError("할 일을 입력해 주세요.", 400),
     );
   });
+
+  it("Todo 목록 응답이 배열이 아니면 공통 에러를 던진다", async () => {
+    const { adapter } = createMockAdapter(() => ({ data: "<!doctype html>" }));
+    const client = createApiClient();
+    client.defaults.adapter = adapter;
+
+    await expect(listTodos(client)).rejects.toEqual(
+      new ApiError("Todo 목록 응답 형식이 올바르지 않습니다.", 0),
+    );
+  });
 });
