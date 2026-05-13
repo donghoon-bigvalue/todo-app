@@ -1,5 +1,11 @@
 {
   "name": "@todo-app/db",
   "version": "0.0.0",
-  "private": true
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@todo-app/domain": "0.0.0"
+  }
 }
