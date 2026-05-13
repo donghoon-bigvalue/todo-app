@@ -36,7 +36,6 @@ docs/
 - React Router v7
 - Tailwind CSS v4
 - TanStack Query
-- Zustand
 - axios
 - react-hook-form
 - @hookform/resolvers
@@ -92,7 +91,9 @@ Tailwind CSS v4는 Figma의 색상, 간격, 타이포그래피 토큰을 구현�
 
 TanStack Query는 todo 목록 조회, 생성, 완료 변경, 삭제처럼 서버 상태를 다루기 위해 사용한다.
 
-Zustand는 서버 데이터가 아니라 클라이언트 UI 상태를 다루기 위해 사용한다.
+Zustand는 서버 데이터가 아니라 클라이언트 UI 상태를 다루는 후보로 둔다.
+
+MVP의 현재 화면은 서버 상태는 TanStack Query, 폼 상태는 React Hook Form, 라우팅 상태는 React Router로 충분히 표현된다. 별도의 클라이언트 UI 상태 저장소가 필요한 기능이 없으므로 Zustand는 설치하지 않고 적용하지 않는다.
 
 axios는 API client를 구성하고 baseURL, 에러 처리, 응답 타입을 일관되게 관리하기 위해 사용한다.
 
@@ -165,7 +166,7 @@ Prisma는 생산성이 높고 schema 중심 경험이 좋다.
 도구가 많아지는 만큼 각 도구의 책임을 명확히 제한한다.
 
 - TanStack Query는 서버 상태만 다룬다.
-- Zustand는 클라이언트 UI 상태만 다룬다.
+- Zustand는 현재 설치하지 않는다. 필터, 정렬, 선택 모드, 로컬 UI preference, 다중 패널 상태처럼 서버와 무관한 클라이언트 UI 상태가 생기면 도입을 다시 검토한다.
 - React Hook Form은 폼 상태와 submit 흐름을 담당한다.
 - Drizzle은 데이터베이스 스키마와 query를 담당한다.
 - Zod는 프론트엔드 입력 검증과 API 요청 계약 검증에 사용한다.
