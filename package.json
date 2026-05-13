@@ -1,0 +1,13 @@
+{
+  "name": "todo-app",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AI Agent와 함께 실무형 개발 과정을 연습하는 Todo App입니다.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "workspaces:list": "npm --workspaces pkg get name"
+  }
+}
