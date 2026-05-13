@@ -9,6 +9,18 @@
 - 작업은 `docs/implementation-plan.md`의 task 단위로 진행한다.
 - 각 task는 검증을 통과한 뒤 하나의 커밋으로 기록한다.
 
+## 설치
+
+```bash
+npm install
+```
+
+Playwright E2E를 실행하려면 브라우저 바이너리를 한 번 설치한다.
+
+```bash
+npx playwright install chromium
+```
+
 ## Workspace 확인
 
 ```bash
@@ -32,11 +44,77 @@ npm run workspaces:list
 npm run format:check
 npm run lint
 npm run typecheck
+npm run test
 ```
 
 Agent는 일반적인 task를 마친 뒤 `npm run check`를 기본 검증 명령으로 사용한다.
 
 특정 task에서 더 좁거나 더 넓은 검증이 필요하면 해당 검증을 추가로 실행하고 완료 보고에 남긴다.
+
+## 로컬 실행
+
+API와 Web 앱은 각각 별도 터미널에서 실행한다.
+
+```bash
+npm run api:dev
+```
+
+기본 API 주소:
+
+```text
+http://127.0.0.1:3000
+```
+
+API 상태 확인:
+
+```text
+http://127.0.0.1:3000/health
+```
+
+Web 앱 실행:
+
+```bash
+npm run web:dev
+```
+
+기본 Web 주소:
+
+```text
+http://127.0.0.1:5173
+```
+
+Web dev server는 `/api` 요청을 `http://127.0.0.1:3000`으로 proxy한다. 실제 Todo 동작을 확인하려면 API 서버와 Web 서버가 모두 실행 중이어야 한다.
+
+## 테스트
+
+단위, 컴포넌트, 통합 테스트를 실행한다.
+
+```bash
+npm run test
+```
+
+브라우저 기반 E2E 테스트를 실행한다.
+
+```bash
+npm run e2e
+```
+
+`npm run e2e`는 Playwright 설정을 통해 API 서버와 Web 서버를 자동으로 실행한다.
+
+E2E에서 사용하는 기본 포트:
+
+- API: `3000`
+- Web: `5173`
+
+이미 같은 포트에 서버가 실행 중이면 Playwright는 로컬 개발 편의를 위해 기존 서버를 재사용한다. CI 환경에서는 기존 서버를 재사용하지 않고 테스트가 직접 서버를 띄운다.
+
+## 빌드
+
+Web 앱 production build를 확인한다.
+
+```bash
+npm run web:build
+```
 
 ## 포맷
 
@@ -79,3 +157,10 @@ Biome recommended rule을 기준으로 검사한다.
 Todo table schema는 `packages/db/src/schema.ts`의 Drizzle schema와 SQL migration을 함께 수정한다.
 
 schema 변경이 반복되어 수동 관리 비용이 커지면 `drizzle-kit` 도입을 별도 task로 검토한다.
+
+## 현재 제한
+
+- API는 PGlite in-memory database를 사용하므로 서버를 재시작하면 Todo 데이터가 초기화된다.
+- 인증, 사용자 계정, 다중 사용자 데이터 분리는 MVP 범위에 없다.
+- E2E는 Chromium 프로젝트만 설정되어 있다. 다른 브라우저가 필요하면 Playwright project를 추가한다.
+- Zustand는 현재 설치하지 않는다. 서버와 무관한 클라이언트 UI 상태가 실제로 생기면 도입을 다시 검토한다.
