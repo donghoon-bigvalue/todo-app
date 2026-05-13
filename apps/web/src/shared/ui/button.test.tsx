@@ -26,6 +26,6 @@ describe("Button", () => {
     render(<Button disabled>추가</Button>);
 
     expect(screen.getByRole("button", { name: "추가" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "추가" })).toHaveClass("disabled:opacity-50");
+    expect(screen.getByRole("button", { name: "추가" })).toHaveClass("disabled:bg-[#F3F4F6]");
   });
 });

@@ -3,24 +3,29 @@ import { cn } from "../lib/cn";
 
 export type CheckboxProps = Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & {
   readonly label: string;
+  readonly hideLabel?: boolean;
 };
 
-export function Checkbox({ className, label, ...props }: CheckboxProps) {
+export function Checkbox({ className, hideLabel = false, label, ...props }: CheckboxProps) {
   return (
     <label className="inline-flex items-center gap-2 text-sm font-normal text-[#1F2937]">
-      <input
+      <input className="peer sr-only" type="checkbox" {...props} />
+      <span
+        aria-hidden="true"
         className={cn(
           [
-            "size-5 rounded-[4px] border border-[#E5E7EB] bg-white accent-[#2563EB]",
-            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2563EB]",
-            "disabled:cursor-not-allowed disabled:opacity-50",
+            "flex size-5 items-center justify-center rounded-[5px] border border-[#E5E7EB] bg-white",
+            "text-[14px] font-bold leading-none text-white",
+            "peer-checked:border-[#2563EB] peer-checked:bg-[#2563EB]",
+            "peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#2563EB]",
+            "peer-disabled:opacity-50",
           ],
           className,
         )}
-        type="checkbox"
-        {...props}
-      />
-      <span>{label}</span>
+      >
+        ✓
+      </span>
+      <span className={cn(hideLabel && "sr-only")}>{label}</span>
     </label>
   );
 }

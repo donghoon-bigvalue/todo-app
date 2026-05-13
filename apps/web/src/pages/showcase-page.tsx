@@ -17,7 +17,7 @@ export function ShowcasePage() {
 
           <div className="flex flex-wrap items-center gap-3">
             <Button>기본</Button>
-            <Button variant="accent">추가</Button>
+            <Button variant="primary">추가</Button>
             <Button variant="danger">삭제</Button>
             <Button disabled>비활성</Button>
           </div>
@@ -29,12 +29,22 @@ export function ShowcasePage() {
             <p className="mt-1 text-sm text-[#6B7280]">할 일을 입력할 때 사용한다.</p>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 lg:grid-cols-3">
             <div className="space-y-2">
               <label className="block text-sm font-semibold" htmlFor="showcase-text-input-default">
                 기본
               </label>
               <TextInput id="showcase-text-input-default" placeholder="할 일을 입력하세요" />
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold" htmlFor="showcase-text-input-focus">
+                포커스
+              </label>
+              <TextInput
+                id="showcase-text-input-focus"
+                placeholder="할 일을 입력하세요"
+                state="focus"
+              />
             </div>
             <div className="space-y-2">
               <label className="block text-sm font-semibold" htmlFor="showcase-text-input-error">
@@ -44,7 +54,9 @@ export function ShowcasePage() {
                 aria-invalid
                 id="showcase-text-input-error"
                 placeholder="할 일을 입력하세요"
+                state="error"
               />
+              <p className="text-[13px] text-[#DC2626]">할 일을 입력해주세요.</p>
             </div>
           </div>
         </section>
@@ -56,8 +68,8 @@ export function ShowcasePage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-4">
-            <Checkbox label="미체크" />
-            <Checkbox checked label="체크" readOnly />
+            <Checkbox hideLabel label="미체크" />
+            <Checkbox checked hideLabel label="체크" readOnly />
           </div>
         </section>
       </div>

@@ -17,8 +17,14 @@ describe("TextInput", () => {
   });
 
   it("에러 상태를 표현한다", () => {
-    render(<TextInput aria-invalid aria-label="할 일" />);
+    render(<TextInput aria-label="할 일" state="error" />);
 
     expect(screen.getByRole("textbox", { name: "할 일" })).toHaveClass("border-[#DC2626]");
+  });
+
+  it("포커스 상태를 표현한다", () => {
+    render(<TextInput aria-label="할 일" state="focus" />);
+
+    expect(screen.getByRole("textbox", { name: "할 일" })).toHaveClass("border-[#2563EB]");
   });
 });
