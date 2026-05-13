@@ -2,6 +2,10 @@
   "name": "@todo-app/api",
   "version": "0.0.0",
   "private": true,
+  "dependencies": {
+    "@todo-app/db": "0.0.0",
+    "@todo-app/domain": "0.0.0"
+  },
   "scripts": {
     "dev": "tsx watch src/main.ts"
   }
