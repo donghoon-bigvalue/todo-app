@@ -53,6 +53,13 @@ description: Use in this Todo App project when turning chat ideas into implement
 
 문서 작업이나 초기 bootstrap처럼 테스트가 자연스럽지 않은 작업은 테스트 예외 사유를 보고에 남긴다.
 
+## 실행 서버 정리
+
+- Verify 단계에서 dev server나 watch process를 실행했다면 Record 전에 종료한다.
+- 사용자가 직접 확인해야 해서 서버를 유지하는 경우, 완료 보고에 URL과 유지 이유를 명시한다.
+- 종료 대상은 이 task에서 Agent가 직접 실행한 세션으로 제한한다.
+- 기존에 떠 있던 서버나 사용자가 실행한 프로세스는 임의로 종료하지 않는다.
+
 ## 경계 규칙
 
 - 한 번에 하나의 task만 진행한다.
