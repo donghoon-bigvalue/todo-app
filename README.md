@@ -20,7 +20,7 @@ AI Agent와 함께 실무형 개발 과정을 연습하기 위해 만든 최소 
 - Data: PGlite, Drizzle ORM
 - State/Form: TanStack Query, React Hook Form
 - Test: Vitest, Testing Library, Playwright
-- Quality: Biome
+- Quality: Biome, Husky
 
 ## 프로젝트 구조
 

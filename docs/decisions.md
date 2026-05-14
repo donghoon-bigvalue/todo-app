@@ -73,6 +73,27 @@ Reference:
 
 - [ADR 0001: 초기 기술 스택 결정](adr/0001-tech-stack.md)
 
+### Husky Git hooks 도입
+
+상태: Accepted
+
+결정:
+
+- Husky를 사용해 commit과 push 전에 검증 명령을 실행한다.
+- `pre-commit`은 `format:check`, `lint`, `typecheck`만 실행한다.
+- `pre-push`는 `npm run check`로 전체 기본 검증을 실행한다.
+- Playwright E2E는 기본 hook에 포함하지 않고, UI 흐름 변경 task에서 별도로 실행한다.
+
+근거:
+
+- Agent Harness의 검증 규칙을 Git 이벤트에 연결해 누락을 줄인다.
+- 커밋은 자주 발생하므로 빠른 정적 검증만 실행한다.
+- 푸시는 원격 반영 직전이므로 테스트까지 포함한 기본 검증을 실행한다.
+
+Reference:
+
+- [개발 가이드](development-guide.md)
+
 ## Agent Harness 결정
 
 ### Idea Intake는 초안 우선형

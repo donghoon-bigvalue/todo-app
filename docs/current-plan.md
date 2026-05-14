@@ -11,6 +11,7 @@
 - `docs/agent-workflow.md`가 하네스와 운영 문서 기준에 맞게 정리되었다.
 - `AGENTS.md`가 하네스와 운영 문서 우선순위를 반영하도록 정리되었다.
 - README 문서 링크에 Agent Harness와 운영 문서가 추가되었다.
+- Husky 기반 Git hook이 추가되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
@@ -48,13 +49,15 @@ Agent Harness 운영 문서 도입.
 
 ## 최근 완료 Task
 
-README 문서 링크 정리.
+Husky Git hook 도입.
 
 완료 조건:
 
-- README 문서 목록에 Agent 운영 문서가 추가된다.
-- Agent Harness와 Agent 작업 루프 문서를 찾을 수 있다.
-- 제품과 개발 reference 문서는 별도 그룹으로 유지된다.
+- `husky`가 devDependency에 추가된다.
+- `prepare` script가 Husky를 초기화한다.
+- `pre-commit`이 format, lint, typecheck를 실행한다.
+- `pre-push`가 `npm run check`를 실행한다.
+- 개발 가이드와 결정 인덱스에 hook 기준이 기록된다.
 
 검증:
 

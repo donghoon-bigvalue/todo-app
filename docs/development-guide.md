@@ -51,6 +51,26 @@ Agent는 일반적인 task를 마친 뒤 `npm run check`를 기본 검증 명령
 
 특정 task에서 더 좁거나 더 넓은 검증이 필요하면 해당 검증을 추가로 실행하고 완료 보고에 남긴다.
 
+## Git hooks
+
+Husky를 사용해 commit과 push 전에 기본 검증을 실행한다.
+
+`pre-commit`은 빠른 정적 검증만 실행한다.
+
+```bash
+npm run format:check
+npm run lint
+npm run typecheck
+```
+
+`pre-push`는 원격 반영 전 전체 기본 검증을 실행한다.
+
+```bash
+npm run check
+```
+
+Playwright E2E는 기본 hook에 포함하지 않는다. UI 흐름을 바꾸는 task에서는 Agent가 별도 검증으로 `npm run e2e`를 실행하고 완료 보고에 남긴다.
+
 ## 로컬 실행
 
 API와 Web 앱은 각각 별도 터미널에서 실행한다.

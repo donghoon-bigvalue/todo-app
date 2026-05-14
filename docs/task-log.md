@@ -201,3 +201,45 @@
 남은 리스크:
 
 - 기존 상세 문서는 아직 archive하지 않았다. 현재 방침은 유지이며, 필요할 때 별도 task로 검토한다.
+
+## 2026-05-14: Husky Git hook 도입
+
+상태: Done
+
+목적:
+
+- commit과 push 전에 검증 명령을 자동 실행해 Agent Harness의 검증 규칙을 Git 이벤트에 연결한다.
+
+변경 파일:
+
+- `package.json`
+- `package-lock.json`
+- `.husky/pre-commit`
+- `.husky/pre-push`
+- `README.md`
+- `docs/development-guide.md`
+- `docs/decisions.md`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- `husky`를 devDependency로 추가했다.
+- `prepare` script로 Husky 초기화를 설정했다.
+- `pre-commit`에서 `format:check`, `lint`, `typecheck`를 실행한다.
+- `pre-push`에서 `npm run check`를 실행한다.
+- E2E는 기본 hook에 넣지 않고 task별 별도 검증으로 남겼다.
+
+검증:
+
+- `.husky/pre-commit` 통과
+- `.husky/pre-push` 통과
+- `npm run check` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- Playwright E2E는 기본 hook에 포함하지 않았다. UI 흐름 변경 task에서는 별도 검증으로 실행해야 한다.
