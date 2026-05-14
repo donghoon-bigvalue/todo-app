@@ -16,6 +16,7 @@ describe("db migrations", () => {
       id: "todo-1",
       title: "첫 번째 할 일",
       completed: false,
+      note: null,
       createdAt: new Date("2026-05-13T09:00:00.000Z"),
     });
 
@@ -26,6 +27,7 @@ describe("db migrations", () => {
         id: "todo-1",
         title: "첫 번째 할 일",
         completed: false,
+        note: null,
         createdAt: new Date("2026-05-13T09:00:00.000Z"),
       },
     ]);

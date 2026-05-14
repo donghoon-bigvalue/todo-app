@@ -39,6 +39,7 @@ function toTodo(row: TodoRow): Todo {
     id: row.id as TodoId,
     title: row.title,
     completed: row.completed,
+    note: row.note,
     createdAt: row.createdAt,
   });
 }
@@ -48,6 +49,7 @@ function toInsertValue(todo: Todo): typeof todosTable.$inferInsert {
     id: todo.id,
     title: todo.title,
     completed: todo.completed,
+    note: todo.note,
     createdAt: todo.createdAt,
   };
 }

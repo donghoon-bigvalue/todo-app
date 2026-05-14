@@ -33,7 +33,7 @@
 
 커밋:
 
-- 미커밋
+- `feat(db): Todo 메모 저장 구조 추가`
 
 남은 리스크:
 
@@ -396,3 +396,43 @@ Figma 변경:
 남은 리스크:
 
 - DB schema와 repository는 아직 note를 저장하지 않는다. 다음 task에서 저장 구조를 확장해야 한다.
+
+## 2026-05-15: Todo note 저장 구조와 repository 확장
+
+상태: Done
+
+목적:
+
+- Todo note를 DB에 저장하고 repository에서 조회, 수정, 비우기 할 수 있게 한다.
+
+변경 파일:
+
+- `packages/db/src/schema.ts`
+- `packages/db/src/todo-repository.ts`
+- `packages/db/src/todo-repository.test.ts`
+- `packages/db/src/migrate.test.ts`
+- `packages/db/drizzle/0001_add_todo_note.sql`
+- `packages/db/drizzle/meta/_journal.json`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- `todos` table에 nullable `note` 컬럼을 추가했다.
+- note 컬럼 추가 migration을 추가했다.
+- repository create/update가 Todo note를 저장한다.
+- repository restore가 DB row의 note를 Todo snapshot에 포함한다.
+- note 저장, 수정, 비우기 repository integration test를 추가했다.
+
+검증:
+
+- `npm run test -- packages/db/src/migrate.test.ts packages/db/src/todo-repository.test.ts` 통과
+- `npm run check` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- API use case와 controller는 아직 note 수정 요청을 처리하지 않는다. 다음 task에서 API 경계를 확장해야 한다.
