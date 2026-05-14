@@ -1,10 +1,12 @@
 # Agent 작업 루프
 
-이 문서는 Todo App에서 AI Agent가 채팅으로 들어온 아이디어를 구현 가능한 작업으로 바꾸고, 정해진 제약을 지키며 진행하기 위한 작업 루프를 정의한다.
+이 문서는 Todo App에서 AI Agent가 승인된 작업을 정해진 제약 안에서 실행하기 위한 세부 작업 루프를 정의한다.
+
+사용자의 새 아이디어를 제품 초안으로 정리하고, 채팅 승인 후 문서화하는 앞단 하네스 기준은 `docs/agent-harness.md`를 따른다. 이 문서는 승인된 제품 초안이나 승인된 task가 생긴 뒤 실제 작업을 어떻게 진행할지에 집중한다.
 
 ## 목표
 
-- 사용자의 생각을 바로 코드로 옮기기 전에 작업 단위와 검증 기준으로 정리한다.
+- 승인된 작업을 바로 코드로 옮기기 전에 작업 단위와 검증 기준으로 정리한다.
 - 한 번에 하나의 task만 수행한다.
 - TDD, 클린 아키텍처, Figma 디자인 시스템, git convention을 반복 가능하게 적용한다.
 - 작업이 끝날 때 다음에 무엇을 논의할지 명확히 남긴다.
@@ -16,13 +18,19 @@
 작업을 시작하기 전에 관련 맥락을 확인한다.
 
 - `AGENTS.md`
-- `docs/implementation-plan.md`
-- 관련 제품 문서
-- 관련 ADR
+- `docs/agent-harness.md`
+- `docs/project-brief.md`
+- `docs/current-plan.md`
+- `docs/decisions.md`
+- `docs/task-log.md`
 - 관련 로컬 skill
 - 현재 git 상태
 
+`docs/implementation-plan.md`, 상세 제품 문서, 상세 ADR은 현재 task와 직접 관련될 때만 추가로 확인한다. Agent는 모든 `docs/` 문서를 매번 읽지 않는다.
+
 사용자가 “논의해보자”, “어떻게 할까”처럼 방향을 묻는 경우에는 구현하지 않고 선택지와 추천안을 제시한다.
+
+사용자가 새 아이디어를 말했지만 승인된 제품 초안이 없다면 이 문서의 실행 루프로 들어가지 않는다. 먼저 `docs/agent-harness.md`의 Idea Intake 절차를 따른다.
 
 ### 2. Task Planning
 
@@ -91,15 +99,20 @@
 
 문서 변경이 필요한 결정이 생겼다면 코드만 바꾸지 않고 관련 문서도 업데이트한다.
 
+작업 기록은 필요하면 `docs/task-log.md`에 남기고, 다음 작업 후보나 현재 phase가 바뀌면 `docs/current-plan.md`를 갱신한다.
+
 ## 승인 게이트
 
 다음 상황에서는 멈추고 사용자 확인을 받는다.
 
+- 제품 초안을 문서화할 때
 - 새 phase로 넘어갈 때
-- `docs/implementation-plan.md`에 없는 큰 작업을 시작할 때
+- `docs/current-plan.md`나 `docs/implementation-plan.md`에 없는 큰 작업을 시작할 때
+- MVP 범위나 제외 범위를 바꿀 때
 - 기술 스택 또는 아키텍처 결정을 바꿀 때
 - Figma 디자인 기준을 바꿀 때
 - 새 라이브러리, MCP, hook, skill을 추가할 때
+- 검증 실패 상태에서 계속 진행할지 결정해야 할 때
 - 커밋 또는 푸시를 수행할 때
 
 ## 커밋과 푸시

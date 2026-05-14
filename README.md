@@ -98,6 +98,17 @@ npm run e2e
 
 ## 문서
 
+Agent 운영 문서:
+
+- [Project Brief](docs/project-brief.md)
+- [Current Plan](docs/current-plan.md)
+- [Decisions](docs/decisions.md)
+- [Task Log](docs/task-log.md)
+- [Agent Harness](docs/agent-harness.md)
+- [Agent 작업 루프](docs/agent-workflow.md)
+
+제품과 개발 reference:
+
 - [제품 기획서](docs/product-brief.md)
 - [요구사항 정의서](docs/requirements.md)
 - [사용자 흐름](docs/user-flow.md)
