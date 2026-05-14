@@ -59,6 +59,7 @@ describe("Todo use cases", () => {
         id: createTodoId("todo-1"),
         title: "첫 번째 할 일",
         completed: false,
+        note: null,
         createdAt: new Date("2026-05-13T09:00:00.000Z"),
       },
     ]);
@@ -77,6 +78,7 @@ describe("Todo use cases", () => {
       id: createTodoId("todo-1"),
       title: "첫 번째 할 일",
       completed: false,
+      note: null,
       createdAt: new Date("2026-05-13T09:00:00.000Z"),
     });
     await expect(repository.findById(createTodoId("todo-1"))).resolves.not.toBeNull();

@@ -14,6 +14,7 @@
 - Husky 기반 Git hook이 추가되었다.
 - Todo 메모 기능 초안이 승인되어 제품 문서와 구현 계획에 반영되었다.
 - Todo note Figma 디자인 업데이트가 완료되었다.
+- Todo note domain과 schema 확장이 완료되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
@@ -33,17 +34,19 @@ Todo 메모 확장.
 
 추천 task:
 
-Task 28: Todo note domain과 schema 확장.
+Task 29: Todo note 저장 구조와 repository 확장.
 
 목표:
 
-- Todo model에 선택 note 필드를 추가한다.
-- note 최대 길이 500자와 공백 정리 규칙을 domain/schema 테스트로 고정한다.
-- 기존 title, completed 규칙은 유지한다.
+- Todo table에 note 컬럼을 추가한다.
+- migration을 준비한다.
+- repository가 note를 저장, 조회, 수정, 비우기 할 수 있게 한다.
+- 기존 create, toggle, delete 동작은 유지한다.
 
 검증:
 
-- domain unit test와 schema unit test
+- DB schema 또는 migration 테스트
+- repository integration test
 - `npm run check`
 
 테스트 예외:
@@ -52,32 +55,32 @@ Task 28: Todo note domain과 schema 확장.
 
 ## 최근 완료 Task
 
-Todo note Figma 디자인 업데이트.
+Todo note domain과 schema 확장.
 
 완료 조건:
 
-- Components에 `Todo Item / with note`와 `Todo Item / note editing` 상태가 추가된다.
-- Screens에 `05 메모 있는 상태`와 `06 메모 편집 상태`가 추가된다.
-- 대표 노드 metadata로 배치와 크기를 검증한다.
-- screenshot으로 시각 상태를 확인한다.
+- Todo model에 선택 note 필드가 추가된다.
+- note 기본값은 `null`이다.
+- note 최대 길이는 500자다.
+- 빈 문자열, 공백, `null`, `undefined`는 note 없음으로 정리된다.
+- 기존 title, completed 규칙은 유지된다.
 
 검증:
 
 - `npm run check` 통과
 
-테스트 예외:
+테스트:
 
-- Figma 디자인 task이므로 Red/Green 테스트를 작성하지 않는다.
+- domain unit test
+- note schema unit test
 
 ## 다음 Task 후보
 
-1. Task 27: Todo note Figma 디자인 업데이트
-2. Task 28: Todo note domain과 schema 확장
-3. Task 29: Todo note 저장 구조와 repository 확장
-4. Task 30: Todo note use case와 API 확장
-5. Task 31: Todo Item note UI와 showcase 확장
-6. Task 32: Todo note 편집 기능 연결
-7. Task 33: Todo note E2E 확장
+1. Task 29: Todo note 저장 구조와 repository 확장
+2. Task 30: Todo note use case와 API 확장
+3. Task 31: Todo Item note UI와 showcase 확장
+4. Task 32: Todo note 편집 기능 연결
+5. Task 33: Todo note E2E 확장
 
 ## 중단 조건
 

@@ -357,3 +357,42 @@ Figma 변경:
 남은 리스크:
 
 - Figma 시각 검토는 Agent가 screenshot으로 확인한 수준이다. 사용자가 Figma에서 직접 보고 세부 시각 피드백을 줄 수 있다.
+
+## 2026-05-15: Todo note domain과 schema 확장
+
+상태: Done
+
+목적:
+
+- Todo domain model과 note 입력 검증 규칙에 선택 메모를 추가한다.
+
+변경 파일:
+
+- `packages/domain/src/todo.ts`
+- `packages/domain/src/todo.test.ts`
+- `packages/domain/src/todo-note-schema.ts`
+- `packages/domain/src/todo-note-schema.test.ts`
+- `packages/domain/src/todo-use-cases.test.ts`
+- `packages/domain/src/index.ts`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- Todo snapshot에 선택 `note` 필드를 추가했다.
+- Todo 생성 시 note 기본값은 `null`이다.
+- 기존 snapshot에 note가 없어도 `null`로 복원해 다음 DB task 전까지 하위 호환을 유지한다.
+- `todoNoteSchema`를 추가해 앞뒤 공백 제거, 공백 입력의 `null` 정리, 최대 500자 제한을 검증한다.
+
+검증:
+
+- `npm run test -- packages/domain/src/todo.test.ts packages/domain/src/todo-note-schema.test.ts packages/domain/src/todo-use-cases.test.ts` 통과
+- `npm run check` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- DB schema와 repository는 아직 note를 저장하지 않는다. 다음 task에서 저장 구조를 확장해야 한다.

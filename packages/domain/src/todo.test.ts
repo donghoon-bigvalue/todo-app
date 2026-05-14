@@ -14,6 +14,7 @@ describe("Todo", () => {
       id: createTodoId("todo-1"),
       title: "첫 번째 할 일",
       completed: false,
+      note: null,
       createdAt,
     });
   });
@@ -23,10 +24,12 @@ describe("Todo", () => {
       id: createTodoId("todo-1"),
       title: "완료된 할 일",
       completed: true,
+      note: "답장 전에 첨부 파일 확인",
       createdAt: new Date("2026-05-13T09:00:00.000Z"),
     });
 
     expect(todo.completed).toBe(true);
+    expect(todo.note).toBe("답장 전에 첨부 파일 확인");
   });
 
   it("도메인 동작으로 완료 상태를 변경한다", () => {
@@ -44,6 +47,20 @@ describe("Todo", () => {
 
     todo.toggleCompleted();
     expect(todo.completed).toBe(true);
+  });
+
+  it("도메인 동작으로 메모를 변경하고 비운다", () => {
+    const todo = Todo.create({
+      id: createTodoId("todo-1"),
+      title: "메모를 남길 할 일",
+      createdAt: new Date("2026-05-13T09:00:00.000Z"),
+    });
+
+    todo.updateNote("우유, 계란, 커피 원두 확인");
+    expect(todo.note).toBe("우유, 계란, 커피 원두 확인");
+
+    todo.clearNote();
+    expect(todo.note).toBeNull();
   });
 
   it("createdAt이 외부 변경의 영향을 받지 않게 보호한다", () => {

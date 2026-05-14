@@ -6,6 +6,7 @@ export type TodoSnapshot = {
   readonly id: TodoId;
   readonly title: string;
   readonly completed: boolean;
+  readonly note?: string | null;
   readonly createdAt: Date;
 };
 
@@ -23,12 +24,14 @@ export class Todo {
   readonly #id: TodoId;
   readonly #title: string;
   #completed: boolean;
+  #note: string | null;
   readonly #createdAt: Date;
 
   private constructor(snapshot: TodoSnapshot) {
     this.#id = snapshot.id;
     this.#title = snapshot.title;
     this.#completed = snapshot.completed;
+    this.#note = snapshot.note ?? null;
     this.#createdAt = new Date(snapshot.createdAt);
   }
 
@@ -37,6 +40,7 @@ export class Todo {
       id: input.id,
       title: input.title,
       completed: false,
+      note: null,
       createdAt: input.createdAt ?? new Date(),
     });
   }
@@ -57,6 +61,10 @@ export class Todo {
     return this.#completed;
   }
 
+  get note(): string | null {
+    return this.#note;
+  }
+
   get createdAt(): Date {
     return new Date(this.#createdAt);
   }
@@ -73,11 +81,20 @@ export class Todo {
     this.#completed = !this.#completed;
   }
 
+  updateNote(note: string): void {
+    this.#note = note;
+  }
+
+  clearNote(): void {
+    this.#note = null;
+  }
+
   toSnapshot(): TodoSnapshot {
     return {
       id: this.#id,
       title: this.#title,
       completed: this.#completed,
+      note: this.#note,
       createdAt: new Date(this.#createdAt),
     };
   }
