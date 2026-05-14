@@ -13,6 +13,7 @@
 - README 문서 링크에 Agent Harness와 운영 문서가 추가되었다.
 - Husky 기반 Git hook이 추가되었다.
 - Todo 메모 기능 초안이 승인되어 제품 문서와 구현 계획에 반영되었다.
+- Todo note Figma 디자인 업데이트가 완료되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
@@ -32,33 +33,33 @@ Todo 메모 확장.
 
 추천 task:
 
-Task 27: Todo note Figma 디자인 업데이트.
+Task 28: Todo note domain과 schema 확장.
 
 목표:
 
-- 메모가 있는 Todo Item과 메모 편집 상태를 Figma 기준으로 먼저 정의한다.
-- 메모 버튼, textarea, 저장/취소 버튼 배치를 정한다.
-- 대표 노드 metadata로 정렬과 크기를 검증한다.
+- Todo model에 선택 note 필드를 추가한다.
+- note 최대 길이 500자와 공백 정리 규칙을 domain/schema 테스트로 고정한다.
+- 기존 title, completed 규칙은 유지한다.
 
 검증:
 
-- Figma metadata 확인
-- 필요 시 screenshot 확인
+- domain unit test와 schema unit test
+- `npm run check`
 
 테스트 예외:
 
-- Figma 디자인 task이므로 Red/Green 테스트를 작성하지 않는다.
+- 기능 구현 task이므로 TDD Red/Green을 적용한다.
 
 ## 최근 완료 Task
 
-Todo 메모 기능 문서화.
+Todo note Figma 디자인 업데이트.
 
 완료 조건:
 
-- 승인된 메모 UX가 제품 문서에 반영된다.
-- 요구사항과 사용자 흐름에 메모 추가, 수정, 비우기가 정의된다.
-- 디자인 브리프에 메모 표시와 인라인 편집 상태가 반영된다.
-- 구현 계획에 Todo 메모 확장 phase와 Figma 선행 task가 추가된다.
+- Components에 `Todo Item / with note`와 `Todo Item / note editing` 상태가 추가된다.
+- Screens에 `05 메모 있는 상태`와 `06 메모 편집 상태`가 추가된다.
+- 대표 노드 metadata로 배치와 크기를 검증한다.
+- screenshot으로 시각 상태를 확인한다.
 
 검증:
 
@@ -66,7 +67,7 @@ Todo 메모 기능 문서화.
 
 테스트 예외:
 
-- 이번 task는 문서화 작업이므로 Red/Green 테스트를 작성하지 않는다.
+- Figma 디자인 task이므로 Red/Green 테스트를 작성하지 않는다.
 
 ## 다음 Task 후보
 

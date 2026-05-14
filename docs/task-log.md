@@ -319,3 +319,41 @@
 남은 리스크:
 
 - 실제 Figma 파일 업데이트는 아직 진행하지 않았다. 다음 task는 Todo note Figma 디자인 업데이트다.
+
+## 2026-05-14: Todo note Figma 디자인 업데이트
+
+상태: Done
+
+목적:
+
+- 메모가 있는 Todo Item과 메모 편집 상태를 코드 구현 전에 Figma 기준으로 먼저 정의한다.
+
+변경 파일:
+
+- `docs/figma-plan.md`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+Figma 변경:
+
+- Components에 `Todo Item / with note` 추가
+- Components에 `Todo Item / note editing` 추가
+- Screens에 `05 메모 있는 상태` 추가
+- Screens에 `06 메모 편집 상태` 추가
+- Feedback Components 섹션을 아래로 이동해 확장된 Todo Components와 겹치지 않게 정리
+
+검증:
+
+- `Todo Components` node `13:7` metadata 확인
+- `05 메모 있는 상태` node `55:25` metadata 확인
+- `06 메모 편집 상태` node `55:64` metadata 확인
+- `Feedback Components` node `13:12` metadata 확인
+- screenshot으로 Components, 메모 있는 상태, 메모 편집 상태 확인
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- Figma 시각 검토는 Agent가 screenshot으로 확인한 수준이다. 사용자가 Figma에서 직접 보고 세부 시각 피드백을 줄 수 있다.
