@@ -243,3 +243,79 @@
 남은 리스크:
 
 - Playwright E2E는 기본 hook에 포함하지 않았다. UI 흐름 변경 task에서는 별도 검증으로 실행해야 한다.
+
+## 2026-05-14: Todo 메모 기능 문서화
+
+상태: Done
+
+목적:
+
+- 승인된 Todo 메모 기능 초안을 제품 문서, 디자인 문서, 구현 계획에 반영한다.
+
+변경 파일:
+
+- `docs/project-brief.md`
+- `docs/product-brief.md`
+- `docs/requirements.md`
+- `docs/user-flow.md`
+- `docs/design-brief.md`
+- `docs/implementation-plan.md`
+- `docs/current-plan.md`
+- `docs/decisions.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- Todo 메모를 생성 후 인라인으로 추가, 수정, 비우는 확장 범위로 정리했다.
+- 메모는 선택 입력이며 최대 500자로 제한한다.
+- 목록에서는 메모를 2줄까지 표시하고, 편집은 한 번에 하나의 Todo에서만 열리도록 정했다.
+- 구현 계획에 Todo 메모 확장 phase와 Task 27~33을 추가했다.
+- UI 영향도 누락을 보정해 Figma 디자인 업데이트를 코드 구현 전 선행 task로 추가했다.
+
+검증:
+
+- `npm run check` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- 아직 구현은 시작하지 않았다. 다음 task는 Todo note Figma 디자인 업데이트다.
+
+## 2026-05-14: Figma-before-code 게이트 보강
+
+상태: Done
+
+목적:
+
+- 새 화면, 컴포넌트, UI 상태가 생기는 기능은 코드 구현 전에 Figma 작업을 먼저 계획하도록 하네스 규칙을 보강한다.
+
+변경 파일:
+
+- `docs/agent-harness.md`
+- `docs/agent-workflow.md`
+- `.codex/skills/agent-work-loop/SKILL.md`
+- `docs/implementation-plan.md`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- UI 영향도 판정 기준을 `docs/agent-harness.md`에 추가했다.
+- UI 영향이 있으면 Figma task를 코드 구현 task보다 먼저 두도록 정했다.
+- `agent-workflow`와 `agent-work-loop` skill에 Figma 선행 작업 확인을 추가했다.
+- Todo 메모 확장 Phase 7의 첫 task를 Figma 디자인 업데이트로 보정했다.
+
+검증:
+
+- `npm run check` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- 실제 Figma 파일 업데이트는 아직 진행하지 않았다. 다음 task는 Todo note Figma 디자인 업데이트다.

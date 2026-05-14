@@ -61,11 +61,14 @@ description: Use in this Todo App project when turning chat ideas into product d
 
 - 목표
 - 변경 예상 파일
+- UI 영향 여부와 Figma 선행 작업 필요 여부
 - 테스트 전략
 - 검증 명령
 - 범위 밖 항목
 
 범위가 모호하면 먼저 묻는다.
+
+새 화면, 새 컴포넌트, 기존 컴포넌트의 새 상태나 variant, 새 interaction이 생기면 코드 구현 전에 Figma 작업 task가 있는지 확인한다. 없으면 `docs/agent-harness.md`의 UI 영향도 판정 기준에 따라 Figma 작업을 먼저 제안한다.
 
 ## 실행 루프
 
@@ -95,6 +98,7 @@ description: Use in this Todo App project when turning chat ideas into product d
 - 요청 범위 밖 기능을 추가하지 않는다.
 - 새 라이브러리, MCP, hook, skill은 사용자 승인 또는 문서화된 결정 없이 추가하지 않는다.
 - MVP 범위, 제외 범위, 기술 스택, 아키텍처, Figma 기준을 바꾸려면 먼저 사용자 확인을 받는다.
+- UI 영향이 있는데 Figma 작업을 건너뛰고 코드부터 구현하려면 먼저 사용자 확인을 받는다.
 - TDD와 클린 아키텍처 작업은 `tdd-clean-architecture` skill을 함께 따른다.
 - Figma 관련 작업은 `figma-design-sync` skill을 함께 따른다.
 - Figma 컴포넌트를 코드로 옮기거나 `/showcase`를 수정하면 `design-system-showcase` skill을 함께 따른다.

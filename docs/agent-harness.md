@@ -91,6 +91,34 @@ docs/adr/*
 - 실행, 테스트, 배포, 로컬 환경 기준이 필요하면 `development-guide.md`를 만든다.
 - 기술 스택, 아키텍처, 도구 도입처럼 장기 영향이 있는 결정을 하면 `docs/adr/`에 남긴다.
 
+## UI 영향도 판정
+
+문서화 이후 implementation plan을 만들 때 Agent는 먼저 UI 영향도를 판정한다.
+
+UI 영향이 있는 경우:
+
+- 새 화면이 생긴다.
+- 새 컴포넌트가 생긴다.
+- 기존 컴포넌트에 새 상태나 variant가 생긴다.
+- 사용자 입력 방식이나 주요 interaction이 바뀐다.
+- 목록, form, navigation, modal, panel 등 화면 구조가 바뀐다.
+- Figma Components 또는 Screens 기준과 코드 구현이 달라질 수 있다.
+
+UI 영향이 없으면 domain, API, DB, refactor 같은 구현 task부터 진행할 수 있다.
+
+UI 영향이 있으면 코드 구현보다 먼저 다음 순서를 따른다.
+
+```text
+design-brief 갱신
+-> figma-plan 갱신 또는 작성
+-> Figma Components/Screens 업데이트 task
+-> Figma metadata 또는 screenshot 검증
+-> 코드 디자인 시스템 또는 UI 구현 task
+-> 기능 연결 task
+```
+
+implementation plan에는 Figma 작업 task를 코드 구현 task보다 먼저 둔다. Figma 작업 없이 코드부터 구현하려면 사용자의 명시적인 승인이 필요하다.
+
 ## 실행 루프
 
 문서화 이후 실제 task 실행은 `docs/agent-workflow.md`와 `.codex/skills/agent-work-loop/SKILL.md`를 따른다.
@@ -120,6 +148,7 @@ Context Intake
 - 기술 스택 또는 아키텍처 결정을 바꿀 때
 - 새 라이브러리, 프레임워크, MCP, hook, skill을 도입할 때
 - Figma 디자인 기준을 바꿀 때
+- UI 영향이 있는데 Figma 작업을 건너뛰고 코드부터 구현하려 할 때
 - 검증 실패 상태에서 작업을 계속할지 결정해야 할 때
 - 커밋할 때
 - 푸시할 때

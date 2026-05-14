@@ -421,3 +421,136 @@
 검증:
 
 - README에 적은 주요 명령이 실제로 실행 가능하다.
+
+## Phase 7: Todo 메모 확장
+
+### Task 27: Todo note Figma 디자인 업데이트
+
+목적:
+
+- 메모가 있는 Todo Item과 메모 편집 상태를 Figma 기준으로 먼저 정의한다.
+
+완료 조건:
+
+- Components 또는 화면 상태에 메모가 있는 Todo Item 상태가 있다.
+- 메모 편집 중 상태가 있다.
+- 메모는 제목 아래 2줄 표시 기준으로 표현된다.
+- 메모 추가 또는 수정 버튼, textarea, 저장 버튼, 취소 버튼의 배치가 정해져 있다.
+- 기존 기본, 완료, 에러 상태와 시각적으로 어긋나지 않는다.
+- 대표 노드 metadata로 정렬과 크기를 검증한다.
+
+검증:
+
+- Figma metadata 확인
+- 필요 시 screenshot 확인
+
+### Task 28: Todo note domain과 schema 확장
+
+목적:
+
+- Todo에 선택 메모를 저장할 수 있도록 domain model과 입력 검증 규칙을 확장한다.
+
+완료 조건:
+
+- Todo model에 선택 `note` 필드가 있다.
+- note는 비어 있을 수 있다.
+- note 최대 길이는 500자다.
+- 빈 문자열이나 공백만 저장하면 note 없음으로 정리된다.
+- 기존 title 검증 규칙은 유지된다.
+
+검증:
+
+- domain unit test와 schema unit test가 통과한다.
+
+### Task 29: Todo note 저장 구조와 repository 확장
+
+목적:
+
+- DB와 repository가 Todo note를 저장, 조회, 수정, 비우기 할 수 있게 한다.
+
+완료 조건:
+
+- Todo table에 note 컬럼이 있다.
+- migration이 준비되어 있다.
+- findMany 결과에 note가 포함된다.
+- repository에서 note 업데이트와 note 비우기가 가능하다.
+- 기존 create, toggle, delete 동작은 유지된다.
+
+검증:
+
+- DB schema 또는 migration 테스트가 통과한다.
+- repository integration test가 통과한다.
+
+### Task 30: Todo note use case와 API 확장
+
+목적:
+
+- frontend가 Todo note를 수정하거나 비울 수 있는 API를 제공한다.
+
+완료 조건:
+
+- note 수정 use case가 있다.
+- note 최대 길이를 검증한다.
+- 빈 note 저장 요청은 note 없음으로 처리한다.
+- Todo 응답에 note가 포함된다.
+- note 수정 API가 있다.
+- 기존 list, create, toggle, delete API는 유지된다.
+
+검증:
+
+- application test가 통과한다.
+- controller test가 통과한다.
+
+### Task 31: Todo Item note UI와 showcase 확장
+
+목적:
+
+- Figma 기준에 맞춰 Todo Item이 메모 표시와 메모 편집 상태를 표현할 수 있게 한다.
+
+완료 조건:
+
+- 메모가 있는 Todo Item은 제목 아래에 메모를 2줄까지 표시한다.
+- 메모 버튼은 메모가 없으면 추가, 있으면 수정 의미를 가진다.
+- 메모 편집 상태에는 textarea, 저장 버튼, 취소 버튼이 있다.
+- `/showcase`에서 메모 있음과 메모 편집 중 상태를 확인할 수 있다.
+
+검증:
+
+- component test와 build가 통과한다.
+
+### Task 32: Todo note 편집 기능 연결
+
+목적:
+
+- 실제 Todo 화면에서 사용자가 생성된 할 일의 메모를 추가, 수정, 비울 수 있게 한다.
+
+완료 조건:
+
+- 할 일 생성 form은 기존처럼 title만 입력한다.
+- 메모 편집은 한 번에 하나의 Todo에서만 열린다.
+- 저장하면 서버에 반영되고 목록에 갱신된다.
+- 빈 값으로 저장하면 메모가 삭제된다.
+- 취소하면 기존 메모가 유지된다.
+- 완료된 할 일도 메모를 수정할 수 있다.
+
+검증:
+
+- 사용자 행동 중심 component test가 통과한다.
+- `npm run check`가 통과한다.
+
+### Task 33: Todo note E2E 확장
+
+목적:
+
+- 실제 브라우저에서 메모 추가, 수정, 비우기 흐름을 검증한다.
+
+완료 조건:
+
+- Todo 생성 후 메모를 추가할 수 있다.
+- 메모를 수정할 수 있다.
+- 빈 값 저장으로 메모를 비울 수 있다.
+- 기존 추가, 완료, 삭제 흐름은 유지된다.
+
+검증:
+
+- Playwright E2E 테스트가 통과한다.
