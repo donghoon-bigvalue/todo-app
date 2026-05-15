@@ -34,5 +34,11 @@ describe("Web app routing", () => {
     renderRoute("/showcase");
 
     expect(screen.getByRole("heading", { name: "Showcase" })).toBeInTheDocument();
+    expect(
+      screen.getAllByText("우유, 계란, 커피 원두를 확인하고 필요한 것만 사기").length,
+    ).toBeGreaterThan(0);
+    expect(screen.getByRole("textbox", { name: "장보기 메모" })).toHaveValue(
+      "우유, 계란, 커피 원두를 확인하고 필요한 것만 사기",
+    );
   });
 });

@@ -82,6 +82,23 @@ export function ShowcasePage() {
           <div className="flex flex-wrap items-start gap-6">
             <TodoItem completed={false} title="장보기" />
             <TodoItem completed title="이메일 답장하기" />
+            <TodoItem
+              completed={false}
+              note="우유, 계란, 커피 원두를 확인하고 필요한 것만 사기"
+              onNoteEdit={() => undefined}
+              title="장보기"
+            />
+            <TodoItem
+              completed={false}
+              isNoteEditing
+              note="우유, 계란, 커피 원두를 확인하고 필요한 것만 사기"
+              noteDraft="우유, 계란, 커피 원두를 확인하고 필요한 것만 사기"
+              onNoteCancel={() => undefined}
+              onNoteChange={() => undefined}
+              onNoteEdit={() => undefined}
+              onNoteSave={() => undefined}
+              title="장보기"
+            />
           </div>
         </section>
 

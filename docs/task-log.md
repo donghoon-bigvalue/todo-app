@@ -482,3 +482,40 @@ Figma 변경:
 남은 리스크:
 
 - Todo Item UI는 아직 note 표시와 편집 상태를 제공하지 않는다. 다음 task에서 Figma 기준 UI component와 showcase를 확장해야 한다.
+
+## 2026-05-15: Todo Item note UI와 showcase 확장
+
+상태: Done
+
+목적:
+
+- Figma의 Todo Item note 상태를 shared UI component와 `/showcase`에 반영한다.
+
+변경 파일:
+
+- `apps/web/src/shared/ui/todo-item.tsx`
+- `apps/web/src/shared/ui/todo-item.test.tsx`
+- `apps/web/src/pages/showcase-page.tsx`
+- `apps/web/src/app/app.test.tsx`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- Todo Item에 note 표시 상태를 추가했다.
+- Todo Item에 note 편집 textarea, 저장 버튼, 취소 버튼 상태를 추가했다.
+- 메모 추가/수정 버튼을 Todo Item header에 배치했다.
+- `/showcase`에 기본, 완료, note 표시, note 편집 상태를 함께 노출했다.
+
+검증:
+
+- `npm run test -- apps/web/src/shared/ui/todo-item.test.tsx apps/web/src/app/app.test.tsx apps/web/src/pages/todo-page.test.tsx apps/web/src/pages/showcase-page.tsx` 통과
+- `npm run check` 통과
+
+커밋:
+
+- `feat(todo): Todo 메모 UI 상태 추가`
+
+남은 리스크:
+
+- TodoPage는 아직 note 편집 상태와 `updateTodoNote` 호출을 연결하지 않는다. 다음 task에서 실제 사용자 흐름을 연결해야 한다.
