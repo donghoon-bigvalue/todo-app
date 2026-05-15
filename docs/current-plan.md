@@ -18,6 +18,7 @@
 - Todo note 저장 구조와 repository 확장이 완료되었다.
 - Todo note use case와 API 확장이 완료되었다.
 - Todo Item note UI와 showcase 확장이 완료되었다.
+- Todo note 편집 기능 연결이 완료되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
@@ -37,21 +38,18 @@ Todo 메모 확장.
 
 추천 task:
 
-Task 32: Todo note 편집 기능 연결.
+Task 33: Todo note E2E 확장.
 
 목표:
 
-- TodoPage에서 note 표시 상태를 렌더링한다.
-- 메모 추가/수정 버튼으로 한 Todo의 편집 상태를 연다.
-- 저장 시 `updateTodoNote` API를 호출하고 목록을 갱신한다.
-- 취소 시 기존 목록 상태로 돌아간다.
-- 빈 값 저장은 note 없음으로 처리한다.
-- 완료된 Todo도 메모를 수정할 수 있게 한다.
+- 실제 브라우저 흐름에서 Todo note 추가, 수정, 비우기를 검증한다.
+- 메모 편집은 한 번에 하나만 열린다는 흐름을 검증한다.
+- 완료된 Todo의 메모 수정이 가능함을 검증한다.
+- 기존 추가, 완료, 삭제 E2E 흐름은 유지한다.
 
 검증:
 
-- page-level interaction test
-- API client mock test
+- Playwright E2E
 - `npm run check`
 
 테스트 예외:
@@ -60,14 +58,16 @@ Task 32: Todo note 편집 기능 연결.
 
 ## 최근 완료 Task
 
-Todo Item note UI와 showcase 확장.
+Todo note 편집 기능 연결.
 
 완료 조건:
 
-- Figma의 메모 상태를 기준으로 Todo Item component가 확장된다.
-- note 표시 상태와 note 편집 상태가 추가된다.
-- `/showcase`에서 note 표시와 편집 상태를 확인할 수 있다.
-- 기존 기본, 완료, 삭제 동작 UI는 유지된다.
+- TodoPage에서 note 표시 상태를 렌더링한다.
+- 메모 추가/수정 버튼으로 한 Todo의 편집 상태를 연다.
+- 저장 시 `updateTodoNote` API를 호출하고 목록을 갱신한다.
+- 취소 시 기존 목록 상태로 돌아간다.
+- 빈 값 저장은 note 없음으로 처리한다.
+- 완료된 Todo도 메모를 수정할 수 있다.
 
 검증:
 
@@ -75,13 +75,12 @@ Todo Item note UI와 showcase 확장.
 
 테스트:
 
-- shared UI test
-- showcase route test
+- page-level interaction test
+- API client mock test
 
 ## 다음 Task 후보
 
-1. Task 32: Todo note 편집 기능 연결
-2. Task 33: Todo note E2E 확장
+1. Task 33: Todo note E2E 확장
 
 ## 중단 조건
 

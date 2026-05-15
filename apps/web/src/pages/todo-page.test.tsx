@@ -13,9 +13,12 @@ vi.mock("../shared/api", () => ({
   deleteTodo: vi.fn(),
   listTodos: vi.fn(),
   updateTodoCompleted: vi.fn(),
+  updateTodoNote: vi.fn(),
 }));
 
-const { createTodo, deleteTodo, listTodos, updateTodoCompleted } = await import("../shared/api");
+const { createTodo, deleteTodo, listTodos, updateTodoCompleted, updateTodoNote } = await import(
+  "../shared/api"
+);
 
 function renderTodoPage() {
   const queryClient = createQueryClient();
@@ -174,6 +177,139 @@ describe("TodoPage", () => {
     expect(await screen.findByText("아직 할 일이 없습니다.")).toBeInTheDocument();
   });
 
+  it("Todo 메모를 표시하고 수정한 뒤 목록을 다시 조회한다", async () => {
+    vi.mocked(listTodos)
+      .mockResolvedValueOnce([
+        {
+          id: "todo-1",
+          title: "장보기",
+          completed: false,
+          note: "우유 확인",
+          createdAt: "2026-05-13T09:00:00.000Z",
+        },
+      ])
+      .mockResolvedValueOnce([
+        {
+          id: "todo-1",
+          title: "장보기",
+          completed: false,
+          note: "우유와 계란 확인",
+          createdAt: "2026-05-13T09:00:00.000Z",
+        },
+      ]);
+    vi.mocked(updateTodoNote).mockResolvedValue({
+      id: "todo-1",
+      title: "장보기",
+      completed: false,
+      note: "우유와 계란 확인",
+      createdAt: "2026-05-13T09:00:00.000Z",
+    });
+
+    renderTodoPage();
+
+    expect(await screen.findByText("우유 확인")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "장보기 메모 수정" }));
+    const noteTextarea = screen.getByRole("textbox", { name: "장보기 메모" });
+    await userEvent.clear(noteTextarea);
+    await userEvent.type(noteTextarea, "우유와 계란 확인");
+    await userEvent.click(screen.getByRole("button", { name: "장보기 메모 저장" }));
+
+    expect(updateTodoNote).toHaveBeenCalledWith("todo-1", { note: "우유와 계란 확인" });
+    expect(await screen.findByText("우유와 계란 확인")).toBeInTheDocument();
+  });
+
+  it("한 번에 하나의 Todo 메모만 편집한다", async () => {
+    vi.mocked(listTodos).mockResolvedValue([
+      {
+        id: "todo-1",
+        title: "장보기",
+        completed: false,
+        note: null,
+        createdAt: "2026-05-13T09:00:00.000Z",
+      },
+      {
+        id: "todo-2",
+        title: "이메일 답장하기",
+        completed: false,
+        note: "첨부파일 확인",
+        createdAt: "2026-05-13T10:00:00.000Z",
+      },
+    ]);
+
+    renderTodoPage();
+
+    await userEvent.click(await screen.findByRole("button", { name: "장보기 메모 추가" }));
+    expect(screen.getByRole("textbox", { name: "장보기 메모" })).toHaveValue("");
+
+    await userEvent.click(screen.getByRole("button", { name: "이메일 답장하기 메모 수정" }));
+
+    expect(screen.queryByRole("textbox", { name: "장보기 메모" })).toBeNull();
+    expect(screen.getByRole("textbox", { name: "이메일 답장하기 메모" })).toHaveValue(
+      "첨부파일 확인",
+    );
+  });
+
+  it("메모 편집을 취소하면 기존 목록 상태로 돌아간다", async () => {
+    vi.mocked(listTodos).mockResolvedValue([
+      {
+        id: "todo-1",
+        title: "장보기",
+        completed: false,
+        note: "기존 메모",
+        createdAt: "2026-05-13T09:00:00.000Z",
+      },
+    ]);
+
+    renderTodoPage();
+
+    await userEvent.click(await screen.findByRole("button", { name: "장보기 메모 수정" }));
+    await userEvent.clear(screen.getByRole("textbox", { name: "장보기 메모" }));
+    await userEvent.type(screen.getByRole("textbox", { name: "장보기 메모" }), "취소할 메모");
+    await userEvent.click(screen.getByRole("button", { name: "장보기 메모 취소" }));
+
+    expect(updateTodoNote).not.toHaveBeenCalled();
+    expect(screen.queryByRole("textbox", { name: "장보기 메모" })).toBeNull();
+    expect(screen.getByText("기존 메모")).toBeInTheDocument();
+  });
+
+  it("빈 메모를 저장하면 note 없음으로 요청한다", async () => {
+    vi.mocked(listTodos)
+      .mockResolvedValueOnce([
+        {
+          id: "todo-1",
+          title: "장보기",
+          completed: true,
+          note: "기존 메모",
+          createdAt: "2026-05-13T09:00:00.000Z",
+        },
+      ])
+      .mockResolvedValueOnce([
+        {
+          id: "todo-1",
+          title: "장보기",
+          completed: true,
+          note: null,
+          createdAt: "2026-05-13T09:00:00.000Z",
+        },
+      ]);
+    vi.mocked(updateTodoNote).mockResolvedValue({
+      id: "todo-1",
+      title: "장보기",
+      completed: true,
+      note: null,
+      createdAt: "2026-05-13T09:00:00.000Z",
+    });
+
+    renderTodoPage();
+
+    await userEvent.click(await screen.findByRole("button", { name: "장보기 메모 수정" }));
+    await userEvent.clear(screen.getByRole("textbox", { name: "장보기 메모" }));
+    await userEvent.click(screen.getByRole("button", { name: "장보기 메모 저장" }));
+
+    expect(updateTodoNote).toHaveBeenCalledWith("todo-1", { note: null });
+    expect(await screen.findByRole("button", { name: "장보기 메모 추가" })).toBeInTheDocument();
+  });
+
   it("완료 상태 변경에 실패하면 에러 메시지를 보여준다", async () => {
     vi.mocked(listTodos).mockResolvedValue([
       {
@@ -208,5 +344,25 @@ describe("TodoPage", () => {
     await userEvent.click(await screen.findByRole("button", { name: "장보기 삭제" }));
 
     expect(await screen.findByText("할 일을 삭제하지 못했습니다.")).toBeInTheDocument();
+  });
+
+  it("메모 저장에 실패하면 에러 메시지를 보여준다", async () => {
+    vi.mocked(listTodos).mockResolvedValue([
+      {
+        id: "todo-1",
+        title: "장보기",
+        completed: false,
+        note: null,
+        createdAt: "2026-05-13T09:00:00.000Z",
+      },
+    ]);
+    vi.mocked(updateTodoNote).mockRejectedValue(new Error("fail"));
+
+    renderTodoPage();
+    await userEvent.click(await screen.findByRole("button", { name: "장보기 메모 추가" }));
+    await userEvent.type(screen.getByRole("textbox", { name: "장보기 메모" }), "새 메모");
+    await userEvent.click(screen.getByRole("button", { name: "장보기 메모 저장" }));
+
+    expect(await screen.findByText("할 일 메모를 저장하지 못했습니다.")).toBeInTheDocument();
   });
 });

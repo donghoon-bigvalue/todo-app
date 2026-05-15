@@ -519,3 +519,42 @@ Figma 변경:
 남은 리스크:
 
 - TodoPage는 아직 note 편집 상태와 `updateTodoNote` 호출을 연결하지 않는다. 다음 task에서 실제 사용자 흐름을 연결해야 한다.
+
+## 2026-05-15: Todo note 편집 기능 연결
+
+상태: Done
+
+목적:
+
+- TodoPage에서 Todo note 표시, 추가, 수정, 비우기 사용자 흐름을 연결한다.
+
+변경 파일:
+
+- `apps/web/src/pages/todo-page.tsx`
+- `apps/web/src/pages/todo-page.test.tsx`
+- `apps/web/src/shared/ui/todo-item.tsx`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- TodoPage가 Todo note를 목록에 표시하도록 연결했다.
+- 모든 Todo에 메모 추가/수정 버튼을 제공한다.
+- 한 번에 하나의 Todo만 note 편집 상태가 되도록 했다.
+- 저장 시 `updateTodoNote`를 호출하고 목록을 다시 조회한다.
+- 빈 문자열 저장은 `note: null` 요청으로 처리한다.
+- 취소 시 API 호출 없이 기존 목록 상태로 돌아간다.
+
+검증:
+
+- `npm run test -- apps/web/src/pages/todo-page.test.tsx` 통과
+- `npm run test -- apps/web/src/pages/todo-page.test.tsx apps/web/src/shared/ui/todo-item.test.tsx apps/web/src/shared/api/todo-api.test.ts` 통과
+- `npm run check` 통과
+
+커밋:
+
+- `feat(todo): Todo 메모 편집 흐름 연결`
+
+남은 리스크:
+
+- 브라우저 E2E에서는 아직 note 추가, 수정, 비우기 흐름을 검증하지 않는다. 다음 task에서 E2E를 확장해야 한다.

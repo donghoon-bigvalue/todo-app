@@ -7,7 +7,7 @@ export type TodoItemProps = {
   readonly completed: boolean;
   readonly isNoteEditing?: boolean;
   readonly note?: string | null;
-  readonly noteDraft?: string;
+  readonly noteDraft?: string | undefined;
   readonly onCompletedChange?: (completed: boolean) => void;
   readonly onDelete?: () => void;
   readonly onNoteCancel?: () => void;

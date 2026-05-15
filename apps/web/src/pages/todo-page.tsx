@@ -1,10 +1,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { todoTitleSchema } from "@todo-app/domain";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import {
+  createTodo,
+  deleteTodo,
+  listTodos,
+  updateTodoCompleted,
+  updateTodoNote,
+} from "../shared/api";
 import { Button, EmptyState, ErrorMessage, TextInput, TodoItem } from "../shared/ui";
-import { createTodo, deleteTodo, listTodos, updateTodoCompleted } from "../shared/api";
 
 const todoFormSchema = z.object({
   title: todoTitleSchema,
@@ -14,6 +21,8 @@ type TodoFormValues = z.infer<typeof todoFormSchema>;
 
 export function TodoPage() {
   const queryClient = useQueryClient();
+  const [editingNoteTodoId, setEditingNoteTodoId] = useState<string | null>(null);
+  const [noteDraft, setNoteDraft] = useState("");
   const form = useForm<TodoFormValues>({
     defaultValues: {
       title: "",
@@ -44,9 +53,34 @@ export function TodoPage() {
       await queryClient.invalidateQueries({ queryKey: ["todos"] });
     },
   });
+  const updateTodoNoteMutation = useMutation({
+    mutationFn: ({ id, note }: { readonly id: string; readonly note: string | null }) =>
+      updateTodoNote(id, { note }),
+    onSuccess: async () => {
+      setEditingNoteTodoId(null);
+      setNoteDraft("");
+      await queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
   const todos = todosQuery.data ?? [];
   const remainingCount = todos.filter((todo) => !todo.completed).length;
   const titleError = form.formState.errors.title?.message;
+
+  function startNoteEdit(todo: (typeof todos)[number]) {
+    setEditingNoteTodoId(todo.id);
+    setNoteDraft(todo.note ?? "");
+  }
+
+  function saveNote(id: string) {
+    const note = noteDraft.trim();
+
+    updateTodoNoteMutation.mutate({ id, note: note.length > 0 ? note : null });
+  }
+
+  function cancelNoteEdit() {
+    setEditingNoteTodoId(null);
+    setNoteDraft("");
+  }
 
   return (
     <main className="min-h-screen bg-[#F7F8FA] px-6 py-10 text-[#1F2937]">
@@ -93,6 +127,9 @@ export function TodoPage() {
           {deleteTodoMutation.isError ? (
             <ErrorMessage>할 일을 삭제하지 못했습니다.</ErrorMessage>
           ) : null}
+          {updateTodoNoteMutation.isError ? (
+            <ErrorMessage>할 일 메모를 저장하지 못했습니다.</ErrorMessage>
+          ) : null}
         </form>
 
         <section aria-label="할 일 목록" className="space-y-3">
@@ -106,11 +143,18 @@ export function TodoPage() {
           {todos.map((todo) => (
             <TodoItem
               completed={todo.completed}
+              isNoteEditing={editingNoteTodoId === todo.id}
               key={todo.id}
+              note={todo.note}
+              noteDraft={editingNoteTodoId === todo.id ? noteDraft : undefined}
               onCompletedChange={(completed) =>
                 updateTodoCompletedMutation.mutate({ completed, id: todo.id })
               }
               onDelete={() => deleteTodoMutation.mutate(todo.id)}
+              onNoteCancel={cancelNoteEdit}
+              onNoteChange={setNoteDraft}
+              onNoteEdit={() => startNoteEdit(todo)}
+              onNoteSave={() => saveNote(todo.id)}
               title={todo.title}
             />
           ))}
