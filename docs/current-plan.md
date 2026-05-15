@@ -19,11 +19,12 @@
 - Todo note use case와 API 확장이 완료되었다.
 - Todo Item note UI와 showcase 확장이 완료되었다.
 - Todo note 편집 기능 연결이 완료되었다.
+- Todo note E2E 확장이 완료되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
 
-Todo 메모 확장.
+Todo 메모 확장 완료.
 
 목표:
 
@@ -38,49 +39,47 @@ Todo 메모 확장.
 
 추천 task:
 
-Task 33: Todo note E2E 확장.
+Todo 메모 확장 회고 또는 다음 제품 개선 후보 논의.
 
 목표:
+
+- Todo 메모 확장 작업 결과를 회고한다.
+- Agent Harness 작업 루프에서 보완할 점을 정리한다.
+- 다음 작은 제품 개선 후보를 논의한다.
+
+검증:
+
+- 논의 task라 코드 검증은 필요할 때만 실행한다.
+
+테스트 예외:
+
+- 논의 task는 테스트 대상이 아니다.
+
+## 최근 완료 Task
+
+Todo note E2E 확장.
+
+완료 조건:
 
 - 실제 브라우저 흐름에서 Todo note 추가, 수정, 비우기를 검증한다.
 - 메모 편집은 한 번에 하나만 열린다는 흐름을 검증한다.
 - 완료된 Todo의 메모 수정이 가능함을 검증한다.
-- 기존 추가, 완료, 삭제 E2E 흐름은 유지한다.
+- 기존 추가, 완료, 삭제 E2E 흐름은 유지된다.
 
 검증:
 
-- Playwright E2E
-- `npm run check`
-
-테스트 예외:
-
-- 기능 구현 task이므로 TDD Red/Green을 적용한다.
-
-## 최근 완료 Task
-
-Todo note 편집 기능 연결.
-
-완료 조건:
-
-- TodoPage에서 note 표시 상태를 렌더링한다.
-- 메모 추가/수정 버튼으로 한 Todo의 편집 상태를 연다.
-- 저장 시 `updateTodoNote` API를 호출하고 목록을 갱신한다.
-- 취소 시 기존 목록 상태로 돌아간다.
-- 빈 값 저장은 note 없음으로 처리한다.
-- 완료된 Todo도 메모를 수정할 수 있다.
-
-검증:
-
+- `npm run e2e` 통과
 - `npm run check` 통과
 
 테스트:
 
-- page-level interaction test
-- API client mock test
+- Playwright E2E
 
 ## 다음 Task 후보
 
-1. Task 33: Todo note E2E 확장
+1. Todo 메모 확장 회고
+2. Agent Harness 작업 루프 개선점 정리
+3. 다음 작은 제품 개선 후보 논의
 
 ## 중단 조건
 

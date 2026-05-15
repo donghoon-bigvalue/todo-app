@@ -558,3 +558,38 @@ Figma 변경:
 남은 리스크:
 
 - 브라우저 E2E에서는 아직 note 추가, 수정, 비우기 흐름을 검증하지 않는다. 다음 task에서 E2E를 확장해야 한다.
+
+## 2026-05-15: Todo note E2E 확장
+
+상태: Done
+
+목적:
+
+- 실제 브라우저에서 Todo note 추가, 수정, 비우기와 단일 편집 흐름을 검증한다.
+
+변경 파일:
+
+- `e2e/todo-flow.e2e.ts`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- Todo note 추가, 수정, 비우기 E2E 시나리오를 추가했다.
+- 메모 편집은 한 번에 하나의 Todo에서만 열린다는 E2E 시나리오를 추가했다.
+- 완료된 Todo에서도 note를 추가하고 저장할 수 있음을 E2E로 검증했다.
+- 입력 form의 `추가` 버튼 locator를 exact match로 고정해 note 추가 버튼과 혼동하지 않게 했다.
+- 연속 Todo 생성 시 첫 생성과 form reset을 기다린 뒤 다음 Todo를 입력하도록 E2E를 안정화했다.
+
+검증:
+
+- `npm run e2e` 통과
+- `npm run check` 통과
+
+커밋:
+
+- `test(e2e): Todo 메모 브라우저 흐름 검증`
+
+남은 리스크:
+
+- Todo 메모 확장의 계획된 구현 task는 완료되었다. 다음에는 회고나 새로운 제품 개선 후보를 논의할 수 있다.
