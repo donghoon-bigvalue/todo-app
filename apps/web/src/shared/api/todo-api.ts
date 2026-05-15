@@ -5,6 +5,7 @@ export type TodoDto = {
   readonly id: string;
   readonly title: string;
   readonly completed: boolean;
+  readonly note: string | null;
   readonly createdAt: string;
 };
 
@@ -14,6 +15,10 @@ export type CreateTodoRequest = {
 
 export type UpdateTodoCompletedRequest = {
   readonly completed: boolean;
+};
+
+export type UpdateTodoNoteRequest = {
+  readonly note: string | null;
 };
 
 export class ApiError extends Error {
@@ -49,6 +54,14 @@ export async function updateTodoCompleted(
   client: AxiosInstance = apiClient,
 ): Promise<TodoDto> {
   return request(() => client.patch<TodoDto>(`/todos/${id}/completed`, input));
+}
+
+export async function updateTodoNote(
+  id: string,
+  input: UpdateTodoNoteRequest,
+  client: AxiosInstance = apiClient,
+): Promise<TodoDto> {
+  return request(() => client.patch<TodoDto>(`/todos/${id}/note`, input));
 }
 
 export async function deleteTodo(id: string, client: AxiosInstance = apiClient): Promise<void> {
@@ -119,6 +132,7 @@ function isTodoDto(value: unknown): value is TodoDto {
     typeof todo.id === "string" &&
     typeof todo.title === "string" &&
     typeof todo.completed === "boolean" &&
+    (typeof todo.note === "string" || todo.note === null) &&
     typeof todo.createdAt === "string"
   );
 }

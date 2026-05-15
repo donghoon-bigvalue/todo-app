@@ -18,6 +18,7 @@ import {
   type Todo,
   TodoNotFoundError,
   type UpdateTodoCompletedUseCase,
+  type UpdateTodoNoteUseCase,
   createTodoId,
 } from "@todo-app/domain";
 import { ZodError, z } from "zod";
@@ -26,6 +27,7 @@ import {
   DELETE_TODO_USE_CASE,
   LIST_TODOS_USE_CASE,
   UPDATE_TODO_COMPLETED_USE_CASE,
+  UPDATE_TODO_NOTE_USE_CASE,
 } from "../todos.tokens";
 
 const createTodoRequestSchema = z.object({
@@ -36,10 +38,15 @@ const updateTodoCompletedRequestSchema = z.object({
   completed: z.boolean(),
 });
 
+const updateTodoNoteRequestSchema = z.object({
+  note: z.string().nullish(),
+});
+
 export type TodoResponse = {
   readonly id: string;
   readonly title: string;
   readonly completed: boolean;
+  readonly note: string | null;
   readonly createdAt: string;
 };
 
@@ -52,6 +59,8 @@ export class TodosController {
     private readonly createTodoUseCase: CreateTodoUseCase,
     @Inject(UPDATE_TODO_COMPLETED_USE_CASE)
     private readonly updateTodoCompletedUseCase: UpdateTodoCompletedUseCase,
+    @Inject(UPDATE_TODO_NOTE_USE_CASE)
+    private readonly updateTodoNoteUseCase: UpdateTodoNoteUseCase,
     @Inject(DELETE_TODO_USE_CASE)
     private readonly deleteTodoUseCase: DeleteTodoUseCase,
   ) {}
@@ -90,6 +99,21 @@ export class TodosController {
     }
   }
 
+  @Patch(":id/note")
+  async updateNote(@Param("id") id: string, @Body() body: unknown): Promise<TodoResponse> {
+    try {
+      const request = updateTodoNoteRequestSchema.parse(body);
+      const todo = await this.updateTodoNoteUseCase.execute({
+        id: createTodoId(id),
+        note: request.note,
+      });
+
+      return toTodoResponse(todo);
+    } catch (error) {
+      throw mapTodoApiError(error);
+    }
+  }
+
   @Delete(":id")
   @HttpCode(204)
   async delete(@Param("id") id: string): Promise<void> {
@@ -106,6 +130,7 @@ function toTodoResponse(todo: Todo): TodoResponse {
     id: todo.id,
     title: todo.title,
     completed: todo.completed,
+    note: todo.note,
     createdAt: todo.createdAt.toISOString(),
   };
 }

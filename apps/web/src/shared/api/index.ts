@@ -5,7 +5,9 @@ export {
   deleteTodo,
   listTodos,
   updateTodoCompleted,
+  updateTodoNote,
   type CreateTodoRequest,
   type TodoDto,
   type UpdateTodoCompletedRequest,
+  type UpdateTodoNoteRequest,
 } from "./todo-api";

@@ -3,6 +3,7 @@ import {
   DeleteTodoUseCase,
   ListTodosUseCase,
   UpdateTodoCompletedUseCase,
+  UpdateTodoNoteUseCase,
   createTodoId,
   type TodoRepository,
   type TodoUseCaseDependencies,
@@ -16,6 +17,7 @@ import {
   TODO_REPOSITORY,
   TODO_USE_CASE_DEPENDENCIES,
   UPDATE_TODO_COMPLETED_USE_CASE,
+  UPDATE_TODO_NOTE_USE_CASE,
 } from "../todos.tokens";
 
 export const todoUseCaseProviders: Provider[] = [
@@ -41,6 +43,11 @@ export const todoUseCaseProviders: Provider[] = [
     provide: UPDATE_TODO_COMPLETED_USE_CASE,
     inject: [TODO_REPOSITORY],
     useFactory: (repository: TodoRepository) => new UpdateTodoCompletedUseCase(repository),
+  },
+  {
+    provide: UPDATE_TODO_NOTE_USE_CASE,
+    inject: [TODO_REPOSITORY],
+    useFactory: (repository: TodoRepository) => new UpdateTodoNoteUseCase(repository),
   },
   {
     provide: DELETE_TODO_USE_CASE,

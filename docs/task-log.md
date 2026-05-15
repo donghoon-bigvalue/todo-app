@@ -33,7 +33,7 @@
 
 커밋:
 
-- `feat(db): Todo 메모 저장 구조 추가`
+- 미커밋
 
 남은 리스크:
 
@@ -431,8 +431,54 @@ Figma 변경:
 
 커밋:
 
-- 미커밋
+- `feat(db): Todo 메모 저장 구조 추가`
 
 남은 리스크:
 
 - API use case와 controller는 아직 note 수정 요청을 처리하지 않는다. 다음 task에서 API 경계를 확장해야 한다.
+
+## 2026-05-15: Todo note use case와 API 확장
+
+상태: Done
+
+목적:
+
+- Todo note 수정을 application use case, backend API, web shared API client까지 연결한다.
+
+변경 파일:
+
+- `packages/domain/src/todo-use-cases.ts`
+- `packages/domain/src/todo-use-cases.test.ts`
+- `packages/domain/src/index.ts`
+- `apps/api/src/todos/todos.tokens.ts`
+- `apps/api/src/todos/application/todo-use-case.providers.ts`
+- `apps/api/src/todos/presentation/todos.controller.ts`
+- `apps/api/src/todos/presentation/todos.controller.test.ts`
+- `apps/api/src/todos/todos.module.test.ts`
+- `apps/web/src/shared/api/todo-api.ts`
+- `apps/web/src/shared/api/todo-api.test.ts`
+- `apps/web/src/shared/api/index.ts`
+- `apps/web/src/pages/todo-page.test.tsx`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- `UpdateTodoNoteUseCase`를 추가해 Todo note 수정, 비우기, 없는 Todo 에러를 처리한다.
+- Todo note 입력은 `todoNoteSchema`로 검증하고 500자 초과를 거절한다.
+- `PATCH /todos/:id/note` API를 추가했다.
+- Todo API 응답에 `note`를 포함했다.
+- web shared API client에 `updateTodoNote`와 note 응답 검증을 추가했다.
+
+검증:
+
+- `npm run test -- packages/domain/src/todo-use-cases.test.ts apps/api/src/todos/presentation/todos.controller.test.ts apps/api/src/todos/todos.module.test.ts apps/web/src/shared/api/todo-api.test.ts apps/web/src/pages/todo-page.test.tsx` 통과
+- `npm run check` 통과
+
+커밋:
+
+- `feat(todo): Todo 메모 API 확장`
+
+남은 리스크:
+
+- Todo Item UI는 아직 note 표시와 편집 상태를 제공하지 않는다. 다음 task에서 Figma 기준 UI component와 showcase를 확장해야 한다.

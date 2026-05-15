@@ -7,6 +7,7 @@ import {
   ListTodosUseCase,
   TodoNotFoundError,
   UpdateTodoCompletedUseCase,
+  UpdateTodoNoteUseCase,
 } from "./todo-use-cases";
 
 class FakeTodoRepository implements TodoRepository {
@@ -106,6 +107,49 @@ describe("Todo use cases", () => {
     const useCase = new UpdateTodoCompletedUseCase(repository);
 
     await expect(useCase.execute({ id: createTodoId("missing"), completed: true })).rejects.toThrow(
+      TodoNotFoundError,
+    );
+  });
+
+  it("Todo 메모를 검증하고 수정한다", async () => {
+    const id = createTodoId("todo-1");
+    const repository = new FakeTodoRepository([
+      Todo.create({
+        id,
+        title: "메모할 일",
+        createdAt: new Date("2026-05-13T09:00:00.000Z"),
+      }),
+    ]);
+    const useCase = new UpdateTodoNoteUseCase(repository);
+
+    const todo = await useCase.execute({ id, note: "  첫 줄\n둘째 줄  " });
+
+    expect(todo.note).toBe("첫 줄\n둘째 줄");
+    await expect(repository.findById(id)).resolves.toMatchObject({ note: "첫 줄\n둘째 줄" });
+  });
+
+  it("빈 Todo 메모는 메모 없음으로 정리한다", async () => {
+    const id = createTodoId("todo-1");
+    const todo = Todo.create({
+      id,
+      title: "메모를 비울 일",
+      createdAt: new Date("2026-05-13T09:00:00.000Z"),
+    });
+    todo.updateNote("기존 메모");
+    const repository = new FakeTodoRepository([todo]);
+    const useCase = new UpdateTodoNoteUseCase(repository);
+
+    const updatedTodo = await useCase.execute({ id, note: "   \n  " });
+
+    expect(updatedTodo.note).toBeNull();
+    await expect(repository.findById(id)).resolves.toMatchObject({ note: null });
+  });
+
+  it("없는 Todo의 메모를 수정하려 하면 에러를 던진다", async () => {
+    const repository = new FakeTodoRepository();
+    const useCase = new UpdateTodoNoteUseCase(repository);
+
+    await expect(useCase.execute({ id: createTodoId("missing"), note: "메모" })).rejects.toThrow(
       TodoNotFoundError,
     );
   });

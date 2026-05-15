@@ -3,6 +3,7 @@ import {
   DELETE_TODO_USE_CASE,
   LIST_TODOS_USE_CASE,
   UPDATE_TODO_COMPLETED_USE_CASE,
+  UPDATE_TODO_NOTE_USE_CASE,
 } from "./todos.tokens";
 import { Test } from "@nestjs/testing";
 import { describe, expect, it } from "vitest";
@@ -17,6 +18,7 @@ describe("TodosModule 구조", () => {
     expect(module.get(LIST_TODOS_USE_CASE)).toBeDefined();
     expect(module.get(CREATE_TODO_USE_CASE)).toBeDefined();
     expect(module.get(UPDATE_TODO_COMPLETED_USE_CASE)).toBeDefined();
+    expect(module.get(UPDATE_TODO_NOTE_USE_CASE)).toBeDefined();
     expect(module.get(DELETE_TODO_USE_CASE)).toBeDefined();
 
     await module.close();

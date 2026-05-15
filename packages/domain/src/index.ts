@@ -14,5 +14,6 @@ export {
   ListTodosUseCase,
   TodoNotFoundError,
   UpdateTodoCompletedUseCase,
+  UpdateTodoNoteUseCase,
   type TodoUseCaseDependencies,
 } from "./todo-use-cases";

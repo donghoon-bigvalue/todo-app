@@ -39,12 +39,14 @@ describe("TodoPage", () => {
         id: "todo-1",
         title: "장보기",
         completed: false,
+        note: null,
         createdAt: "2026-05-13T09:00:00.000Z",
       },
       {
         id: "todo-2",
         title: "이메일 답장하기",
         completed: true,
+        note: null,
         createdAt: "2026-05-13T10:00:00.000Z",
       },
     ]);
@@ -95,6 +97,7 @@ describe("TodoPage", () => {
           id: "todo-1",
           title: "장보기",
           completed: false,
+          note: null,
           createdAt: "2026-05-13T09:00:00.000Z",
         },
       ]);
@@ -102,6 +105,7 @@ describe("TodoPage", () => {
       id: "todo-1",
       title: "장보기",
       completed: false,
+      note: null,
       createdAt: "2026-05-13T09:00:00.000Z",
     });
 
@@ -121,6 +125,7 @@ describe("TodoPage", () => {
           id: "todo-1",
           title: "장보기",
           completed: false,
+          note: null,
           createdAt: "2026-05-13T09:00:00.000Z",
         },
       ])
@@ -129,6 +134,7 @@ describe("TodoPage", () => {
           id: "todo-1",
           title: "장보기",
           completed: true,
+          note: null,
           createdAt: "2026-05-13T09:00:00.000Z",
         },
       ]);
@@ -136,6 +142,7 @@ describe("TodoPage", () => {
       id: "todo-1",
       title: "장보기",
       completed: true,
+      note: null,
       createdAt: "2026-05-13T09:00:00.000Z",
     });
 
@@ -153,6 +160,7 @@ describe("TodoPage", () => {
           id: "todo-1",
           title: "장보기",
           completed: false,
+          note: null,
           createdAt: "2026-05-13T09:00:00.000Z",
         },
       ])
@@ -172,6 +180,7 @@ describe("TodoPage", () => {
         id: "todo-1",
         title: "장보기",
         completed: false,
+        note: null,
         createdAt: "2026-05-13T09:00:00.000Z",
       },
     ]);
@@ -189,6 +198,7 @@ describe("TodoPage", () => {
         id: "todo-1",
         title: "장보기",
         completed: false,
+        note: null,
         createdAt: "2026-05-13T09:00:00.000Z",
       },
     ]);

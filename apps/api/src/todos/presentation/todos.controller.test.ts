@@ -36,6 +36,7 @@ describe("TodosController", () => {
       id: "todo-1",
       title: "첫 번째 할 일",
       completed: false,
+      note: null,
       createdAt: "2026-05-13T09:00:00.000Z",
     });
 
@@ -44,6 +45,7 @@ describe("TodosController", () => {
         id: "todo-1",
         title: "첫 번째 할 일",
         completed: false,
+        note: null,
         createdAt: "2026-05-13T09:00:00.000Z",
       },
     ]);
@@ -60,12 +62,59 @@ describe("TodosController", () => {
       id: "todo-1",
       title: "완료할 일",
       completed: true,
+      note: null,
       createdAt: "2026-05-13T09:00:00.000Z",
     });
   });
 
   it("없는 Todo의 완료 상태를 변경하려 하면 NotFoundException을 던진다", async () => {
     await expect(controller.updateCompleted("missing", { completed: true })).rejects.toThrow(
+      NotFoundException,
+    );
+  });
+
+  it("Todo 메모를 수정하고 응답에 포함한다", async () => {
+    await controller.create({ title: "메모할 일" });
+
+    await expect(controller.updateNote("todo-1", { note: "  첫 줄\n둘째 줄  " })).resolves.toEqual({
+      id: "todo-1",
+      title: "메모할 일",
+      completed: false,
+      note: "첫 줄\n둘째 줄",
+      createdAt: "2026-05-13T09:00:00.000Z",
+    });
+
+    await expect(controller.list()).resolves.toEqual([
+      {
+        id: "todo-1",
+        title: "메모할 일",
+        completed: false,
+        note: "첫 줄\n둘째 줄",
+        createdAt: "2026-05-13T09:00:00.000Z",
+      },
+    ]);
+  });
+
+  it("빈 Todo 메모 저장 요청은 메모 없음으로 처리한다", async () => {
+    await controller.create({ title: "메모를 비울 일" });
+    await controller.updateNote("todo-1", { note: "기존 메모" });
+
+    await expect(controller.updateNote("todo-1", { note: "   \n  " })).resolves.toMatchObject({
+      id: "todo-1",
+      note: null,
+    });
+  });
+
+  it("긴 Todo 메모 저장 요청은 BadRequestException을 던진다", async () => {
+    await controller.create({ title: "메모할 일" });
+
+    await expect(controller.updateNote("todo-1", { note: "가".repeat(501) })).rejects.toThrow(
+      BadRequestException,
+    );
+  });
+
+  it("없는 Todo의 메모를 수정하려 하면 NotFoundException을 던진다", async () => {
+    await expect(controller.updateNote("missing", { note: "메모" })).rejects.toThrow(
       NotFoundException,
     );
   });

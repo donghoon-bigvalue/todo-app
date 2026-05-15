@@ -16,6 +16,7 @@
 - Todo note Figma 디자인 업데이트가 완료되었다.
 - Todo note domain과 schema 확장이 완료되었다.
 - Todo note 저장 구조와 repository 확장이 완료되었다.
+- Todo note use case와 API 확장이 완료되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
@@ -35,20 +36,19 @@ Todo 메모 확장.
 
 추천 task:
 
-Task 30: Todo note use case와 API 확장.
+Task 31: Todo Item note UI와 showcase 확장.
 
 목표:
 
-- note 수정 use case를 추가한다.
-- note 최대 길이를 검증한다.
-- 빈 note 저장 요청은 note 없음으로 처리한다.
-- Todo 응답에 note가 포함되게 한다.
-- note 수정 API를 추가한다.
+- Figma의 메모 상태를 기준으로 Todo Item component를 확장한다.
+- note 표시 상태와 note 편집 상태 variant를 추가한다.
+- `/showcase`에서 note 표시와 편집 상태를 확인할 수 있게 한다.
+- 기존 기본, 완료, 삭제 동작 UI는 유지한다.
 
 검증:
 
-- application test
-- controller test
+- shared UI test
+- showcase 또는 page-level render test
 - `npm run check`
 
 테스트 예외:
@@ -57,15 +57,16 @@ Task 30: Todo note use case와 API 확장.
 
 ## 최근 완료 Task
 
-Todo note 저장 구조와 repository 확장.
+Todo note use case와 API 확장.
 
 완료 조건:
 
-- Todo table에 note 컬럼이 추가된다.
-- note 컬럼 추가 migration이 준비된다.
-- repository가 note를 저장하고 조회한다.
-- repository update로 note를 수정하고 비울 수 있다.
-- 기존 create, toggle, delete 동작은 유지된다.
+- note 수정 use case가 추가된다.
+- note 최대 길이를 검증한다.
+- 빈 note 저장 요청은 note 없음으로 처리한다.
+- Todo 응답에 note가 포함된다.
+- note 수정 API가 추가된다.
+- web shared API client가 note 응답과 note 수정 요청을 다룬다.
 
 검증:
 
@@ -73,15 +74,15 @@ Todo note 저장 구조와 repository 확장.
 
 테스트:
 
-- migration test
-- repository integration test
+- application test
+- controller test
+- API client test
 
 ## 다음 Task 후보
 
-1. Task 30: Todo note use case와 API 확장
-2. Task 31: Todo Item note UI와 showcase 확장
-3. Task 32: Todo note 편집 기능 연결
-4. Task 33: Todo note E2E 확장
+1. Task 31: Todo Item note UI와 showcase 확장
+2. Task 32: Todo note 편집 기능 연결
+3. Task 33: Todo note E2E 확장
 
 ## 중단 조건
 

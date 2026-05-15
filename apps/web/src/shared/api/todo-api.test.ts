@@ -12,6 +12,7 @@ import {
   deleteTodo,
   listTodos,
   updateTodoCompleted,
+  updateTodoNote,
   type TodoDto,
 } from "./todo-api";
 
@@ -42,6 +43,7 @@ describe("todo-api", () => {
         id: "todo-1",
         title: "장보기",
         completed: false,
+        note: null,
         createdAt: "2026-05-13T09:00:00.000Z",
       },
     ];
@@ -58,6 +60,7 @@ describe("todo-api", () => {
       id: "todo-1",
       title: "장보기",
       completed: false,
+      note: null,
       createdAt: "2026-05-13T09:00:00.000Z",
     };
     const { adapter, requests } = createMockAdapter(() => ({ data: todo, status: 201 }));
@@ -74,6 +77,7 @@ describe("todo-api", () => {
       id: "todo-1",
       title: "장보기",
       completed: true,
+      note: null,
       createdAt: "2026-05-13T09:00:00.000Z",
     };
     const { adapter, requests } = createMockAdapter(() => ({ data: todo }));
@@ -83,6 +87,23 @@ describe("todo-api", () => {
     await expect(updateTodoCompleted("todo-1", { completed: true }, client)).resolves.toEqual(todo);
     expect(requests[0]).toMatchObject({ method: "patch", url: "/todos/todo-1/completed" });
     expect(JSON.parse(String(requests[0]?.data))).toEqual({ completed: true });
+  });
+
+  it("Todo 메모를 수정한다", async () => {
+    const todo: TodoDto = {
+      id: "todo-1",
+      title: "장보기",
+      completed: false,
+      note: "우유 확인",
+      createdAt: "2026-05-13T09:00:00.000Z",
+    };
+    const { adapter, requests } = createMockAdapter(() => ({ data: todo }));
+    const client = createApiClient();
+    client.defaults.adapter = adapter;
+
+    await expect(updateTodoNote("todo-1", { note: "우유 확인" }, client)).resolves.toEqual(todo);
+    expect(requests[0]).toMatchObject({ method: "patch", url: "/todos/todo-1/note" });
+    expect(JSON.parse(String(requests[0]?.data))).toEqual({ note: "우유 확인" });
   });
 
   it("Todo를 삭제한다", async () => {

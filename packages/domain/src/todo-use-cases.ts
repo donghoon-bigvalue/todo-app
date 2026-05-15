@@ -1,4 +1,5 @@
 import { Todo, type TodoId } from "./todo";
+import { todoNoteSchema } from "./todo-note-schema";
 import type { TodoRepository } from "./todo-repository";
 import { todoTitleSchema } from "./todo-title-schema";
 
@@ -55,6 +56,33 @@ export class UpdateTodoCompletedUseCase {
       todo.complete();
     } else {
       todo.reopen();
+    }
+
+    await this.repository.update(todo);
+
+    return todo;
+  }
+}
+
+export class UpdateTodoNoteUseCase {
+  constructor(private readonly repository: TodoRepository) {}
+
+  async execute(input: {
+    readonly id: TodoId;
+    readonly note?: string | null | undefined;
+  }): Promise<Todo> {
+    const todo = await this.repository.findById(input.id);
+
+    if (!todo) {
+      throw new TodoNotFoundError(input.id);
+    }
+
+    const note = todoNoteSchema.parse(input.note);
+
+    if (note) {
+      todo.updateNote(note);
+    } else {
+      todo.clearNote();
     }
 
     await this.repository.update(todo);
