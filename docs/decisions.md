@@ -52,6 +52,35 @@ Reference:
 - [사용자 흐름](user-flow.md)
 - [디자인 브리프](design-brief.md)
 
+### Auth와 계정 관리 확장
+
+상태: Accepted
+
+결정:
+
+- 회원가입 시 로그인 ID, 닉네임, 이메일, 비밀번호를 입력받는다.
+- 로그인은 이메일이 아니라 로그인 ID와 비밀번호로 진행한다.
+- Todo 데이터는 로그인한 사용자별로 분리한다.
+- 사용자는 로그아웃할 수 있다.
+- 아이디 찾기와 비밀번호 재설정은 이메일 인증 후 진행한다.
+- 이메일 인증은 실제 메일 발송을 포함한다.
+- 로그인한 사용자는 현재 비밀번호 확인 후 비밀번호를 변경할 수 있다.
+- 회원탈퇴는 비밀번호 재확인 후 hard delete로 처리한다.
+- 회원탈퇴 후 같은 로그인 ID와 이메일로 다시 가입할 수 있다.
+
+근거:
+
+- 로그인 ID와 이메일을 분리하면 사용자가 로그인 ID를 잊었을 때 이메일 인증 기반 복구 흐름을 제공할 수 있다.
+- 사용자별 Todo 분리는 계정 기능의 핵심 가치다.
+- 현재 제품에는 계정 복구나 감사 로그 요구사항이 없으므로 hard delete가 단순하다.
+
+Reference:
+
+- [제품 기획서](product-brief.md)
+- [요구사항 정의서](requirements.md)
+- [사용자 흐름](user-flow.md)
+- [디자인 브리프](design-brief.md)
+
 ## 기술 결정
 
 ### 초기 기술 스택
@@ -120,6 +149,23 @@ Reference:
 Reference:
 
 - [개발 가이드](development-guide.md)
+
+### Auth와 계정 관리 전략
+
+상태: Accepted
+
+결정:
+
+- JWT 기반 인증을 사용한다.
+- access token은 응답 body로 전달한다.
+- refresh token은 HTTP-only cookie로 전달한다.
+- refresh token 원문은 DB에 저장하지 않고 hash로 저장한다.
+- 메일 발송은 Nodemailer를 사용한다.
+- 회원탈퇴는 hard delete와 관련 데이터 cascade 삭제로 처리한다.
+
+Reference:
+
+- [ADR 0003: Auth와 계정 관리 전략](adr/0003-auth-account-strategy.md)
 
 ## Agent Harness 결정
 

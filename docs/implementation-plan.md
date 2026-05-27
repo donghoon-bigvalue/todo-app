@@ -554,3 +554,229 @@
 검증:
 
 - Playwright E2E 테스트가 통과한다.
+
+## Phase 8: Auth와 계정 관리 확장
+
+### Task 34: Auth 기능 제품 문서화
+
+목적:
+
+- 승인된 Auth 기능 초안을 제품 문서, 요구사항, 사용자 흐름, 디자인 브리프, 구현 계획, ADR에 반영한다.
+
+완료 조건:
+
+- 회원가입, 로그인, 로그아웃, 토큰 갱신, 아이디 찾기, 비밀번호 재설정, 로그인 후 비밀번호 변경, 회원탈퇴 범위가 문서에 정리되어 있다.
+- 로그인 ID와 이메일 분리 정책이 문서에 있다.
+- JWT access token과 HTTP-only cookie refresh token 전략이 ADR에 있다.
+- Nodemailer 기반 실제 메일 발송 결정이 ADR에 있다.
+- 회원탈퇴 hard delete 결정이 ADR에 있다.
+
+검증:
+
+- `npm run check`가 통과한다.
+
+### Task 35: Auth Figma 디자인 업데이트
+
+목적:
+
+- Auth 확장에 필요한 화면과 form 상태를 코드 구현 전에 Figma 기준으로 정의한다.
+
+완료 조건:
+
+- 로그인 화면이 있다.
+- 회원가입 화면이 있다.
+- 아이디 찾기 이메일 입력, 인증 코드 입력, 결과 화면이 있다.
+- 비밀번호 재설정 이메일 입력, 인증 코드 입력, 새 비밀번호 설정 화면이 있다.
+- 로그인 후 비밀번호 변경 화면이 있다.
+- 회원탈퇴 확인 화면이 있다.
+- Todo 화면에 사용자 닉네임, 로그아웃, 계정 관리 진입이 표현되어 있다.
+- 대표 노드 metadata 또는 screenshot으로 레이아웃을 검증한다.
+
+검증:
+
+- Figma metadata 확인
+- 필요 시 screenshot 확인
+
+### Task 36: Auth domain model과 schema 정의
+
+목적:
+
+- UI, API, DB에 의존하지 않는 사용자, 인증, 이메일 인증, refresh token 핵심 규칙을 정의한다.
+
+완료 조건:
+
+- User model에 id, loginId, nickname, email, passwordHash, createdAt이 있다.
+- loginId, nickname, email, password 입력 검증 schema가 있다.
+- 이메일 인증 코드 생성, 만료, 사용 처리 규칙이 있다.
+- refresh token snapshot과 만료 규칙이 있다.
+- 비밀번호 hash 세부 라이브러리 선택이 기록되어 있다.
+
+검증:
+
+- domain unit test와 schema unit test가 통과한다.
+
+### Task 37: Auth 저장 구조와 repository 확장
+
+목적:
+
+- 사용자, refresh token, 이메일 인증 기록을 저장하고 Todo를 사용자 소유 데이터로 분리한다.
+
+완료 조건:
+
+- users table이 있다.
+- refresh_tokens table이 있다.
+- email_verifications table이 있다.
+- todos table에 user id 참조가 있다.
+- 사용자 삭제 시 관련 Todo, refresh token, 이메일 인증 기록이 함께 삭제된다.
+- repository가 사용자 조회, 생성, 비밀번호 변경, 삭제를 지원한다.
+- repository가 refresh token 저장, 검증용 조회, 무효화를 지원한다.
+- repository가 이메일 인증 생성, 조회, 사용 처리를 지원한다.
+
+검증:
+
+- migration 테스트가 통과한다.
+- repository integration test가 통과한다.
+
+### Task 38: Nodemailer mail sender 구현
+
+목적:
+
+- 이메일 인증 코드를 실제 메일로 발송할 수 있는 infrastructure를 만든다.
+
+완료 조건:
+
+- mail sender interface가 있다.
+- Nodemailer 기반 구현이 있다.
+- SMTP 환경변수 설정이 문서화되어 있다.
+- 테스트에서는 fake sender를 사용할 수 있다.
+- 메일 발송 실패를 application 계층에서 다룰 수 있다.
+
+검증:
+
+- mail sender unit test 또는 integration seam test가 통과한다.
+- `npm run check`가 통과한다.
+
+### Task 39: Auth API 기본 인증 흐름 구현
+
+목적:
+
+- 회원가입, 로그인, refresh, 로그아웃 API를 제공한다.
+
+완료 조건:
+
+- 회원가입 API가 있다.
+- 로그인 API가 access token을 응답 body로 반환한다.
+- 로그인 API가 refresh token을 HTTP-only cookie로 설정한다.
+- refresh API가 cookie의 refresh token으로 access token을 재발급한다.
+- 로그아웃 API가 refresh token을 무효화하고 cookie를 정리한다.
+- 요청 검증 실패와 인증 실패가 명확한 에러 응답을 반환한다.
+
+검증:
+
+- application test가 통과한다.
+- controller test가 통과한다.
+
+### Task 40: 아이디 찾기와 비밀번호 재설정 API 구현
+
+목적:
+
+- 이메일 인증 기반 아이디 찾기와 비밀번호 재설정 API를 제공한다.
+
+완료 조건:
+
+- 아이디 찾기 인증 코드 요청 API가 있다.
+- 아이디 찾기 인증 코드 확인 API가 있다.
+- 인증 성공 후 로그인 ID를 반환한다.
+- 비밀번호 재설정 인증 코드 요청 API가 있다.
+- 비밀번호 재설정 인증 코드 확인 API가 있다.
+- 인증 성공 후 새 비밀번호로 변경할 수 있다.
+- 비밀번호 재설정 후 기존 refresh token이 무효화된다.
+
+검증:
+
+- application test가 통과한다.
+- controller test가 통과한다.
+
+### Task 41: Todo API 인증 보호와 사용자별 데이터 분리
+
+목적:
+
+- 기존 Todo API가 로그인한 사용자의 Todo만 다루도록 확장한다.
+
+완료 조건:
+
+- Todo API는 access token 인증을 요구한다.
+- Todo 생성 시 현재 사용자 id가 저장된다.
+- 목록 조회는 현재 사용자 Todo만 반환한다.
+- 완료 변경, 메모 수정, 삭제는 현재 사용자 Todo에만 적용된다.
+- 다른 사용자의 Todo id로 접근하면 실패한다.
+- 기존 Todo 기능 요구사항은 로그인 후 유지된다.
+
+검증:
+
+- application test가 통과한다.
+- controller test가 통과한다.
+- 기존 Todo page component test가 필요한 범위에서 갱신되어 통과한다.
+
+### Task 42: Web Auth 화면과 token 흐름 연결
+
+목적:
+
+- 사용자가 웹에서 회원가입, 로그인, 로그아웃, token refresh 흐름을 사용할 수 있게 한다.
+
+완료 조건:
+
+- 로그인 화면이 있다.
+- 회원가입 화면이 있다.
+- 로그인 후 Todo 화면에 접근할 수 있다.
+- 미로그인 사용자는 Todo 화면에서 로그인 화면으로 이동한다.
+- access token은 API 요청에 포함된다.
+- refresh 실패 시 로그인 화면으로 이동한다.
+- 로그아웃하면 인증 상태가 해소된다.
+
+검증:
+
+- 사용자 행동 중심 component test가 통과한다.
+- API client test가 통과한다.
+- `npm run check`가 통과한다.
+
+### Task 43: Web 계정 복구와 계정 관리 화면 연결
+
+목적:
+
+- 사용자가 아이디 찾기, 비밀번호 재설정, 로그인 후 비밀번호 변경, 회원탈퇴를 웹에서 수행할 수 있게 한다.
+
+완료 조건:
+
+- 아이디 찾기 화면에서 이메일 인증과 로그인 ID 확인을 할 수 있다.
+- 비밀번호 재설정 화면에서 이메일 인증 후 새 비밀번호를 설정할 수 있다.
+- 로그인 후 비밀번호 변경 화면이 있다.
+- 회원탈퇴 확인 화면이 있다.
+- 회원탈퇴 후 로그인 화면으로 이동한다.
+
+검증:
+
+- 사용자 행동 중심 component test가 통과한다.
+- `npm run check`가 통과한다.
+
+### Task 44: Auth E2E 확장
+
+목적:
+
+- 실제 브라우저에서 Auth 핵심 흐름과 사용자별 Todo 분리를 검증한다.
+
+완료 조건:
+
+- 회원가입 후 로그인할 수 있다.
+- 로그인 후 Todo를 생성할 수 있다.
+- 로그아웃 후 Todo 화면 접근이 제한된다.
+- 다른 사용자로 로그인하면 이전 사용자의 Todo가 보이지 않는다.
+- 아이디 찾기 흐름을 검증한다.
+- 비밀번호 재설정 후 새 비밀번호로 로그인할 수 있다.
+- 로그인 후 비밀번호 변경 흐름을 검증한다.
+- 회원탈퇴 후 해당 계정으로 로그인할 수 없다.
+
+검증:
+
+- Playwright E2E 테스트가 통과한다.
+- `npm run check`가 통과한다.

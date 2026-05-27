@@ -593,3 +593,48 @@ Figma 변경:
 남은 리스크:
 
 - Todo 메모 확장의 계획된 구현 task는 완료되었다. 다음에는 회고나 새로운 제품 개선 후보를 논의할 수 있다.
+
+## 2026-05-27: Auth 기능 제품 문서화
+
+상태: Done
+
+목적:
+
+- 승인된 Auth와 계정 관리 확장 초안을 제품 문서와 구현 계획에 반영한다.
+
+변경 파일:
+
+- `docs/project-brief.md`
+- `docs/product-brief.md`
+- `docs/requirements.md`
+- `docs/user-flow.md`
+- `docs/design-brief.md`
+- `docs/implementation-plan.md`
+- `docs/decisions.md`
+- `docs/adr/0003-auth-account-strategy.md`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- 로그인 ID, 닉네임, 이메일, 비밀번호 기반 회원가입 범위를 정리했다.
+- 로그인 ID 기반 로그인, 로그아웃, JWT access token, HTTP-only cookie refresh token 전략을 정리했다.
+- Nodemailer 기반 실제 메일 발송과 이메일 인증 기반 아이디 찾기, 비밀번호 재설정 흐름을 추가했다.
+- 로그인 후 비밀번호 변경과 hard delete 기반 회원탈퇴 범위를 추가했다.
+- Auth 구현 계획을 Task 34~44로 나누었다.
+- 다음 task를 Auth Figma 디자인 업데이트로 갱신했다.
+
+검증:
+
+- `npm run check` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- password hash 라이브러리와 비용 설정은 아직 확정하지 않았다.
+- access token과 refresh token 만료 시간은 아직 확정하지 않았다.
+- 실제 SMTP provider와 환경변수 값은 아직 확정하지 않았다.
+- Auth 화면 기준은 다음 Figma task에서 먼저 정의해야 한다.
