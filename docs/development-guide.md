@@ -105,6 +105,21 @@ http://127.0.0.1:5173
 
 Web dev server는 `/api` 요청을 `http://127.0.0.1:3000`으로 proxy한다. 실제 Todo 동작을 확인하려면 API 서버와 Web 서버가 모두 실행 중이어야 한다.
 
+## SMTP 메일 발송 설정
+
+Auth 이메일 인증 메일은 Nodemailer 기반 SMTP transport로 발송한다.
+
+API 서버에서 실제 메일을 발송하려면 다음 환경변수를 설정한다.
+
+- `SMTP_HOST`: SMTP server host. 필수.
+- `SMTP_PORT`: SMTP server port. 필수이며 양의 정수여야 한다.
+- `SMTP_SECURE`: `true`이면 TLS secure connection을 사용한다. 생략하면 `false`로 처리한다.
+- `SMTP_USER`: SMTP 인증 사용자. 인증이 필요한 SMTP server에서 사용한다.
+- `SMTP_PASS`: SMTP 인증 비밀번호. `SMTP_USER`와 함께 있을 때만 인증 설정에 포함한다.
+- `SMTP_FROM`: 발신자 주소. 예: `Todo App <no-reply@example.com>`. 필수.
+
+테스트에서는 실제 SMTP server에 연결하지 않고 fake transporter 또는 fake mail sender를 사용한다.
+
 ## 테스트
 
 단위, 컴포넌트, 통합 테스트를 실행한다.

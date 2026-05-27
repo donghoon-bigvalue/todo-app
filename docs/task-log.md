@@ -788,7 +788,7 @@ Figma 변경:
 
 커밋:
 
-- 미커밋
+- `c068f12 feat(domain): Auth 도메인 규칙 추가`
 
 남은 리스크:
 
@@ -835,9 +835,53 @@ Figma 변경:
 
 커밋:
 
-- 미커밋
+- `fd2a284 feat(db): Auth 저장 구조와 repository 추가`
 
 남은 리스크:
 
 - `todos.user_id`는 기존 미인증 Todo API 검증을 깨지 않기 위해 nullable로 추가했다. Task 41에서 인증 보호와 함께 생성/조회 경로를 사용자 기준으로 전환해야 한다.
 - refresh token 원문 hashing, JWT 서명, SMTP 설정은 이후 task에서 구현해야 한다.
+
+## 2026-05-27: Nodemailer mail sender 구현
+
+상태: Done
+
+목적:
+
+- 이메일 인증 코드를 실제 SMTP 메일로 발송할 수 있는 Nodemailer 기반 infrastructure를 만든다.
+
+변경 파일:
+
+- `apps/api/package.json`
+- `package-lock.json`
+- `apps/api/src/auth/application/mail-sender.ts`
+- `apps/api/src/auth/infrastructure/nodemailer-mail-sender.ts`
+- `apps/api/src/auth/infrastructure/smtp-mail-config.ts`
+- `apps/api/src/auth/infrastructure/nodemailer-mail-sender.test.ts`
+- `apps/api/src/auth/infrastructure/smtp-mail-config.test.ts`
+- `docs/development-guide.md`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- application 계층에서 사용할 `MailSender` interface와 `MailSendFailedError`를 추가했다.
+- Nodemailer transporter를 주입받아 이메일 인증 코드를 발송하는 `NodemailerMailSender`를 추가했다.
+- 아이디 찾기와 비밀번호 재설정 목적별 subject와 본문을 분리했다.
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` 환경변수 파서를 추가했다.
+- 테스트에서는 fake transporter로 실제 SMTP 연결 없이 발송 payload와 실패 변환을 검증했다.
+
+검증:
+
+- `npm run test -- apps/api/src/auth/infrastructure/nodemailer-mail-sender.test.ts apps/api/src/auth/infrastructure/smtp-mail-config.test.ts` 통과
+- `npm run typecheck` 통과
+- `npm run check` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- 실제 SMTP provider 계정과 비밀값은 로컬/배포 환경에서 별도로 주입해야 한다.
+- Auth API use case와 controller는 아직 mail sender를 호출하지 않는다.

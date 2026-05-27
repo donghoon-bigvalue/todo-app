@@ -4,10 +4,14 @@
   "private": true,
   "dependencies": {
     "@todo-app/db": "0.0.0",
-    "@todo-app/domain": "0.0.0"
+    "@todo-app/domain": "0.0.0",
+    "nodemailer": "^8.0.9"
   },
   "scripts": {
     "dev": "tsx watch src/main.ts",
     "start": "tsx src/main.ts"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^8.0.0"
   }
 }
