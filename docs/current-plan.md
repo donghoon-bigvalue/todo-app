@@ -24,6 +24,7 @@
 - Auth 기능 제품 문서화가 완료되었다.
 - Figma 파일 참조가 복원된 파일로 갱신되었다.
 - Figma 작업 안전 규칙과 기존 스타일 유지 규칙이 보강되었다.
+- Auth Figma 디자인 업데이트가 완료되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
@@ -44,56 +45,54 @@ Auth와 계정 관리 확장 진행 중.
 
 추천 task:
 
-Auth Figma 디자인 업데이트.
+Auth domain model과 schema 정의.
 
 목표:
 
-- Auth 확장에 필요한 화면과 form 상태를 코드 구현 전에 Figma 기준으로 정의한다.
-- 기존 Figma 디자인을 삭제하거나 덮어쓰지 않고 새 영역에 추가한다.
-- 기존 디자인 토큰과 컴포넌트 스타일을 유지한다.
-- 로그인, 회원가입, 아이디 찾기, 비밀번호 재설정, 비밀번호 변경, 회원탈퇴 화면을 만든다.
-- Todo 화면에 사용자 닉네임, 로그아웃, 계정 관리 진입을 반영한다.
+- UI, API, DB에 의존하지 않는 사용자, 인증, 이메일 인증, refresh token 핵심 규칙을 정의한다.
+- User model과 loginId, nickname, email, password 입력 검증 schema를 만든다.
+- 이메일 인증 코드 생성, 만료, 사용 처리 규칙을 정의한다.
+- refresh token snapshot과 만료 규칙을 정의한다.
 
 검증:
 
-- 쓰기 전 read-only metadata inventory 확인
-- Figma metadata 확인
-- 필요 시 screenshot 확인
+- domain unit test와 schema unit test가 통과한다.
+- `npm run check`가 통과한다.
 
 테스트 예외:
 
-- Figma 디자인 task는 코드 테스트 대상이 아니다.
+- 없음. 기능 구현 task라 TDD로 진행한다.
 
 ## 최근 완료 Task
 
-Auth 기능 제품 문서화.
+Auth Figma 디자인 업데이트.
 
 완료 조건:
 
-- 승인된 Auth 기능 범위가 제품 문서, 요구사항, 사용자 흐름, 디자인 브리프에 반영되어 있다.
-- Auth 구현 계획이 `docs/implementation-plan.md`에 반영되어 있다.
-- JWT, refresh token, Nodemailer, hard delete 회원탈퇴 전략이 ADR로 기록되어 있다.
+- 기존 Figma 디자인을 삭제하거나 덮어쓰지 않고 Auth 컴포넌트와 화면을 추가한다.
+- 기존 디자인 토큰과 컴포넌트 스타일을 유지한다.
+- 로그인, 회원가입, 아이디 찾기, 비밀번호 재설정, 계정 관리, 회원탈퇴, 로그인 후 Todo 화면 상태가 있다.
+- 대표 노드 metadata와 screenshot으로 검증한다.
 
 검증:
 
-- `npm run check` 통과
+- 쓰기 전 read-only inventory 확인
+- `Auth Components` node `2006:2` metadata 확인
+- `Auth Screens` node `2006:51` metadata 확인
+- screenshot으로 Components와 Screens 확인
 
 테스트:
 
-- 문서 task라 별도 테스트는 없다.
+- Figma 디자인 task라 코드 테스트 대상은 아니다.
 
 ## 다음 Task 후보
 
-1. Auth Figma 디자인 업데이트
-2. Auth domain model과 schema 정의
-3. Auth 저장 구조와 repository 확장
+1. Auth domain model과 schema 정의
+2. Auth 저장 구조와 repository 확장
+3. Nodemailer mail sender 구현
 
 ## 중단 조건
 
-- 새 Auth 디자인이 기존 디자인 토큰과 컴포넌트 스타일을 유지하지 못하는 경우.
-- Figma inventory에서 문서에 기록된 page 또는 node 기준과 실제 구조가 다른 경우.
-- 기존 Figma node 삭제, page 비우기, 대량 이동, 이름 변경이 필요해지는 경우.
-- Auth 화면 기준을 Figma 없이 코드부터 구현해야 하는 경우.
 - password hash 라이브러리 또는 비용 설정을 결정해야 하는 경우.
 - 실제 SMTP provider, 계정, 환경변수 정책을 확정해야 하는 경우.
 - refresh token 만료 시간이나 access token 만료 시간을 확정해야 하는 경우.

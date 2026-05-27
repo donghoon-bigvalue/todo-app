@@ -363,3 +363,40 @@ Screens:
 - 메모 버튼은 `x=212`, 삭제 버튼은 `x=264`에 배치해 44x28 크기를 유지한다.
 - 메모 편집 상태의 저장 버튼은 `x=212`, 취소 버튼은 `x=264`, `y=128`에 배치한다.
 - Screens의 Todo list는 확장된 Todo Item 높이에 맞춰 다음 항목을 아래로 재배치한다.
+
+## Auth와 계정 관리 확장 반영
+
+Figma 파일에 다음 Auth 기준을 추가했다.
+
+Components:
+
+- `Auth Components`: node `2006:2`
+- `Auth Form Controls`
+- `Auth Form / 로그인`
+
+Screens:
+
+- `Auth Screens`: node `2006:51`
+- `Auth Screen / 로그인`
+- `Auth Screen / 회원가입`
+- `Auth Screen / 아이디 찾기`
+- `Auth Screen / 비밀번호 재설정 인증`
+- `Auth Screen / 새 비밀번호 설정`
+- `Auth Screen / 계정 관리`
+- `Auth Screen / 회원탈퇴 확인`
+- `Auth Screen / 로그인 후 Todo`
+
+검증한 대표 노드:
+
+- `Auth Components`: node `2006:2`
+- `Auth Screens`: node `2006:51`
+
+검증 기준:
+
+- 기존 `Components` 화면은 유지하고 오른쪽 `x=920` 위치에 Auth 컴포넌트를 추가했다.
+- 기존 `Screens` 화면은 유지하고 오른쪽 `x=2700` 위치에 Auth 화면 묶음을 추가했다.
+- Auth 화면은 기존 Todo screen과 같은 `width=390`, 배경 `#F7F8FA`, 내부 padding 24 기준을 유지한다.
+- Auth form card는 기존 surface, border, radius 8 계열을 유지한다.
+- Text Input과 Password Input은 form 내부에서 `width=310`, `height=42`를 기준으로 사용한다.
+- 주요 버튼은 기존 accent/danger/default 스타일을 유지하고, form primary button은 `width=310`, `height=28`을 기준으로 사용한다.
+- 기존 node 삭제, page 비우기, 대량 이동, 이름 변경은 수행하지 않았다.

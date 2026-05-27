@@ -700,8 +700,54 @@ Figma 변경:
 
 커밋:
 
-- 미커밋
+- `d51b4bd docs(figma): Figma 작업 안전 규칙 보강`
 
 남은 리스크:
 
 - 다음 Auth Figma 디자인 업데이트에서는 실제 metadata inventory 결과를 확인하고, 기존 node 삭제 없이 새 영역에만 추가해야 한다.
+
+## 2026-05-27: Auth Figma 디자인 업데이트
+
+상태: Done
+
+목적:
+
+- Auth 확장에 필요한 컴포넌트와 화면 상태를 기존 Figma 디자인 스타일을 유지하면서 추가한다.
+
+변경 파일:
+
+- `docs/figma-plan.md`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+Figma 변경:
+
+- Components에 `Auth Components` 추가: node `2006:2`
+- Components에 `Auth Form Controls` 추가
+- Components에 `Auth Form / 로그인` 추가
+- Screens에 `Auth Screens` 추가: node `2006:51`
+- Screens에 로그인, 회원가입, 아이디 찾기, 비밀번호 재설정 인증, 새 비밀번호 설정, 계정 관리, 회원탈퇴 확인, 로그인 후 Todo 화면 추가
+
+핵심 변경:
+
+- 기존 Components와 Screens를 삭제하거나 덮어쓰지 않고 오른쪽 바깥 영역에 새 Auth 섹션을 추가했다.
+- 기존 색상, typography, radius, 390px 화면 width, 24px padding, form card 스타일을 유지했다.
+- form 내부 Text Input과 Password Input은 310x42 기준으로 정리했다.
+- primary button은 310x28 기준으로 정리했다.
+
+검증:
+
+- 쓰기 전 read-only inventory 확인
+- `Auth Components` node `2006:2` metadata 확인
+- `Auth Screens` node `2006:51` metadata 확인
+- screenshot으로 Components와 Screens 확인
+- `npm run check` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- Figma MCP의 page child metadata는 실제 screenshot과 다르게 비어 있는 값으로 반환될 수 있어, 이후에도 metadata와 screenshot을 함께 확인해야 한다.
+- 세부 시각 검토는 사용자가 Figma에서 직접 확인할 수 있다.
