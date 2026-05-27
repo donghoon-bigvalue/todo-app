@@ -15,6 +15,13 @@
       "when": 1778742000000,
       "tag": "0001_add_todo_note",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1780000000000,
+      "tag": "0002_auth_storage",
+      "breakpoints": true
     }
   ]
 }

@@ -794,3 +794,50 @@ Figma 변경:
 
 - 실제 password hashing cost와 token 서명/만료 설정은 이후 application/API task에서 결정해야 한다.
 - 저장 구조와 repository가 아직 없어 Auth API는 다음 task 이후 구현한다.
+
+## 2026-05-27: Auth 저장 구조와 repository 확장
+
+상태: Done
+
+목적:
+
+- 사용자, refresh token, 이메일 인증 기록을 저장하고 Todo를 사용자 소유 데이터로 분리할 DB/repository 기반을 만든다.
+
+변경 파일:
+
+- `packages/db/drizzle/0002_auth_storage.sql`
+- `packages/db/drizzle/meta/_journal.json`
+- `packages/db/src/schema.ts`
+- `packages/db/src/user-repository.ts`
+- `packages/db/src/refresh-token-repository.ts`
+- `packages/db/src/email-verification-repository.ts`
+- `packages/db/src/todo-repository.ts`
+- `packages/domain/src/user-repository.ts`
+- `packages/domain/src/refresh-token-repository.ts`
+- `packages/domain/src/email-verification-repository.ts`
+- `packages/domain/src/todo-repository.ts`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- `users`, `refresh_tokens`, `email_verifications` table과 `todos.user_id` 참조를 추가했다.
+- `users.login_id`, `users.email`, `refresh_tokens.token_hash`에 unique 제약을 추가했다.
+- 사용자 삭제 시 owned Todo와 refresh token은 FK cascade로 삭제되도록 했다.
+- 사용자 repository 삭제 동작에서 같은 이메일의 이메일 인증 기록도 함께 삭제하도록 했다.
+- 사용자, refresh token, 이메일 인증 repository 계약과 Drizzle 구현을 추가했다.
+- Todo repository에 사용자별 생성, 목록 조회, 단건 조회 메서드를 추가했다.
+
+검증:
+
+- `npm run test -- packages/db/src/migrate.test.ts packages/db/src/todo-repository.test.ts packages/db/src/user-repository.test.ts packages/db/src/refresh-token-repository.test.ts packages/db/src/email-verification-repository.test.ts` 통과
+- `npm run check` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- `todos.user_id`는 기존 미인증 Todo API 검증을 깨지 않기 위해 nullable로 추가했다. Task 41에서 인증 보호와 함께 생성/조회 경로를 사용자 기준으로 전환해야 한다.
+- refresh token 원문 hashing, JWT 서명, SMTP 설정은 이후 task에서 구현해야 한다.

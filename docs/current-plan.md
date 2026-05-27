@@ -26,6 +26,7 @@
 - Figma 작업 안전 규칙과 기존 스타일 유지 규칙이 보강되었다.
 - Auth Figma 디자인 업데이트가 완료되었다.
 - Auth domain model과 schema 정의가 완료되었다.
+- Auth 저장 구조와 repository 확장이 완료되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
@@ -46,20 +47,19 @@ Auth와 계정 관리 확장 진행 중.
 
 추천 task:
 
-Auth 저장 구조와 repository 확장.
+Nodemailer mail sender 구현.
 
 목표:
 
-- 사용자, refresh token, 이메일 인증 기록을 저장하고 Todo를 사용자 소유 데이터로 분리한다.
-- users, refresh_tokens, email_verifications table을 추가한다.
-- todos table에 user id 참조를 추가한다.
-- 사용자 삭제 시 관련 Todo, refresh token, 이메일 인증 기록을 함께 삭제한다.
-- repository가 사용자, refresh token, 이메일 인증 기록의 핵심 동작을 지원한다.
+- 이메일 인증 코드를 실제 SMTP 메일로 발송할 수 있는 infrastructure를 만든다.
+- application 계층에서 의존할 mail sender interface를 정의한다.
+- Nodemailer 기반 구현을 추가한다.
+- SMTP 환경변수 설정을 문서화한다.
+- 테스트에서는 fake sender 또는 전송 transport를 사용해 실제 외부 발송 없이 검증한다.
 
 검증:
 
-- migration 테스트가 통과한다.
-- repository integration test가 통과한다.
+- mail sender unit/integration test가 통과한다.
 - `npm run check`가 통과한다.
 
 테스트 예외:
@@ -68,31 +68,34 @@ Auth 저장 구조와 repository 확장.
 
 ## 최근 완료 Task
 
-Auth domain model과 schema 정의.
+Auth 저장 구조와 repository 확장.
 
 완료 조건:
 
-- User model에 id, loginId, nickname, email, passwordHash, createdAt이 있다.
-- loginId, nickname, email, password 입력 검증 schema가 있다.
-- 이메일 인증 코드 생성, 만료, 사용 처리 규칙이 있다.
-- refresh token snapshot과 만료 규칙이 있다.
-- password hash 라이브러리 선택이 ADR과 decisions에 기록되어 있다.
+- users table이 있다.
+- refresh_tokens table이 있다.
+- email_verifications table이 있다.
+- todos table에 user id 참조가 있다.
+- 사용자 삭제 시 관련 Todo, refresh token, 이메일 인증 기록이 함께 삭제된다.
+- repository가 사용자 조회, 생성, 비밀번호 변경, 삭제를 지원한다.
+- repository가 refresh token 저장, 검증용 조회, 무효화를 지원한다.
+- repository가 이메일 인증 생성, 조회, 사용 처리를 지원한다.
+- Todo repository가 사용자별 생성과 조회를 지원한다.
 
 검증:
 
-- `npm run test -- packages/domain/src/user.test.ts packages/domain/src/auth-schemas.test.ts packages/domain/src/email-verification.test.ts packages/domain/src/refresh-token.test.ts` 통과
-- `npm run test -- packages/db/src/migrate.test.ts packages/db/src/todo-repository.test.ts apps/api/src/todos/todos.module.test.ts` 통과
+- `npm run test -- packages/db/src/migrate.test.ts packages/db/src/todo-repository.test.ts packages/db/src/user-repository.test.ts packages/db/src/refresh-token-repository.test.ts packages/db/src/email-verification-repository.test.ts` 통과
 - `npm run check` 통과
 
 테스트:
 
-- Vitest domain unit/schema test
+- Vitest DB migration/repository integration test
 
 ## 다음 Task 후보
 
-1. Auth 저장 구조와 repository 확장
-2. Nodemailer mail sender 구현
-3. Auth API 기본 인증 흐름 구현
+1. Nodemailer mail sender 구현
+2. Auth API 기본 인증 흐름 구현
+3. 아이디 찾기와 비밀번호 재설정 API 구현
 
 ## 중단 조건
 

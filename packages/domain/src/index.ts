@@ -18,6 +18,7 @@ export {
   type EmailVerificationSnapshot,
   type UseEmailVerificationInput,
 } from "./email-verification";
+export type { EmailVerificationRepository } from "./email-verification-repository";
 export {
   RefreshToken,
   createRefreshTokenId,
@@ -25,6 +26,7 @@ export {
   type RefreshTokenId,
   type RefreshTokenSnapshot,
 } from "./refresh-token";
+export type { RefreshTokenRepository } from "./refresh-token-repository";
 export {
   MAX_LOGIN_ID_LENGTH,
   MAX_NICKNAME_LENGTH,
@@ -38,7 +40,7 @@ export {
   signupSchema,
   userEmailSchema,
 } from "./auth-schemas";
-export type { TodoRepository } from "./todo-repository";
+export type { TodoRepository, UserScopedTodoRepository } from "./todo-repository";
 export { MAX_TODO_NOTE_LENGTH, todoNoteSchema } from "./todo-note-schema";
 export { MAX_TODO_TITLE_LENGTH, todoTitleSchema } from "./todo-title-schema";
 export {
@@ -48,6 +50,7 @@ export {
   type UserId,
   type UserSnapshot,
 } from "./user";
+export type { UserRepository } from "./user-repository";
 export {
   CreateTodoUseCase,
   DeleteTodoUseCase,
