@@ -670,3 +670,38 @@ Figma 변경:
 
 - Figma 캔버스 자체는 이번 task에서 수정하지 않았다.
 - Auth Figma 디자인 업데이트를 재개하기 전에 새 file key로 read-only metadata inventory를 먼저 확인해야 한다.
+
+## 2026-05-27: Figma 작업 안전 규칙 보강
+
+상태: Done
+
+목적:
+
+- Figma 작업 중 기존 디자인을 삭제하거나 스타일을 깨뜨리지 않도록 로컬 skill과 작업 계획 문서의 안전 규칙을 보강한다.
+
+변경 파일:
+
+- `.codex/skills/figma-design-sync/SKILL.md`
+- `docs/figma-plan.md`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- Figma 쓰기 작업 전 read-only inventory 확인과 사용자 보고를 필수화했다.
+- `clearPage(...)`, 기존 노드 `remove()`, page 전체 비우기, 기존 frame/component/screen 삭제를 금지했다.
+- 새 컴포넌트와 새 화면은 기존 page 끝 영역 또는 별도 section에 추가하도록 정했다.
+- 새 컴포넌트와 화면은 기존 디자인 토큰, 컴포넌트 크기, 화면 width, padding, 문구 톤을 유지하도록 명시했다.
+- 기존 스타일과 다른 새 패턴이 필요하면 먼저 사용자 확인을 받도록 했다.
+
+검증:
+
+- `npm run check` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- 다음 Auth Figma 디자인 업데이트에서는 실제 metadata inventory 결과를 확인하고, 기존 node 삭제 없이 새 영역에만 추가해야 한다.

@@ -17,16 +17,73 @@ description: Use for this project when creating, updating, or reviewing Figma de
    - `docs/user-flow.md`
    - `docs/design-brief.md`
    - `docs/figma-plan.md`
-2. Figma 파일 구조와 대상 노드를 확인한다.
-3. 먼저 Components 페이지의 기준 컴포넌트를 수정한다.
-4. Screens 페이지가 컴포넌트 instance인지 단순 복제 프레임인지 확인한다.
-5. 단순 복제 프레임이면 Screens도 별도로 동기화한다.
-6. 수정 후 대표 노드 metadata를 다시 읽어 좌표와 크기를 검증한다.
-7. 사용자가 보는 시각적 어색함은 수치 검증과 별개로 피드백을 받는다.
+2. Figma 파일 구조와 대상 노드를 read-only로 확인한다.
+3. 쓰기 작업 전에 inventory를 사용자에게 보고한다.
+4. 기존 디자인 토큰, 컴포넌트, 화면 스타일을 기준으로 새 작업 계획을 정리한다.
+5. 먼저 Components 페이지의 기준 컴포넌트를 확장한다.
+6. Screens 페이지가 컴포넌트 instance인지 단순 복제 프레임인지 확인한다.
+7. 단순 복제 프레임이면 Screens도 별도로 동기화한다.
+8. 수정 후 대표 노드 metadata를 다시 읽어 좌표와 크기를 검증한다.
+9. 사용자가 보는 시각적 어색함은 수치 검증과 별개로 피드백을 받는다.
+
+## 쓰기 전 필수 inventory
+
+Figma에 쓰기 작업을 하기 전에는 반드시 read-only 단계로 다음을 확인한다.
+
+- 현재 file key와 문서의 file key가 일치하는가
+- top-level page 목록
+- 각 page의 주요 child frame 이름과 node id
+- 수정 또는 추가 대상 page와 node id
+- 기존 Components와 Screens가 instance 연결인지 단순 복제인지
+- 새 화면이 기존 화면 옆에 추가될 위치
+
+inventory 확인 전에는 `use_figma`로 쓰기 작업을 하지 않는다.
+
+inventory 결과에서 문서와 실제 Figma 구조가 다르면 쓰기 작업을 멈추고 사용자에게 먼저 보고한다.
+
+## Figma 안전 규칙
+
+기존 디자인을 보존하는 것이 최우선이다.
+
+다음 작업은 사용자에게 별도 승인을 받기 전까지 금지한다.
+
+- page 전체 비우기
+- 기존 frame 전체 삭제
+- 기존 component 삭제
+- 기존 screen 삭제
+- 기존 node 대량 이동
+- 기존 page/frame/component 이름 변경
+- `clearPage(...)` 사용
+- 기존 노드에 대한 `remove()` 사용
+
+새 컴포넌트나 화면을 만들 때는 기본적으로 기존 page 안의 끝 영역 또는 별도 section에 추가한다. 기존 화면 위에 덮어쓰지 않는다.
+
+기존 노드를 수정해야 하는 경우에는 수정 대상 node id, 수정 이유, 되돌릴 수 있는 기준을 먼저 보고한다.
+
+## 기존 스타일 유지 규칙
+
+새 컴포넌트나 화면은 기존 디자인 시스템의 시각 언어를 유지해야 한다.
+
+쓰기 작업 전 다음 기준을 먼저 확인하고 재사용한다.
+
+- 기존 색상 토큰
+- 기존 typography 크기와 weight
+- 기존 spacing 간격
+- 기존 radius
+- 기존 Button, Text Input, Checkbox, Todo Item의 크기와 상태 표현
+- 기존 화면 width, padding, section 간격
+- 기존 문구 톤과 label 방식
+
+새 스타일을 임의로 만들지 않는다.
+
+새 상태가 필요하면 기존 컴포넌트를 복제해 variant처럼 확장한다. 색상, radius, typography, padding은 기존 토큰과 같은 계열을 사용한다.
+
+기존 디자인과 다르게 보이는 새 패턴이 필요하면 먼저 사용자에게 이유와 대안을 제시한다.
 
 ## 주의할 점
 
 - Components를 고쳤다고 Screens가 자동으로 바뀐다고 가정하지 않는다.
+- Figma 작업은 추가/확장을 기본으로 하고, 삭제/재생성은 예외로 다룬다.
 - Figma MCP에서 `page.findAll`이 항상 기대대로 대상을 잡는다고 가정하지 않는다.
 - 특정 링크가 있으면 URL의 `node-id`를 우선 사용한다.
 - 넓은 범위를 한 번에 수정하기보다, 대표 노드 하나를 고치고 검증한 뒤 같은 패턴을 확장한다.
@@ -80,5 +137,7 @@ Figma 작업 후에는 다음을 한국어로 요약한다.
 
 - 수정한 Figma 페이지 또는 노드
 - 기준으로 삼은 문서
+- 재사용한 기존 디자인 토큰 또는 컴포넌트
 - metadata로 검증한 대표 노드
+- 삭제하거나 이름을 바꾼 기존 노드가 없는지 여부
 - 남은 시각 검토 항목

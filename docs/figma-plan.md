@@ -41,6 +41,48 @@ COA4ynKukuVp6aqqe1ECPM
 
 Figma 컴포넌트를 코드로 옮길 때는 `Components` 페이지를 먼저 확인하고, 화면 구현을 할 때는 `Screens` 페이지를 기준으로 삼는다.
 
+## 안전 작업 규칙
+
+Figma 작업은 기존 디자인을 보존하면서 추가하거나 확장하는 방식으로 진행한다.
+
+쓰기 작업 전에는 반드시 read-only inventory를 먼저 확인한다.
+
+확인 항목:
+
+- 기준 file key가 `COA4ynKukuVp6aqqe1ECPM`인지 확인한다.
+- Cover, Design System, Components, Screens page가 존재하는지 확인한다.
+- 각 page의 주요 frame 이름과 node id를 확인한다.
+- 새 작업을 추가할 위치를 기존 화면과 겹치지 않는 영역으로 정한다.
+- 기존 Components와 Screens가 instance 연결인지 단순 복제인지 확인한다.
+
+금지 항목:
+
+- page 전체 비우기
+- 기존 frame, component, screen 삭제
+- 기존 node 대량 이동
+- 기존 page/frame/component 이름 변경
+- `clearPage(...)` 사용
+- 기존 노드에 대한 `remove()` 사용
+
+위 금지 항목이 필요하다고 판단되면 Figma를 수정하지 않고 먼저 사용자에게 이유와 대상 node id를 보고한다.
+
+## 기존 스타일 유지 규칙
+
+새 컴포넌트와 새 화면은 기존 디자인 시스템의 스타일을 유지한다.
+
+작업 전 먼저 확인하고 재사용할 기준:
+
+- Design System의 색상, 간격, 타이포그래피, radius 토큰
+- Components의 Button, Text Input, Checkbox, Todo Item 상태와 크기
+- Screens의 화면 width, padding, section 간격
+- 기존 문구 톤과 label 방식
+
+Auth 화면처럼 새 화면을 추가할 때도 기존 Todo 앱의 차분한 체크리스트 스타일을 유지한다.
+
+새 스타일을 임의로 만들지 않는다. 새 상태가 필요하면 기존 컴포넌트를 복제해 같은 토큰으로 확장한다.
+
+기존 스타일로 표현하기 어려운 새 패턴이 필요하면 먼저 대안을 제시하고 사용자 확인을 받는다.
+
 ## 페이지 구성
 
 ### 1. Cover
