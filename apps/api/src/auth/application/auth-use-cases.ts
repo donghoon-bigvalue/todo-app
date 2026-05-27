@@ -13,6 +13,7 @@ import {
   type UserId,
   type UserRepository,
   createEmailVerificationCode,
+  createUserId,
   passwordSchema,
   signupSchema,
   userEmailSchema,
@@ -131,6 +132,23 @@ const resetPasswordSchema = z
     message: "비밀번호 확인이 일치하지 않습니다.",
     path: ["passwordConfirm"],
   });
+
+const changePasswordSchema = z
+  .object({
+    userId: z.string().min(1),
+    currentPassword: z.string(),
+    password: passwordSchema,
+    passwordConfirm: passwordSchema,
+  })
+  .refine((input) => input.password === input.passwordConfirm, {
+    message: "비밀번호 확인이 일치하지 않습니다.",
+    path: ["passwordConfirm"],
+  });
+
+const deleteAccountSchema = z.object({
+  userId: z.string().min(1),
+  password: z.string(),
+});
 
 export class SignupUseCase {
   constructor(
@@ -344,6 +362,50 @@ export class ResetPasswordUseCase {
   }
 }
 
+export class ChangePasswordUseCase {
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly refreshTokenRepository: RefreshTokenRepository,
+    private readonly dependencies: AuthUseCaseDependencies,
+  ) {}
+
+  async execute(input: unknown): Promise<void> {
+    const request = changePasswordSchema.parse(input);
+    const user = await findUserByIdOrThrow(this.userRepository, createUserId(request.userId));
+
+    if (
+      !(await this.dependencies.passwordHasher.verify(request.currentPassword, user.passwordHash))
+    ) {
+      throw new InvalidCredentialsError();
+    }
+
+    user.changePasswordHash(await this.dependencies.passwordHasher.hash(request.password));
+
+    await this.userRepository.updatePasswordHash(user);
+    await this.refreshTokenRepository.revokeAllByUserId(user.id, this.dependencies.now());
+  }
+}
+
+export class DeleteAccountUseCase {
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly refreshTokenRepository: RefreshTokenRepository,
+    private readonly dependencies: AuthUseCaseDependencies,
+  ) {}
+
+  async execute(input: unknown): Promise<void> {
+    const request = deleteAccountSchema.parse(input);
+    const user = await findUserByIdOrThrow(this.userRepository, createUserId(request.userId));
+
+    if (!(await this.dependencies.passwordHasher.verify(request.password, user.passwordHash))) {
+      throw new InvalidCredentialsError();
+    }
+
+    await this.refreshTokenRepository.revokeAllByUserId(user.id, this.dependencies.now());
+    await this.userRepository.delete(user.id);
+  }
+}
+
 async function issueLoginResult(
   user: User,
   refreshTokenRepository: RefreshTokenRepository,
@@ -418,6 +480,16 @@ async function findUserByEmailOrThrow(
 
   if (!user) {
     throw new UserEmailNotFoundError(email);
+  }
+
+  return user;
+}
+
+async function findUserByIdOrThrow(userRepository: UserRepository, userId: UserId): Promise<User> {
+  const user = await userRepository.findById(userId);
+
+  if (!user) {
+    throw new InvalidCredentialsError();
   }
 
   return user;

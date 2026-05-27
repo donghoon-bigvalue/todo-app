@@ -1030,7 +1030,7 @@ Figma 변경:
 
 커밋:
 
-- 미커밋
+- `6a60201 feat(api): Todo API 인증 보호 추가`
 
 남은 리스크:
 
@@ -1074,9 +1074,49 @@ Figma 변경:
 
 커밋:
 
-- 미커밋
+- `b013a45 feat(web): Auth 화면과 token 흐름 연결`
 
 남은 리스크:
 
 - 아이디 찾기, 비밀번호 재설정, 로그인 후 비밀번호 변경, 회원탈퇴 Web 화면은 아직 연결하지 않았다.
-- 로그인 후 비밀번호 변경과 회원탈퇴 API도 아직 구현하지 않았다.
+- 로그인 후 비밀번호 변경과 회원탈퇴 API는 다음 task에서 구현해야 한다.
+
+## 2026-05-27: 로그인 후 비밀번호 변경과 회원탈퇴 API 구현
+
+상태: Done
+
+목적:
+
+- 로그인한 사용자가 비밀번호를 변경하거나 계정을 탈퇴할 수 있는 API를 제공한다.
+
+변경 파일:
+
+- `apps/api/src/auth/application/auth-use-case.providers.ts`
+- `apps/api/src/auth/application/auth-use-cases.ts`
+- `apps/api/src/auth/application/auth-use-cases.test.ts`
+- `apps/api/src/auth/auth.tokens.ts`
+- `apps/api/src/auth/presentation/auth.controller.ts`
+- `apps/api/src/auth/presentation/auth.controller.test.ts`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- `ChangePasswordUseCase`를 추가해 현재 비밀번호 확인 후 password hash를 변경하고 기존 refresh token을 무효화한다.
+- `DeleteAccountUseCase`를 추가해 비밀번호 재확인 후 refresh token을 무효화하고 사용자 계정을 hard delete한다.
+- `PATCH /auth/password` API를 추가했다.
+- `DELETE /auth/account` API를 추가했다.
+- Auth controller에 access token verifier를 연결해 계정 관리 API를 인증된 사용자에게만 허용한다.
+
+검증:
+
+- `npm run test -- apps/api/src/auth/application/auth-use-cases.test.ts apps/api/src/auth/presentation/auth.controller.test.ts packages/db/src/user-repository.test.ts` 통과
+- `npm run check` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- Web 화면에서는 아직 아이디 찾기, 비밀번호 재설정, 로그인 후 비밀번호 변경, 회원탈퇴 API를 호출하지 않는다.

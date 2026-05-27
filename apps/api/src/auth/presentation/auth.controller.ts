@@ -2,17 +2,22 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Headers,
   HttpCode,
   Inject,
   NotFoundException,
+  Patch,
   Post,
   Res,
   UnauthorizedException,
 } from "@nestjs/common";
-import type { User } from "@todo-app/domain";
+import type { User, UserId } from "@todo-app/domain";
 import { ZodError, z } from "zod";
 import {
+  type AccessTokenVerifier,
+  type ChangePasswordUseCase,
+  type DeleteAccountUseCase,
   type LoginUseCase,
   type LogoutUseCase,
   type RefreshAccessTokenUseCase,
@@ -33,7 +38,10 @@ import {
   UserEmailNotFoundError,
 } from "../application/auth-use-cases";
 import {
+  AUTH_ACCESS_TOKEN_VERIFIER,
+  CHANGE_PASSWORD_USE_CASE,
   type CookieResponse,
+  DELETE_ACCOUNT_USE_CASE,
   LOGIN_USE_CASE,
   LOGOUT_USE_CASE,
   REFRESH_ACCESS_TOKEN_USE_CASE,
@@ -57,6 +65,16 @@ const emailRequestSchema = z.object({
 const emailVerificationRequestSchema = z.object({
   email: z.string(),
   code: z.string(),
+});
+
+const changePasswordRequestSchema = z.object({
+  currentPassword: z.string(),
+  password: z.string(),
+  passwordConfirm: z.string(),
+});
+
+const deleteAccountRequestSchema = z.object({
+  password: z.string(),
 });
 
 export type AuthUserResponse = {
@@ -89,6 +107,12 @@ export class AuthController {
     private readonly requestPasswordResetCodeUseCase: RequestPasswordResetCodeUseCase,
     @Inject(RESET_PASSWORD_USE_CASE)
     private readonly resetPasswordUseCase: ResetPasswordUseCase,
+    @Inject(CHANGE_PASSWORD_USE_CASE)
+    private readonly changePasswordUseCase: ChangePasswordUseCase,
+    @Inject(DELETE_ACCOUNT_USE_CASE)
+    private readonly deleteAccountUseCase: DeleteAccountUseCase,
+    @Inject(AUTH_ACCESS_TOKEN_VERIFIER)
+    private readonly accessTokenVerifier: AccessTokenVerifier,
   ) {}
 
   @Post("signup")
@@ -209,6 +233,56 @@ export class AuthController {
       throw mapAuthApiError(error);
     }
   }
+
+  @Patch("password")
+  @HttpCode(204)
+  async changePassword(
+    @Body() body: unknown,
+    @Headers("authorization") authorization: string | undefined,
+  ): Promise<void> {
+    try {
+      await this.changePasswordUseCase.execute({
+        ...changePasswordRequestSchema.parse(body),
+        userId: this.authenticate(authorization),
+      });
+    } catch (error) {
+      throw mapAuthApiError(error);
+    }
+  }
+
+  @Delete("account")
+  @HttpCode(204)
+  async deleteAccount(
+    @Body() body: unknown,
+    @Headers("authorization") authorization: string | undefined,
+    @Res({ passthrough: true }) response?: CookieResponse,
+  ): Promise<void> {
+    try {
+      await this.deleteAccountUseCase.execute({
+        ...deleteAccountRequestSchema.parse(body),
+        userId: this.authenticate(authorization),
+      });
+      response?.clearCookie(REFRESH_TOKEN_COOKIE_NAME, {
+        httpOnly: true,
+        sameSite: "strict",
+        secure: false,
+        path: "/",
+      });
+    } catch (error) {
+      throw mapAuthApiError(error);
+    }
+  }
+
+  private authenticate(authorization: string | undefined): UserId {
+    const accessToken = readBearerToken(authorization);
+    const user = accessToken ? this.accessTokenVerifier.verify(accessToken) : null;
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    return user.userId;
+  }
 }
 
 function toSignupResponse(user: User): SignupResponse {
@@ -241,6 +315,12 @@ function readCookie(cookieHeader: string | undefined, name: string): string | nu
   }
 
   return null;
+}
+
+function readBearerToken(authorization: string | undefined): string | null {
+  const [scheme, token] = authorization?.split(" ") ?? [];
+
+  return scheme === "Bearer" && token ? token : null;
 }
 
 function mapAuthApiError(error: unknown): Error {

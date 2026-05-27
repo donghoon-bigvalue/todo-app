@@ -1,4 +1,6 @@
 import {
+  ChangePasswordUseCase,
+  DeleteAccountUseCase,
   LoginUseCase,
   LogoutUseCase,
   RefreshAccessTokenUseCase,
@@ -18,7 +20,10 @@ import { createEmailVerificationId, createRefreshTokenId, createUserId } from "@
 import type { Provider } from "@nestjs/common";
 import { randomUUID } from "node:crypto";
 import {
+  AUTH_ACCESS_TOKEN_VERIFIER,
   AUTH_USE_CASE_DEPENDENCIES,
+  CHANGE_PASSWORD_USE_CASE,
+  DELETE_ACCOUNT_USE_CASE,
   EMAIL_VERIFICATION_REPOSITORY,
   LOGIN_USE_CASE,
   LOGOUT_USE_CASE,
@@ -33,7 +38,10 @@ import {
 } from "../auth.tokens";
 import { createAuthConfig, generateRefreshTokenValue } from "../infrastructure/auth-config";
 import { BcryptPasswordHasher } from "../infrastructure/bcrypt-password-hasher";
-import { JwtAccessTokenIssuer } from "../infrastructure/jwt-access-token-issuer";
+import {
+  JwtAccessTokenIssuer,
+  JwtAccessTokenVerifier,
+} from "../infrastructure/jwt-access-token-issuer";
 import { createNodemailerMailSender } from "../infrastructure/nodemailer-mail-sender";
 import { Sha256RefreshTokenHasher } from "../infrastructure/refresh-token-hasher";
 import { createSmtpMailConfig } from "../infrastructure/smtp-mail-config";
@@ -62,6 +70,10 @@ export const authUseCaseProviders: Provider[] = [
         mailSender: createNodemailerMailSender(createSmtpMailConfig(process.env)),
       };
     },
+  },
+  {
+    provide: AUTH_ACCESS_TOKEN_VERIFIER,
+    useFactory: () => new JwtAccessTokenVerifier(createAuthConfig(process.env).jwtSecret),
   },
   {
     provide: SIGNUP_USE_CASE,
@@ -149,5 +161,23 @@ export const authUseCaseProviders: Provider[] = [
         emailVerificationRepository,
         dependencies,
       ),
+  },
+  {
+    provide: CHANGE_PASSWORD_USE_CASE,
+    inject: [USER_REPOSITORY, REFRESH_TOKEN_REPOSITORY, AUTH_USE_CASE_DEPENDENCIES],
+    useFactory: (
+      userRepository: UserRepository,
+      refreshTokenRepository: RefreshTokenRepository,
+      dependencies: AuthUseCaseDependencies,
+    ) => new ChangePasswordUseCase(userRepository, refreshTokenRepository, dependencies),
+  },
+  {
+    provide: DELETE_ACCOUNT_USE_CASE,
+    inject: [USER_REPOSITORY, REFRESH_TOKEN_REPOSITORY, AUTH_USE_CASE_DEPENDENCIES],
+    useFactory: (
+      userRepository: UserRepository,
+      refreshTokenRepository: RefreshTokenRepository,
+      dependencies: AuthUseCaseDependencies,
+    ) => new DeleteAccountUseCase(userRepository, refreshTokenRepository, dependencies),
   },
 ];

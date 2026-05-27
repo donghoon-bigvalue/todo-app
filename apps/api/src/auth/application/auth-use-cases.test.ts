@@ -15,6 +15,7 @@ import { describe, expect, it } from "vitest";
 import {
   DuplicateEmailError,
   DuplicateLoginIdError,
+  DeleteAccountUseCase,
   InvalidCredentialsError,
   LoginUseCase,
   LogoutUseCase,
@@ -22,6 +23,7 @@ import {
   RequestFindLoginIdCodeUseCase,
   RequestPasswordResetCodeUseCase,
   ResetPasswordUseCase,
+  ChangePasswordUseCase,
   SignupUseCase,
   UserEmailNotFoundError,
   VerifyFindLoginIdCodeUseCase,
@@ -286,6 +288,102 @@ describe("Auth use cases", () => {
     expect(refreshTokenRepository.tokens[0]?.revokedAt).toEqual(
       new Date("2026-05-27T08:00:00.000Z"),
     );
+  });
+
+  it("로그인 사용자가 현재 비밀번호 확인 후 비밀번호를 변경하고 기존 refresh token을 무효화한다", async () => {
+    const user = createUser();
+    const userRepository = new FakeUserRepository([user]);
+    const refreshTokenRepository = new FakeRefreshTokenRepository([
+      RefreshToken.create({
+        id: createRefreshTokenId("refresh-token-1"),
+        userId: createUserId("user-1"),
+        tokenHash: "refresh-hash:refresh-token-value",
+        createdAt: new Date("2026-05-27T08:00:00.000Z"),
+        expiresAt: new Date("2026-06-26T08:00:00.000Z"),
+      }),
+    ]);
+    const useCase = new ChangePasswordUseCase(
+      userRepository,
+      refreshTokenRepository,
+      createDependencies(),
+    );
+
+    await useCase.execute({
+      userId: createUserId("user-1"),
+      currentPassword: "password1",
+      password: "new-password1",
+      passwordConfirm: "new-password1",
+    });
+
+    await expect(userRepository.findById(createUserId("user-1"))).resolves.toMatchObject({
+      passwordHash: "hashed:new-password1",
+    });
+    expect(refreshTokenRepository.tokens[0]?.revokedAt).toEqual(
+      new Date("2026-05-27T08:00:00.000Z"),
+    );
+  });
+
+  it("현재 비밀번호가 틀리면 비밀번호를 변경할 수 없다", async () => {
+    const userRepository = new FakeUserRepository([createUser()]);
+    const useCase = new ChangePasswordUseCase(
+      userRepository,
+      new FakeRefreshTokenRepository(),
+      createDependencies(),
+    );
+
+    await expect(
+      useCase.execute({
+        userId: createUserId("user-1"),
+        currentPassword: "wrong",
+        password: "new-password1",
+        passwordConfirm: "new-password1",
+      }),
+    ).rejects.toThrow(InvalidCredentialsError);
+  });
+
+  it("로그인 사용자가 비밀번호 재확인 후 계정을 탈퇴한다", async () => {
+    const userRepository = new FakeUserRepository([createUser()]);
+    const refreshTokenRepository = new FakeRefreshTokenRepository([
+      RefreshToken.create({
+        id: createRefreshTokenId("refresh-token-1"),
+        userId: createUserId("user-1"),
+        tokenHash: "refresh-hash:refresh-token-value",
+        createdAt: new Date("2026-05-27T08:00:00.000Z"),
+        expiresAt: new Date("2026-06-26T08:00:00.000Z"),
+      }),
+    ]);
+    const useCase = new DeleteAccountUseCase(
+      userRepository,
+      refreshTokenRepository,
+      createDependencies(),
+    );
+
+    await useCase.execute({
+      userId: createUserId("user-1"),
+      password: "password1",
+    });
+
+    await expect(userRepository.findById(createUserId("user-1"))).resolves.toBeNull();
+    expect(refreshTokenRepository.tokens[0]?.revokedAt).toEqual(
+      new Date("2026-05-27T08:00:00.000Z"),
+    );
+  });
+
+  it("비밀번호가 틀리면 계정을 탈퇴할 수 없다", async () => {
+    const userRepository = new FakeUserRepository([createUser()]);
+    const useCase = new DeleteAccountUseCase(
+      userRepository,
+      new FakeRefreshTokenRepository(),
+      createDependencies(),
+    );
+
+    await expect(
+      useCase.execute({
+        userId: createUserId("user-1"),
+        password: "wrong",
+      }),
+    ).rejects.toThrow(InvalidCredentialsError);
+    await expect(userRepository.findById(createUserId("user-1"))).resolves.not.toBeNull();
   });
 
   it("가입되지 않은 이메일로 인증 코드를 요청할 수 없다", async () => {

@@ -4,6 +4,7 @@ import { createEmailVerificationId, createRefreshTokenId, createUserId } from "@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { AuthModule } from "../auth.module";
 import {
+  AUTH_ACCESS_TOKEN_VERIFIER,
   AUTH_USE_CASE_DEPENDENCIES,
   type CookieResponse,
   REFRESH_TOKEN_COOKIE_NAME,
@@ -49,6 +50,11 @@ describe("AuthController", () => {
           sendEmailVerificationCode: async () => {},
         },
       } satisfies AuthUseCaseDependencies)
+      .overrideProvider(AUTH_ACCESS_TOKEN_VERIFIER)
+      .useValue({
+        verify: (accessToken: string) =>
+          accessToken === "access:user-1" ? { userId: createUserId("user-1") } : null,
+      })
       .compile();
 
     controller = module.get(AuthController);
@@ -211,6 +217,75 @@ describe("AuthController", () => {
     await expect(
       controller.refresh(`${REFRESH_TOKEN_COOKIE_NAME}=refresh-token-value-1`),
     ).rejects.toThrow(UnauthorizedException);
+  });
+
+  it("로그인 사용자가 현재 비밀번호 확인 후 비밀번호를 변경한다", async () => {
+    await controller.signup({
+      loginId: "todo_user",
+      nickname: "도훈",
+      email: "user@example.com",
+      password: "password1",
+      passwordConfirm: "password1",
+    });
+    const loginResponse = createCookieResponse();
+    await controller.login({ loginId: "todo_user", password: "password1" }, loginResponse);
+
+    await expect(
+      controller.changePassword(
+        {
+          currentPassword: "password1",
+          password: "new-password1",
+          passwordConfirm: "new-password1",
+        },
+        "Bearer access:user-1",
+      ),
+    ).resolves.toBeUndefined();
+    await expect(
+      controller.login({ loginId: "todo_user", password: "password1" }, createCookieResponse()),
+    ).rejects.toThrow(UnauthorizedException);
+    await expect(
+      controller.login({ loginId: "todo_user", password: "new-password1" }, createCookieResponse()),
+    ).resolves.toMatchObject({
+      accessToken: "access:user-1",
+    });
+    await expect(
+      controller.refresh(`${REFRESH_TOKEN_COOKIE_NAME}=refresh-token-value-1`),
+    ).rejects.toThrow(UnauthorizedException);
+  });
+
+  it("로그인 사용자가 비밀번호 재확인 후 계정을 탈퇴한다", async () => {
+    await controller.signup({
+      loginId: "todo_user",
+      nickname: "도훈",
+      email: "user@example.com",
+      password: "password1",
+      passwordConfirm: "password1",
+    });
+    const loginResponse = createCookieResponse();
+    await controller.login({ loginId: "todo_user", password: "password1" }, loginResponse);
+
+    await expect(
+      controller.deleteAccount(
+        { password: "password1" },
+        "Bearer access:user-1",
+        createCookieResponse(),
+      ),
+    ).resolves.toBeUndefined();
+    await expect(
+      controller.login({ loginId: "todo_user", password: "password1" }, createCookieResponse()),
+    ).rejects.toThrow(UnauthorizedException);
+    await expect(
+      controller.signup({
+        loginId: "todo_user",
+        nickname: "도훈",
+        email: "user@example.com",
+        password: "password1",
+        passwordConfirm: "password1",
+      }),
+    ).resolves.toMatchObject({
+      loginId: "todo_user",
+      email: "user@example.com",
+    });
   });
 });
 
