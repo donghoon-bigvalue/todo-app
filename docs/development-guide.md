@@ -109,7 +109,21 @@ Web dev server는 `/api` 요청을 `http://127.0.0.1:3000`으로 proxy한다. �
 
 Auth 이메일 인증 메일은 Nodemailer 기반 SMTP transport로 발송한다.
 
-API 서버에서 실제 메일을 발송하려면 다음 환경변수를 설정한다.
+API 서버는 저장소 루트의 `.env` 파일을 시작 시 읽는다. 로컬에서 처음 설정할 때는 `.env.example`을 복사해 `.env`를 만든다.
+
+```bash
+cp .env.example .env
+```
+
+화면 흐름만 확인하고 실제 메일을 보내지 않을 때는 `.env`에 다음 값을 둔다. 이 경우 인증 코드는 `333333`이다.
+
+```text
+SMTP_TRANSPORT=stream
+SMTP_FROM="Todo App <no-reply@example.com>"
+AUTH_EMAIL_VERIFICATION_DIGIT=3
+```
+
+API 서버에서 실제 메일을 발송하려면 `SMTP_TRANSPORT=stream`을 제거하거나 주석 처리하고 다음 환경변수를 설정한다.
 
 - `SMTP_HOST`: SMTP server host. 필수.
 - `SMTP_PORT`: SMTP server port. 필수이며 양의 정수여야 한다.
