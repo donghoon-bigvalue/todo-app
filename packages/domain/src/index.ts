@@ -53,9 +53,14 @@ export {
 export type { UserRepository } from "./user-repository";
 export {
   CreateTodoUseCase,
+  CreateUserTodoUseCase,
   DeleteTodoUseCase,
+  DeleteUserTodoUseCase,
+  ListUserTodosUseCase,
   ListTodosUseCase,
   TodoNotFoundError,
+  UpdateUserTodoCompletedUseCase,
+  UpdateUserTodoNoteUseCase,
   UpdateTodoCompletedUseCase,
   UpdateTodoNoteUseCase,
   type TodoUseCaseDependencies,

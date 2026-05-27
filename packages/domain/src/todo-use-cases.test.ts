@@ -1,14 +1,20 @@
 import { describe, expect, it } from "vitest";
 import { Todo, type TodoId, type TodoSnapshot, createTodoId } from "./todo";
-import type { TodoRepository } from "./todo-repository";
+import type { TodoRepository, UserScopedTodoRepository } from "./todo-repository";
 import {
+  CreateUserTodoUseCase,
   CreateTodoUseCase,
+  DeleteUserTodoUseCase,
   DeleteTodoUseCase,
+  ListUserTodosUseCase,
   ListTodosUseCase,
   TodoNotFoundError,
+  UpdateUserTodoCompletedUseCase,
+  UpdateUserTodoNoteUseCase,
   UpdateTodoCompletedUseCase,
   UpdateTodoNoteUseCase,
 } from "./todo-use-cases";
+import { type UserId, createUserId } from "./user";
 
 class FakeTodoRepository implements TodoRepository {
   readonly #todos = new Map<TodoId, TodoSnapshot>();
@@ -39,6 +45,58 @@ class FakeTodoRepository implements TodoRepository {
 
   async delete(id: TodoId): Promise<void> {
     this.#todos.delete(id);
+  }
+}
+
+class FakeUserScopedTodoRepository implements TodoRepository, UserScopedTodoRepository {
+  readonly #todos = new Map<TodoId, { readonly userId: UserId; readonly snapshot: TodoSnapshot }>();
+
+  async findMany(): Promise<Todo[]> {
+    return [...this.#todos.values()].map(({ snapshot }) => Todo.restore(snapshot));
+  }
+
+  async findById(id: TodoId): Promise<Todo | null> {
+    const saved = this.#todos.get(id);
+
+    return saved ? Todo.restore(saved.snapshot) : null;
+  }
+
+  async create(todo: Todo): Promise<void> {
+    await this.createForUser(todo, createUserId("legacy-user"));
+  }
+
+  async update(todo: Todo): Promise<void> {
+    const saved = this.#todos.get(todo.id);
+
+    if (saved) {
+      this.#todos.set(todo.id, {
+        userId: saved.userId,
+        snapshot: todo.toSnapshot(),
+      });
+    }
+  }
+
+  async delete(id: TodoId): Promise<void> {
+    this.#todos.delete(id);
+  }
+
+  async findManyByUserId(userId: UserId): Promise<Todo[]> {
+    return [...this.#todos.values()]
+      .filter((saved) => saved.userId === userId)
+      .map(({ snapshot }) => Todo.restore(snapshot));
+  }
+
+  async findByIdForUser(id: TodoId, userId: UserId): Promise<Todo | null> {
+    const saved = this.#todos.get(id);
+
+    return saved?.userId === userId ? Todo.restore(saved.snapshot) : null;
+  }
+
+  async createForUser(todo: Todo, userId: UserId): Promise<void> {
+    this.#todos.set(todo.id, {
+      userId,
+      snapshot: todo.toSnapshot(),
+    });
   }
 }
 
@@ -177,5 +235,78 @@ describe("Todo use cases", () => {
     await expect(useCase.execute({ id: createTodoId("missing") })).rejects.toThrow(
       TodoNotFoundError,
     );
+  });
+
+  it("사용자별 Todo 목록을 조회한다", async () => {
+    const repository = new FakeUserScopedTodoRepository();
+    await repository.createForUser(
+      Todo.create({
+        id: createTodoId("todo-1"),
+        title: "첫 번째 사용자 Todo",
+        createdAt: new Date("2026-05-13T09:00:00.000Z"),
+      }),
+      createUserId("user-1"),
+    );
+    await repository.createForUser(
+      Todo.create({
+        id: createTodoId("todo-2"),
+        title: "두 번째 사용자 Todo",
+        createdAt: new Date("2026-05-13T09:01:00.000Z"),
+      }),
+      createUserId("user-2"),
+    );
+    const useCase = new ListUserTodosUseCase(repository);
+
+    await expect(useCase.execute({ userId: createUserId("user-1") })).resolves.toHaveLength(1);
+  });
+
+  it("사용자 소유 Todo를 생성한다", async () => {
+    const repository = new FakeUserScopedTodoRepository();
+    const useCase = new CreateUserTodoUseCase(repository, {
+      generateId: () => createTodoId("todo-1"),
+      now: () => new Date("2026-05-13T09:00:00.000Z"),
+    });
+
+    await useCase.execute({
+      userId: createUserId("user-1"),
+      title: "사용자 Todo",
+    });
+
+    await expect(repository.findManyByUserId(createUserId("user-1"))).resolves.toHaveLength(1);
+  });
+
+  it("사용자 소유 Todo만 변경하고 삭제한다", async () => {
+    const repository = new FakeUserScopedTodoRepository();
+    const todo = Todo.create({
+      id: createTodoId("todo-1"),
+      title: "사용자 Todo",
+      createdAt: new Date("2026-05-13T09:00:00.000Z"),
+    });
+    await repository.createForUser(todo, createUserId("user-1"));
+
+    await new UpdateUserTodoCompletedUseCase(repository).execute({
+      userId: createUserId("user-1"),
+      id: createTodoId("todo-1"),
+      completed: true,
+    });
+    await new UpdateUserTodoNoteUseCase(repository).execute({
+      userId: createUserId("user-1"),
+      id: createTodoId("todo-1"),
+      note: "사용자 메모",
+    });
+
+    await expect(
+      new UpdateUserTodoCompletedUseCase(repository).execute({
+        userId: createUserId("user-2"),
+        id: createTodoId("todo-1"),
+        completed: false,
+      }),
+    ).rejects.toThrow(TodoNotFoundError);
+
+    await new DeleteUserTodoUseCase(repository).execute({
+      userId: createUserId("user-1"),
+      id: createTodoId("todo-1"),
+    });
+    await expect(repository.findById(createTodoId("todo-1"))).resolves.toBeNull();
   });
 });

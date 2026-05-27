@@ -98,7 +98,7 @@
 
 커밋:
 
-- 미커밋
+- `fd8b636 feat(api): 계정 복구 API 추가`
 
 남은 리스크:
 
@@ -987,3 +987,52 @@ Figma 변경:
 
 - 로그인 후 비밀번호 변경과 회원탈퇴 API는 아직 구현하지 않았다.
 - 실제 SMTP provider 계정과 비밀값은 로컬/배포 환경에서 별도로 주입해야 한다.
+
+## 2026-05-27: Todo API 인증 보호와 사용자별 데이터 분리
+
+상태: Done
+
+목적:
+
+- 기존 Todo API가 로그인한 사용자의 Todo만 다루도록 확장한다.
+
+변경 파일:
+
+- `packages/domain/src/todo-use-cases.ts`
+- `packages/domain/src/todo-use-cases.test.ts`
+- `packages/domain/src/index.ts`
+- `apps/api/src/database/database.module.ts`
+- `apps/api/src/database/database.providers.ts`
+- `apps/api/src/database/database.tokens.ts`
+- `apps/api/src/auth/application/auth-use-cases.ts`
+- `apps/api/src/auth/infrastructure/jwt-access-token-issuer.ts`
+- `apps/api/src/auth/auth.module.ts`
+- `apps/api/src/todos/todos.module.ts`
+- `apps/api/src/todos/todos.tokens.ts`
+- `apps/api/src/todos/application/todo-use-case.providers.ts`
+- `apps/api/src/todos/presentation/todos.controller.ts`
+- `apps/api/src/todos/presentation/todos.controller.test.ts`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- 사용자 범위 Todo use case를 추가했다.
+- Todo API가 `Authorization: Bearer <accessToken>`을 요구하도록 변경했다.
+- JWT access token 검증 결과의 user id를 Todo 생성, 목록, 수정, 삭제에 사용한다.
+- 다른 사용자의 Todo id로 수정하거나 삭제하면 `NotFoundException`으로 처리한다.
+- Auth module과 Todo module이 같은 `DatabaseModule`을 통해 DB client와 repository를 공유하도록 정리했다.
+
+검증:
+
+- `npm run test -- apps/api/src/todos/presentation/todos.controller.test.ts packages/domain/src/todo-use-cases.test.ts apps/api/src/auth/presentation/auth.controller.test.ts` 통과
+- `npm run check` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- Web은 아직 access token 저장/첨부/refresh 흐름을 사용하지 않는다. 다음 task에서 연결해야 한다.
+- 로그인 후 비밀번호 변경과 회원탈퇴 API는 아직 구현하지 않았다.

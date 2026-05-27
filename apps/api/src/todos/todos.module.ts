@@ -1,11 +1,12 @@
 import { Module } from "@nestjs/common";
+import { DatabaseModule } from "../database/database.module";
 import { todoUseCaseProviders } from "./application/todo-use-case.providers";
-import { todoDatabaseProviders } from "./infrastructure/todo-database.providers";
 import { TodosController } from "./presentation/todos.controller";
 
 @Module({
+  imports: [DatabaseModule],
   controllers: [TodosController],
-  providers: [...todoDatabaseProviders, ...todoUseCaseProviders],
+  providers: [...todoUseCaseProviders],
   exports: [...todoUseCaseProviders],
 })
 export class TodosModule {}

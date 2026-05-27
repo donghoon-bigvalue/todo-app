@@ -1,7 +1,8 @@
 import { Todo, type TodoId } from "./todo";
 import { todoNoteSchema } from "./todo-note-schema";
-import type { TodoRepository } from "./todo-repository";
+import type { TodoRepository, UserScopedTodoRepository } from "./todo-repository";
 import { todoTitleSchema } from "./todo-title-schema";
+import type { UserId } from "./user";
 
 export type TodoUseCaseDependencies = {
   readonly generateId: () => TodoId;
@@ -96,6 +97,103 @@ export class DeleteTodoUseCase {
 
   async execute(input: { readonly id: TodoId }): Promise<void> {
     const todo = await this.repository.findById(input.id);
+
+    if (!todo) {
+      throw new TodoNotFoundError(input.id);
+    }
+
+    await this.repository.delete(input.id);
+  }
+}
+
+type UserScopedTodoUseCaseRepository = TodoRepository & UserScopedTodoRepository;
+
+export class ListUserTodosUseCase {
+  constructor(private readonly repository: UserScopedTodoRepository) {}
+
+  async execute(input: { readonly userId: UserId }): Promise<Todo[]> {
+    return this.repository.findManyByUserId(input.userId);
+  }
+}
+
+export class CreateUserTodoUseCase {
+  constructor(
+    private readonly repository: UserScopedTodoRepository,
+    private readonly dependencies: TodoUseCaseDependencies,
+  ) {}
+
+  async execute(input: { readonly userId: UserId; readonly title: string }): Promise<Todo> {
+    const todo = Todo.create({
+      id: this.dependencies.generateId(),
+      title: todoTitleSchema.parse(input.title),
+      createdAt: this.dependencies.now(),
+    });
+
+    await this.repository.createForUser(todo, input.userId);
+
+    return todo;
+  }
+}
+
+export class UpdateUserTodoCompletedUseCase {
+  constructor(private readonly repository: UserScopedTodoUseCaseRepository) {}
+
+  async execute(input: {
+    readonly userId: UserId;
+    readonly id: TodoId;
+    readonly completed: boolean;
+  }): Promise<Todo> {
+    const todo = await this.repository.findByIdForUser(input.id, input.userId);
+
+    if (!todo) {
+      throw new TodoNotFoundError(input.id);
+    }
+
+    if (input.completed) {
+      todo.complete();
+    } else {
+      todo.reopen();
+    }
+
+    await this.repository.update(todo);
+
+    return todo;
+  }
+}
+
+export class UpdateUserTodoNoteUseCase {
+  constructor(private readonly repository: UserScopedTodoUseCaseRepository) {}
+
+  async execute(input: {
+    readonly userId: UserId;
+    readonly id: TodoId;
+    readonly note?: string | null | undefined;
+  }): Promise<Todo> {
+    const todo = await this.repository.findByIdForUser(input.id, input.userId);
+
+    if (!todo) {
+      throw new TodoNotFoundError(input.id);
+    }
+
+    const note = todoNoteSchema.parse(input.note);
+
+    if (note) {
+      todo.updateNote(note);
+    } else {
+      todo.clearNote();
+    }
+
+    await this.repository.update(todo);
+
+    return todo;
+  }
+}
+
+export class DeleteUserTodoUseCase {
+  constructor(private readonly repository: UserScopedTodoUseCaseRepository) {}
+
+  async execute(input: { readonly userId: UserId; readonly id: TodoId }): Promise<void> {
+    const todo = await this.repository.findByIdForUser(input.id, input.userId);
 
     if (!todo) {
       throw new TodoNotFoundError(input.id);

@@ -38,6 +38,14 @@ export type AccessTokenIssuer = {
   }): string;
 };
 
+export type AuthenticatedUser = {
+  readonly userId: UserId;
+};
+
+export type AccessTokenVerifier = {
+  verify(accessToken: string): AuthenticatedUser | null;
+};
+
 export type AuthUseCaseDependencies = {
   readonly generateUserId: () => UserId;
   readonly generateRefreshTokenId: () => RefreshTokenId;
