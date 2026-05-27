@@ -24,14 +24,20 @@ Todo App MVP
 
 실제 Figma 파일:
 
-- [Todo App](https://www.figma.com/design/LMJjjtgzzuwDDthcxS8p4I/Todo-App?node-id=4-2&p=f&m=dev)
+- [Todo App](https://www.figma.com/design/COA4ynKukuVp6aqqe1ECPM/Todo-App?node-id=4-2&p=f&m=dev)
 
 페이지별 기준 node:
 
-- [Cover](https://www.figma.com/design/LMJjjtgzzuwDDthcxS8p4I/Todo-App?node-id=4-2&p=f&m=dev)
-- [Design System](https://www.figma.com/design/LMJjjtgzzuwDDthcxS8p4I/Todo-App?node-id=4-3&p=f&m=dev)
-- [Components](https://www.figma.com/design/LMJjjtgzzuwDDthcxS8p4I/Todo-App?node-id=4-4&p=f&m=dev)
-- [Screens](https://www.figma.com/design/LMJjjtgzzuwDDthcxS8p4I/Todo-App?node-id=4-5&p=f&m=dev)
+- [Cover](https://www.figma.com/design/COA4ynKukuVp6aqqe1ECPM/Todo-App?node-id=4-2&p=f&m=dev)
+- [Design System](https://www.figma.com/design/COA4ynKukuVp6aqqe1ECPM/Todo-App?node-id=4-3&p=f&m=dev)
+- [Components](https://www.figma.com/design/COA4ynKukuVp6aqqe1ECPM/Todo-App?node-id=4-4&p=f&m=dev)
+- [Screens](https://www.figma.com/design/COA4ynKukuVp6aqqe1ECPM/Todo-App?node-id=4-5&p=f&m=dev)
+
+현재 기준 file key:
+
+```text
+COA4ynKukuVp6aqqe1ECPM
+```
 
 Figma 컴포넌트를 코드로 옮길 때는 `Components` 페이지를 먼저 확인하고, 화면 구현을 할 때는 `Screens` 페이지를 기준으로 삼는다.
 

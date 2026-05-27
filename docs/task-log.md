@@ -638,3 +638,35 @@ Figma 변경:
 - access token과 refresh token 만료 시간은 아직 확정하지 않았다.
 - 실제 SMTP provider와 환경변수 값은 아직 확정하지 않았다.
 - Auth 화면 기준은 다음 Figma task에서 먼저 정의해야 한다.
+
+## 2026-05-27: Figma 파일 참조 복구
+
+상태: Done
+
+목적:
+
+- 사용자가 복원한 Figma 파일을 이후 작업 기준으로 사용하도록 문서의 file key와 URL을 갱신한다.
+
+변경 파일:
+
+- `docs/figma-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- Figma 기준 file key를 `COA4ynKukuVp6aqqe1ECPM`으로 갱신했다.
+- Cover, Design System, Components, Screens 기준 URL을 복원된 Figma 파일로 교체했다.
+
+검증:
+
+- `rg -n "COA4ynKukuVp6aqqe1ECPM|figma.com/design" docs/figma-plan.md`
+- `npm run check` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- Figma 캔버스 자체는 이번 task에서 수정하지 않았다.
+- Auth Figma 디자인 업데이트를 재개하기 전에 새 file key로 read-only metadata inventory를 먼저 확인해야 한다.
