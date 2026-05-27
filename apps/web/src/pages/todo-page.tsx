@@ -19,7 +19,7 @@ const todoFormSchema = z.object({
 
 type TodoFormValues = z.infer<typeof todoFormSchema>;
 
-export function TodoPage() {
+export function TodoPage({ onLogout }: { readonly onLogout?: () => void | Promise<void> }) {
   const queryClient = useQueryClient();
   const [editingNoteTodoId, setEditingNoteTodoId] = useState<string | null>(null);
   const [noteDraft, setNoteDraft] = useState("");
@@ -85,9 +85,16 @@ export function TodoPage() {
   return (
     <main className="min-h-screen bg-[#F7F8FA] px-6 py-10 text-[#1F2937]">
       <div className="mx-auto max-w-[390px] space-y-6">
-        <header className="space-y-2">
-          <h1 className="text-2xl font-semibold">할 일 체크리스트</h1>
-          <p className="text-sm text-[#6B7280]">남은 할 일 {remainingCount}개</p>
+        <header className="flex items-start justify-between gap-4">
+          <div className="space-y-2">
+            <h1 className="text-2xl font-semibold">할 일 체크리스트</h1>
+            <p className="text-sm text-[#6B7280]">남은 할 일 {remainingCount}개</p>
+          </div>
+          {onLogout ? (
+            <Button onClick={() => void onLogout()} size="sm">
+              로그아웃
+            </Button>
+          ) : null}
         </header>
 
         <form

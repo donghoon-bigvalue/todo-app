@@ -131,7 +131,7 @@
 
 커밋:
 
-- 미커밋
+- `6a60201 feat(api): Todo API 인증 보호 추가`
 
 남은 리스크:
 
@@ -1036,3 +1036,47 @@ Figma 변경:
 
 - Web은 아직 access token 저장/첨부/refresh 흐름을 사용하지 않는다. 다음 task에서 연결해야 한다.
 - 로그인 후 비밀번호 변경과 회원탈퇴 API는 아직 구현하지 않았다.
+
+## 2026-05-27: Web Auth 화면과 token 흐름 연결
+
+상태: Done
+
+목적:
+
+- 사용자가 웹에서 회원가입, 로그인, 로그아웃, access token 저장/첨부와 refresh 재시도 흐름을 사용할 수 있게 한다.
+
+변경 파일:
+
+- `apps/web/src/app/app.test.tsx`
+- `apps/web/src/app/routes.tsx`
+- `apps/web/src/pages/auth-gate.tsx`
+- `apps/web/src/pages/auth-gate.test.tsx`
+- `apps/web/src/pages/todo-page.tsx`
+- `apps/web/src/shared/api/api-client.ts`
+- `apps/web/src/shared/api/auth-api.ts`
+- `apps/web/src/shared/api/auth-api.test.ts`
+- `apps/web/src/shared/api/index.ts`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- root route를 `AuthGate`로 전환해 미로그인 사용자는 로그인/회원가입 화면을 보고, 인증 후 Todo 화면으로 이동하게 했다.
+- Todo 화면 header에 로그아웃 동작을 연결했다.
+- Web Auth API wrapper를 추가하고 로그인/refresh 성공 시 access token을 저장하도록 했다.
+- API client가 `withCredentials`와 `Authorization: Bearer <accessToken>`을 사용하도록 했다.
+- 401 응답을 받으면 `/auth/refresh`로 access token을 갱신한 뒤 원 요청을 한 번 재시도한다.
+
+검증:
+
+- `npm run test -- apps/web/src/shared/api/auth-api.test.ts apps/web/src/pages/auth-gate.test.tsx apps/web/src/pages/todo-page.test.tsx apps/web/src/shared/api/todo-api.test.ts` 통과
+- `npm run check` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- 아이디 찾기, 비밀번호 재설정, 로그인 후 비밀번호 변경, 회원탈퇴 Web 화면은 아직 연결하지 않았다.
+- 로그인 후 비밀번호 변경과 회원탈퇴 API도 아직 구현하지 않았다.

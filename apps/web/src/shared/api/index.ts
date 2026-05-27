@@ -1,4 +1,21 @@
-export { apiClient, createApiClient } from "./api-client";
+export {
+  apiClient,
+  clearAccessToken,
+  createApiClient,
+  getAccessToken,
+  setAccessToken,
+} from "./api-client";
+export {
+  login,
+  logout,
+  refreshAccessToken,
+  signup,
+  type AuthUserDto,
+  type LoginRequest,
+  type LoginResponse,
+  type SignupRequest,
+  type SignupResponse,
+} from "./auth-api";
 export {
   ApiError,
   createTodo,

@@ -1,10 +1,10 @@
-import { TodoPage } from "../pages/todo-page";
+import { AuthGate } from "../pages/auth-gate";
 import { ShowcasePage } from "../pages/showcase-page";
 
 export const routes = [
   {
     path: "/",
-    element: <TodoPage />,
+    element: <AuthGate />,
   },
   {
     path: "/showcase",

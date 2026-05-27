@@ -31,6 +31,7 @@
 - Auth API 기본 인증 흐름 구현이 완료되었다.
 - 아이디 찾기와 비밀번호 재설정 API 구현이 완료되었다.
 - Todo API 인증 보호와 사용자별 데이터 분리가 완료되었다.
+- Web Auth 화면과 token 흐름 연결이 완료되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
@@ -47,20 +48,38 @@ Auth와 계정 관리 확장 진행 중.
 
 ## 현재 Task
 
-다음 task 승인 대기.
-
-추천 task:
-
-Web Auth 화면과 token 흐름 연결.
+로그인 후 비밀번호 변경과 회원탈퇴 API 구현.
 
 목표:
 
-- 사용자가 웹에서 회원가입, 로그인, 로그아웃, token refresh 흐름을 사용할 수 있게 한다.
-- 로그인 화면이 있다.
-- 회원가입 화면이 있다.
+- 로그인한 사용자가 현재 비밀번호를 확인한 뒤 새 비밀번호로 변경할 수 있다.
+- 비밀번호 변경 후 기존 refresh token은 무효화된다.
+- 로그인한 사용자가 자신의 계정을 탈퇴할 수 있다.
+- 회원탈퇴는 현재 결정에 따라 hard delete로 처리하고, 사용자 소유 Todo와 refresh token은 cascade로 삭제된다.
+- 인증되지 않은 요청은 실패한다.
+
+검증:
+
+- Auth application/controller test가 통과한다.
+- 관련 repository test가 통과한다.
+- `npm run check`가 통과한다.
+
+테스트 예외:
+
+- 없음. 기능 구현 task라 TDD로 진행한다.
+
+## 최근 완료 Task
+
+Web Auth 화면과 token 흐름 연결.
+
+완료 조건:
+
+- 사용자가 웹에서 회원가입, 로그인, 로그아웃, token refresh 흐름을 사용할 수 있다.
+- 로그인 화면과 회원가입 화면이 있다.
 - 로그인 후 Todo 화면에 접근할 수 있다.
-- 미로그인 사용자는 Todo 화면에서 로그인 화면으로 이동한다.
+- 미로그인 사용자는 Todo 화면 대신 로그인 화면을 본다.
 - access token은 API 요청에 포함된다.
+- 401 응답은 refresh 후 재시도한다.
 - refresh 실패 시 로그인 화면으로 이동한다.
 - 로그아웃하면 인증 상태가 해소된다.
 
@@ -70,38 +89,14 @@ Web Auth 화면과 token 흐름 연결.
 - API client test가 통과한다.
 - `npm run check`가 통과한다.
 
-테스트 예외:
-
-- 없음. 기능 구현 task라 TDD로 진행한다.
-
-## 최근 완료 Task
-
-Todo API 인증 보호와 사용자별 데이터 분리.
-
-완료 조건:
-
-- Todo API는 access token 인증을 요구한다.
-- Todo 생성 시 현재 사용자 id가 저장된다.
-- 목록 조회는 현재 사용자 Todo만 반환한다.
-- 완료 변경, 메모 수정, 삭제는 현재 사용자 Todo에만 적용된다.
-- 다른 사용자의 Todo id로 접근하면 실패한다.
-- Auth와 Todo module은 같은 DB provider를 공유한다.
-- 기존 Todo 기능 요구사항은 로그인 후 유지된다.
-
-검증:
-
-- `npm run test -- apps/api/src/todos/presentation/todos.controller.test.ts packages/domain/src/todo-use-cases.test.ts apps/api/src/auth/presentation/auth.controller.test.ts` 통과
-- `npm run check` 통과
-
 테스트:
 
-- Vitest Todo domain/controller integration test
+- Vitest Web API/component/routing test
 
 ## 다음 Task 후보
 
-1. Web Auth 화면과 token 흐름 연결
-2. Web 계정 복구와 계정 관리 화면 연결
-3. Auth E2E 확장
+1. Web 계정 복구와 계정 관리 화면 연결
+2. Auth E2E 확장
 
 ## 중단 조건
 
