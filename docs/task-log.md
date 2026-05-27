@@ -879,11 +879,43 @@ Figma 변경:
 
 커밋:
 
+- `18a3f2e test(e2e): Auth 흐름 검증 추가`
+
+남은 리스크:
+
+- 실제 SMTP provider 계정과 비밀값은 로컬/배포 환경에서 별도로 주입해야 한다.
+
+## 2026-05-27: Auth와 계정 관리 확장 phase 정리
+
+상태: Done
+
+목적:
+
+- Auth와 계정 관리 확장을 완료 상태로 정리하고 다음 작업 후보를 운영 리스크 중심으로 남긴다.
+
+변경 파일:
+
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- Auth와 계정 관리 확장 phase를 완료 상태로 갱신했다.
+- 최근 완료 task를 phase 정리로 갱신했다.
+- 다음 task 후보를 실제 SMTP provider 설정과 기존 문서 archive 검토로 좁혔다.
+
+검증:
+
+- `npm run check` 통과
+
+커밋:
+
 - 미커밋
 
 남은 리스크:
 
 - 실제 SMTP provider 계정과 비밀값은 로컬/배포 환경에서 별도로 주입해야 한다.
+- 기존 제품/설계/개발 문서 archive 여부는 별도 승인 전까지 유지한다.
 - Auth API use case와 controller는 아직 mail sender를 호출하지 않는다.
 
 ## 2026-05-27: Auth API 기본 인증 흐름 구현
