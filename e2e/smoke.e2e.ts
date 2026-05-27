@@ -9,7 +9,7 @@ test.describe("E2E smoke", () => {
 
     await page.goto("/");
 
-    await expect(page.getByRole("heading", { name: "할 일 체크리스트" })).toBeVisible();
-    await expect(page.getByRole("textbox", { name: "할 일" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "로그인" })).toBeVisible();
+    await expect(page.getByLabel("로그인 ID")).toBeVisible();
   });
 });

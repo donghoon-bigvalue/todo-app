@@ -1155,8 +1155,52 @@ Figma 변경:
 
 커밋:
 
-- 미커밋
+- `dff67ee feat(web): 계정 복구와 관리 화면 연결`
 
 남은 리스크:
 
 - Auth 전체 흐름은 아직 실제 브라우저 E2E로 검증하지 않았다.
+
+## 2026-05-27: Auth E2E 확장
+
+상태: Done
+
+목적:
+
+- 실제 브라우저에서 Auth 핵심 흐름과 사용자별 Todo 분리를 검증한다.
+
+변경 파일:
+
+- `playwright.config.ts`
+- `e2e/auth-flow.e2e.ts`
+- `e2e/smoke.e2e.ts`
+- `e2e/todo-flow.e2e.ts`
+- `apps/api/src/auth/application/auth-use-case.providers.ts`
+- `apps/api/src/auth/infrastructure/auth-config.ts`
+- `apps/api/src/auth/infrastructure/auth-config.test.ts`
+- `apps/api/src/auth/infrastructure/nodemailer-mail-sender.ts`
+- `apps/api/src/auth/infrastructure/smtp-mail-config.ts`
+- `apps/api/src/auth/infrastructure/smtp-mail-config.test.ts`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- Auth E2E에서 회원가입, 사용자별 Todo 분리, refresh 후 Todo 요청, 아이디 찾기, 비밀번호 재설정, 로그인 후 비밀번호 변경, 회원탈퇴를 검증한다.
+- 기존 Todo E2E가 인증 화면을 통과하도록 회원가입 helper를 추가했다.
+- E2E 서버에서 Nodemailer stream transport와 고정 이메일 인증 코드 `333333`을 사용할 수 있게 했다.
+- smoke E2E 기대값을 미로그인 첫 화면인 로그인 화면 기준으로 갱신했다.
+
+검증:
+
+- `npm run test -- apps/api/src/auth/infrastructure/auth-config.test.ts apps/api/src/auth/infrastructure/smtp-mail-config.test.ts apps/api/src/auth/infrastructure/nodemailer-mail-sender.test.ts` 통과
+- `npm run check` 통과
+- `npm run e2e` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- 실제 SMTP provider 계정과 비밀값은 로컬/배포 환경에서 별도로 주입해야 한다.

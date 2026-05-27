@@ -22,7 +22,8 @@ export default defineConfig({
   ],
   webServer: [
     {
-      command: "npm run api:start",
+      command:
+        "SMTP_TRANSPORT=stream AUTH_EMAIL_VERIFICATION_DIGIT=3 AUTH_ACCESS_TOKEN_EXPIRES_IN_SECONDS=1 npm run api:start",
       url: `${API_BASE_URL}/health`,
       reuseExistingServer: !process.env.CI,
       timeout: 30_000,

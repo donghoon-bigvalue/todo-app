@@ -14,12 +14,14 @@ describe("createAuthConfig", () => {
         AUTH_ACCESS_TOKEN_EXPIRES_IN_SECONDS: "600",
         AUTH_REFRESH_TOKEN_EXPIRES_IN_DAYS: "14",
         AUTH_EMAIL_VERIFICATION_EXPIRES_IN_MINUTES: "5",
+        AUTH_EMAIL_VERIFICATION_DIGIT: "3",
       }),
     ).toEqual({
       jwtSecret: "test-secret",
       accessTokenExpiresInSeconds: 600,
       refreshTokenTtlMs: 14 * 24 * 60 * 60 * 1000,
       emailVerificationTtlMs: 5 * 60 * 1000,
+      emailVerificationDigit: 3,
     });
   });
 
@@ -29,6 +31,7 @@ describe("createAuthConfig", () => {
       accessTokenExpiresInSeconds: ACCESS_TOKEN_EXPIRES_IN_SECONDS,
       refreshTokenTtlMs: REFRESH_TOKEN_EXPIRES_IN_DAYS * 24 * 60 * 60 * 1000,
       emailVerificationTtlMs: EMAIL_VERIFICATION_EXPIRES_IN_MINUTES * 60 * 1000,
+      emailVerificationDigit: null,
     });
   });
 });

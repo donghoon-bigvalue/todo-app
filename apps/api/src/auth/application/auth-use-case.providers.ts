@@ -57,7 +57,8 @@ export const authUseCaseProviders: Provider[] = [
         generateRefreshTokenId: () => createRefreshTokenId(randomUUID()),
         generateEmailVerificationId: () => createEmailVerificationId(randomUUID()),
         generateRefreshTokenValue,
-        generateEmailVerificationDigit: () => Math.floor(Math.random() * 10),
+        generateEmailVerificationDigit: () =>
+          config.emailVerificationDigit ?? Math.floor(Math.random() * 10),
         now: () => new Date(),
         refreshTokenTtlMs: config.refreshTokenTtlMs,
         emailVerificationTtlMs: config.emailVerificationTtlMs,

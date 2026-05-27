@@ -9,6 +9,7 @@ export type AuthConfig = {
   readonly accessTokenExpiresInSeconds: number;
   readonly refreshTokenTtlMs: number;
   readonly emailVerificationTtlMs: number;
+  readonly emailVerificationDigit: number | null;
 };
 
 export function createAuthConfig(env: NodeJS.ProcessEnv): AuthConfig {
@@ -31,6 +32,7 @@ export function createAuthConfig(env: NodeJS.ProcessEnv): AuthConfig {
       ) *
       60 *
       1000,
+    emailVerificationDigit: readDigit(env.AUTH_EMAIL_VERIFICATION_DIGIT),
   };
 }
 
@@ -46,4 +48,14 @@ function readPositiveInteger(value: string | undefined, fallback: number): numbe
   const parsed = Number(value);
 
   return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function readDigit(value: string | undefined): number | null {
+  if (!value) {
+    return null;
+  }
+
+  const parsed = Number(value);
+
+  return Number.isInteger(parsed) && parsed >= 0 && parsed <= 9 ? parsed : null;
 }

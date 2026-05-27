@@ -4,7 +4,7 @@ import {
   MailSendFailedError,
   type SendEmailVerificationCodeInput,
 } from "../application/mail-sender";
-import type { SmtpMailConfig } from "./smtp-mail-config";
+import type { MailConfig } from "./smtp-mail-config";
 
 export type NodemailerTransporter = {
   sendMail(message: SendMailOptions): Promise<unknown>;
@@ -34,13 +34,19 @@ export class NodemailerMailSender implements MailSender {
   }
 }
 
-export function createNodemailerMailSender(config: SmtpMailConfig): NodemailerMailSender {
-  const transporter = nodemailer.createTransport({
-    host: config.host,
-    port: config.port,
-    secure: config.secure,
-    auth: config.auth,
-  });
+export function createNodemailerMailSender(config: MailConfig): NodemailerMailSender {
+  const transporter =
+    config.transport === "stream"
+      ? nodemailer.createTransport({
+          buffer: true,
+          streamTransport: true,
+        })
+      : nodemailer.createTransport({
+          host: config.host,
+          port: config.port,
+          secure: config.secure,
+          auth: config.auth,
+        });
 
   return new NodemailerMailSender(transporter, {
     from: config.from,

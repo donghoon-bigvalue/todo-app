@@ -13,6 +13,7 @@ describe("createSmtpMailConfig", () => {
         SMTP_FROM: "Todo App <no-reply@example.com>",
       }),
     ).toEqual({
+      transport: "smtp",
       host: "smtp.example.com",
       port: 465,
       secure: true,
@@ -32,6 +33,7 @@ describe("createSmtpMailConfig", () => {
         SMTP_FROM: "Todo App <no-reply@example.com>",
       }),
     ).toEqual({
+      transport: "smtp",
       host: "smtp.example.com",
       port: 587,
       secure: false,
@@ -48,5 +50,17 @@ describe("createSmtpMailConfig", () => {
         SMTP_FROM: "Todo App <no-reply@example.com>",
       }),
     ).toThrow(SmtpMailConfigError);
+  });
+
+  it("E2E에서는 stream transport를 사용할 수 있다", () => {
+    expect(
+      createSmtpMailConfig({
+        SMTP_TRANSPORT: "stream",
+        SMTP_FROM: "Todo App <no-reply@example.com>",
+      }),
+    ).toEqual({
+      transport: "stream",
+      from: "Todo App <no-reply@example.com>",
+    });
   });
 });

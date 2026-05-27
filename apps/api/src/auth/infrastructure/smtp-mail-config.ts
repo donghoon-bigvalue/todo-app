@@ -1,4 +1,5 @@
 export type SmtpMailConfig = {
+  readonly transport: "smtp";
   readonly host: string;
   readonly port: number;
   readonly secure: boolean;
@@ -9,6 +10,13 @@ export type SmtpMailConfig = {
   readonly from: string;
 };
 
+export type StreamMailConfig = {
+  readonly transport: "stream";
+  readonly from: string;
+};
+
+export type MailConfig = SmtpMailConfig | StreamMailConfig;
+
 export class SmtpMailConfigError extends Error {
   constructor(message: string) {
     super(message);
@@ -16,7 +24,14 @@ export class SmtpMailConfigError extends Error {
   }
 }
 
-export function createSmtpMailConfig(env: NodeJS.ProcessEnv): SmtpMailConfig {
+export function createSmtpMailConfig(env: NodeJS.ProcessEnv): MailConfig {
+  if (env.SMTP_TRANSPORT === "stream") {
+    return {
+      transport: "stream",
+      from: env.SMTP_FROM?.trim() || "Todo App <no-reply@example.com>",
+    };
+  }
+
   const host = readRequiredEnv(env, "SMTP_HOST");
   const port = Number(readRequiredEnv(env, "SMTP_PORT"));
   const from = readRequiredEnv(env, "SMTP_FROM");
@@ -29,6 +44,7 @@ export function createSmtpMailConfig(env: NodeJS.ProcessEnv): SmtpMailConfig {
   const pass = env.SMTP_PASS?.trim();
 
   return {
+    transport: "smtp",
     host,
     port,
     secure: env.SMTP_SECURE === "true",
