@@ -745,9 +745,52 @@ Figma 변경:
 
 커밋:
 
-- 미커밋
+- `df8f888 docs(figma): Auth 디자인 상태 기록`
 
 남은 리스크:
 
 - Figma MCP의 page child metadata는 실제 screenshot과 다르게 비어 있는 값으로 반환될 수 있어, 이후에도 metadata와 screenshot을 함께 확인해야 한다.
 - 세부 시각 검토는 사용자가 Figma에서 직접 확인할 수 있다.
+
+## 2026-05-27: Auth domain model과 schema 정의
+
+상태: Done
+
+목적:
+
+- UI, API, DB에 의존하지 않는 사용자, 이메일 인증, refresh token 핵심 규칙을 정의한다.
+
+변경 파일:
+
+- `packages/domain/src/user.ts`
+- `packages/domain/src/auth-schemas.ts`
+- `packages/domain/src/email-verification.ts`
+- `packages/domain/src/refresh-token.ts`
+- `packages/domain/src/index.ts`
+- `docs/adr/0003-auth-account-strategy.md`
+- `docs/decisions.md`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- `User` model에 `loginId`, `nickname`, `email`, `passwordHash`, 생성일 snapshot 규칙을 추가했다.
+- 회원가입 입력 검증을 위한 `loginId`, `nickname`, `email`, `password`, `signup` Zod schema를 추가했다.
+- 이메일 인증 코드 생성, 만료, 사용 처리 규칙을 도메인 객체로 분리했다.
+- refresh token snapshot, 만료, revoke 규칙을 도메인 객체로 분리했다.
+- password hash 라이브러리는 MVP에서 `bcryptjs`를 사용하기로 ADR과 decisions에 기록했다.
+
+검증:
+
+- `npm run test -- packages/domain/src/user.test.ts packages/domain/src/auth-schemas.test.ts packages/domain/src/email-verification.test.ts packages/domain/src/refresh-token.test.ts` 통과
+- `npm run test -- packages/db/src/migrate.test.ts packages/db/src/todo-repository.test.ts apps/api/src/todos/todos.module.test.ts` 통과
+- `npm run check` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- 실제 password hashing cost와 token 서명/만료 설정은 이후 application/API task에서 결정해야 한다.
+- 저장 구조와 repository가 아직 없어 Auth API는 다음 task 이후 구현한다.

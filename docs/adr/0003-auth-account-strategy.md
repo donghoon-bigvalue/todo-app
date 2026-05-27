@@ -42,7 +42,8 @@ Todo App은 MVP와 Todo 메모 확장을 완료한 뒤, 사용자별 Todo 데이
 
 - 비밀번호는 평문으로 저장하지 않는다.
 - 비밀번호 저장에는 단방향 password hash를 사용한다.
-- 구체적인 hash 라이브러리와 비용 설정은 구현 task에서 확정한다.
+- MVP 구현에서는 `bcryptjs`를 사용한다.
+- 비용 설정은 password hash 구현 task에서 테스트 실행 시간과 보안 기준을 함께 고려해 확정한다.
 
 ### 회원탈퇴
 
@@ -99,6 +100,6 @@ Auth 확장은 기존 Todo API와 DB 구조에 사용자 소유권을 추가한�
 
 - Nodemailer
 - JWT 발급과 검증 라이브러리
-- password hash 라이브러리
+- `bcryptjs`
 
 각 dependency는 해당 구현 task에서 설치하고 검증한다.

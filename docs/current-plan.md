@@ -25,6 +25,7 @@
 - Figma 파일 참조가 복원된 파일로 갱신되었다.
 - Figma 작업 안전 규칙과 기존 스타일 유지 규칙이 보강되었다.
 - Auth Figma 디자인 업데이트가 완료되었다.
+- Auth domain model과 schema 정의가 완료되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
@@ -45,18 +46,20 @@ Auth와 계정 관리 확장 진행 중.
 
 추천 task:
 
-Auth domain model과 schema 정의.
+Auth 저장 구조와 repository 확장.
 
 목표:
 
-- UI, API, DB에 의존하지 않는 사용자, 인증, 이메일 인증, refresh token 핵심 규칙을 정의한다.
-- User model과 loginId, nickname, email, password 입력 검증 schema를 만든다.
-- 이메일 인증 코드 생성, 만료, 사용 처리 규칙을 정의한다.
-- refresh token snapshot과 만료 규칙을 정의한다.
+- 사용자, refresh token, 이메일 인증 기록을 저장하고 Todo를 사용자 소유 데이터로 분리한다.
+- users, refresh_tokens, email_verifications table을 추가한다.
+- todos table에 user id 참조를 추가한다.
+- 사용자 삭제 시 관련 Todo, refresh token, 이메일 인증 기록을 함께 삭제한다.
+- repository가 사용자, refresh token, 이메일 인증 기록의 핵심 동작을 지원한다.
 
 검증:
 
-- domain unit test와 schema unit test가 통과한다.
+- migration 테스트가 통과한다.
+- repository integration test가 통과한다.
 - `npm run check`가 통과한다.
 
 테스트 예외:
@@ -65,31 +68,31 @@ Auth domain model과 schema 정의.
 
 ## 최근 완료 Task
 
-Auth Figma 디자인 업데이트.
+Auth domain model과 schema 정의.
 
 완료 조건:
 
-- 기존 Figma 디자인을 삭제하거나 덮어쓰지 않고 Auth 컴포넌트와 화면을 추가한다.
-- 기존 디자인 토큰과 컴포넌트 스타일을 유지한다.
-- 로그인, 회원가입, 아이디 찾기, 비밀번호 재설정, 계정 관리, 회원탈퇴, 로그인 후 Todo 화면 상태가 있다.
-- 대표 노드 metadata와 screenshot으로 검증한다.
+- User model에 id, loginId, nickname, email, passwordHash, createdAt이 있다.
+- loginId, nickname, email, password 입력 검증 schema가 있다.
+- 이메일 인증 코드 생성, 만료, 사용 처리 규칙이 있다.
+- refresh token snapshot과 만료 규칙이 있다.
+- password hash 라이브러리 선택이 ADR과 decisions에 기록되어 있다.
 
 검증:
 
-- 쓰기 전 read-only inventory 확인
-- `Auth Components` node `2006:2` metadata 확인
-- `Auth Screens` node `2006:51` metadata 확인
-- screenshot으로 Components와 Screens 확인
+- `npm run test -- packages/domain/src/user.test.ts packages/domain/src/auth-schemas.test.ts packages/domain/src/email-verification.test.ts packages/domain/src/refresh-token.test.ts` 통과
+- `npm run test -- packages/db/src/migrate.test.ts packages/db/src/todo-repository.test.ts apps/api/src/todos/todos.module.test.ts` 통과
+- `npm run check` 통과
 
 테스트:
 
-- Figma 디자인 task라 코드 테스트 대상은 아니다.
+- Vitest domain unit/schema test
 
 ## 다음 Task 후보
 
-1. Auth domain model과 schema 정의
-2. Auth 저장 구조와 repository 확장
-3. Nodemailer mail sender 구현
+1. Auth 저장 구조와 repository 확장
+2. Nodemailer mail sender 구현
+3. Auth API 기본 인증 흐름 구현
 
 ## 중단 조건
 

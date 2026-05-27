@@ -161,6 +161,7 @@ Reference:
 - refresh token은 HTTP-only cookie로 전달한다.
 - refresh token 원문은 DB에 저장하지 않고 hash로 저장한다.
 - 메일 발송은 Nodemailer를 사용한다.
+- password hash는 `bcryptjs`를 사용한다.
 - 회원탈퇴는 hard delete와 관련 데이터 cascade 삭제로 처리한다.
 
 Reference:
