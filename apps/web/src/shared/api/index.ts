@@ -6,15 +6,26 @@ export {
   setAccessToken,
 } from "./api-client";
 export {
+  changePassword,
+  deleteAccount,
   login,
   logout,
   refreshAccessToken,
+  requestFindLoginIdCode,
+  requestPasswordResetCode,
+  resetPassword,
   signup,
+  verifyFindLoginIdCode,
   type AuthUserDto,
+  type ChangePasswordRequest,
+  type DeleteAccountRequest,
+  type EmailRequest,
   type LoginRequest,
   type LoginResponse,
+  type ResetPasswordRequest,
   type SignupRequest,
   type SignupResponse,
+  type VerifyFindLoginIdRequest,
 } from "./auth-api";
 export {
   ApiError,

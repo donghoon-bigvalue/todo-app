@@ -33,6 +33,7 @@
 - Todo API 인증 보호와 사용자별 데이터 분리가 완료되었다.
 - Web Auth 화면과 token 흐름 연결이 완료되었다.
 - 로그인 후 비밀번호 변경과 회원탈퇴 API 구현이 완료되었다.
+- Web 계정 복구와 계정 관리 화면 연결이 완료되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
@@ -49,9 +50,31 @@ Auth와 계정 관리 확장 진행 중.
 
 ## 현재 Task
 
-Web 계정 복구와 계정 관리 화면 연결.
+Auth E2E 확장.
 
 목표:
+
+- 실제 브라우저에서 Auth 핵심 흐름과 사용자별 Todo 분리를 검증한다.
+- 회원가입 후 로그인해 Todo를 사용할 수 있다.
+- access token 만료/401 상황에서 refresh 흐름이 동작한다.
+- 아이디 찾기와 비밀번호 재설정을 검증한다.
+- 로그인 후 비밀번호 변경 흐름을 검증한다.
+- 회원탈퇴 후 해당 계정으로 로그인할 수 없음을 검증한다.
+
+검증:
+
+- Playwright E2E test가 통과한다.
+- `npm run check`가 통과한다.
+
+테스트 예외:
+
+- 없음. 기능 구현 task라 TDD로 진행한다.
+
+## 최근 완료 Task
+
+Web 계정 복구와 계정 관리 화면 연결.
+
+완료 조건:
 
 - 사용자가 아이디 찾기, 비밀번호 재설정, 로그인 후 비밀번호 변경, 회원탈퇴를 웹에서 수행할 수 있다.
 - 아이디 찾기 화면에서 이메일 인증 후 로그인 ID를 확인할 수 있다.
@@ -65,36 +88,13 @@ Web 계정 복구와 계정 관리 화면 연결.
 - Web Auth API wrapper test가 통과한다.
 - `npm run check`가 통과한다.
 
-테스트 예외:
-
-- 없음. 기능 구현 task라 TDD로 진행한다.
-
-## 최근 완료 Task
-
-로그인 후 비밀번호 변경과 회원탈퇴 API 구현.
-
-완료 조건:
-
-- 로그인한 사용자가 현재 비밀번호를 확인한 뒤 새 비밀번호로 변경할 수 있다.
-- 비밀번호 변경 후 기존 refresh token은 무효화된다.
-- 로그인한 사용자가 비밀번호 재확인 후 자신의 계정을 탈퇴할 수 있다.
-- 회원탈퇴는 hard delete로 처리한다.
-- 회원탈퇴 후 같은 로그인 ID와 이메일로 다시 가입할 수 있다.
-- 인증되지 않은 요청은 실패한다.
-
-검증:
-
-- Auth application/controller test가 통과한다.
-- 관련 repository test가 통과한다.
-- `npm run check`가 통과한다.
-
 테스트:
 
-- Vitest Auth application/controller/repository test
+- Vitest Web API/component/routing test
 
 ## 다음 Task 후보
 
-1. Auth E2E 확장
+1. 완료 후 Auth와 계정 관리 확장 phase 정리
 
 ## 중단 조건
 

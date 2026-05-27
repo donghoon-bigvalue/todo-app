@@ -9,12 +9,18 @@ import { createQueryClient } from "../app/query-client";
 import { AuthGate } from "./auth-gate";
 
 vi.mock("../shared/api", () => ({
+  changePassword: vi.fn(),
   clearAccessToken: vi.fn(),
+  deleteAccount: vi.fn(),
   getAccessToken: vi.fn(),
   login: vi.fn(),
   logout: vi.fn(),
   refreshAccessToken: vi.fn(),
+  requestFindLoginIdCode: vi.fn(),
+  requestPasswordResetCode: vi.fn(),
+  resetPassword: vi.fn(),
   signup: vi.fn(),
+  verifyFindLoginIdCode: vi.fn(),
   createTodo: vi.fn(),
   deleteTodo: vi.fn(),
   listTodos: vi.fn(),
@@ -22,9 +28,20 @@ vi.mock("../shared/api", () => ({
   updateTodoNote: vi.fn(),
 }));
 
-const { getAccessToken, login, listTodos, logout, refreshAccessToken, signup } = await import(
-  "../shared/api"
-);
+const {
+  changePassword,
+  deleteAccount,
+  getAccessToken,
+  login,
+  listTodos,
+  logout,
+  refreshAccessToken,
+  requestFindLoginIdCode,
+  requestPasswordResetCode,
+  resetPassword,
+  signup,
+  verifyFindLoginIdCode,
+} = await import("../shared/api");
 
 function renderAuthGate() {
   render(
@@ -114,6 +131,88 @@ describe("AuthGate", () => {
     renderAuthGate();
     await userEvent.click(await screen.findByRole("button", { name: "로그아웃" }));
 
+    expect(await screen.findByRole("heading", { name: "로그인" })).toBeInTheDocument();
+  });
+
+  it("이메일 인증으로 로그인 ID를 찾는다", async () => {
+    vi.mocked(getAccessToken).mockReturnValue(null);
+    vi.mocked(refreshAccessToken).mockRejectedValue(new Error("refresh failed"));
+    vi.mocked(requestFindLoginIdCode).mockResolvedValue(undefined);
+    vi.mocked(verifyFindLoginIdCode).mockResolvedValue({ loginId: "todo_user" });
+
+    renderAuthGate();
+    await userEvent.click(await screen.findByRole("button", { name: "아이디 찾기" }));
+    await userEvent.type(screen.getByLabelText("이메일"), "user@example.com");
+    await userEvent.click(screen.getByRole("button", { name: "인증 코드 발송" }));
+    await userEvent.type(screen.getByLabelText("인증 코드"), "333333");
+    await userEvent.click(screen.getByRole("button", { name: "로그인 ID 확인" }));
+
+    expect(requestFindLoginIdCode).toHaveBeenCalledWith({ email: "user@example.com" });
+    expect(verifyFindLoginIdCode).toHaveBeenCalledWith({
+      email: "user@example.com",
+      code: "333333",
+    });
+    expect(await screen.findByText("로그인 ID: todo_user")).toBeInTheDocument();
+  });
+
+  it("이메일 인증으로 비밀번호를 재설정한다", async () => {
+    vi.mocked(getAccessToken).mockReturnValue(null);
+    vi.mocked(refreshAccessToken).mockRejectedValue(new Error("refresh failed"));
+    vi.mocked(requestPasswordResetCode).mockResolvedValue(undefined);
+    vi.mocked(resetPassword).mockResolvedValue(undefined);
+
+    renderAuthGate();
+    await userEvent.click(await screen.findByRole("button", { name: "비밀번호 재설정" }));
+    await userEvent.type(screen.getByLabelText("이메일"), "user@example.com");
+    await userEvent.click(screen.getByRole("button", { name: "인증 코드 발송" }));
+    await userEvent.type(screen.getByLabelText("인증 코드"), "333333");
+    await userEvent.type(screen.getByLabelText("새 비밀번호"), "new-password1");
+    await userEvent.type(screen.getByLabelText("새 비밀번호 확인"), "new-password1");
+    await userEvent.click(screen.getByRole("button", { name: "비밀번호 변경" }));
+
+    expect(requestPasswordResetCode).toHaveBeenCalledWith({ email: "user@example.com" });
+    expect(resetPassword).toHaveBeenCalledWith({
+      email: "user@example.com",
+      code: "333333",
+      password: "new-password1",
+      passwordConfirm: "new-password1",
+    });
+    expect(await screen.findByText("비밀번호가 변경되었습니다.")).toBeInTheDocument();
+  });
+
+  it("로그인 후 비밀번호를 변경하면 로그인 화면으로 돌아간다", async () => {
+    vi.mocked(getAccessToken).mockReturnValue("access-token");
+    vi.mocked(listTodos).mockResolvedValue([]);
+    vi.mocked(changePassword).mockResolvedValue(undefined);
+    vi.mocked(refreshAccessToken).mockRejectedValue(new Error("refresh failed"));
+
+    renderAuthGate();
+    await userEvent.click(await screen.findByRole("button", { name: "계정 관리" }));
+    await userEvent.type(screen.getByLabelText("현재 비밀번호"), "password1");
+    await userEvent.type(screen.getByLabelText("새 비밀번호"), "new-password1");
+    await userEvent.type(screen.getByLabelText("새 비밀번호 확인"), "new-password1");
+    await userEvent.click(screen.getByRole("button", { name: "비밀번호 변경" }));
+
+    expect(changePassword).toHaveBeenCalledWith({
+      currentPassword: "password1",
+      password: "new-password1",
+      passwordConfirm: "new-password1",
+    });
+    expect(await screen.findByRole("heading", { name: "로그인" })).toBeInTheDocument();
+  });
+
+  it("회원탈퇴 후 로그인 화면으로 돌아간다", async () => {
+    vi.mocked(getAccessToken).mockReturnValue("access-token");
+    vi.mocked(listTodos).mockResolvedValue([]);
+    vi.mocked(deleteAccount).mockResolvedValue(undefined);
+    vi.mocked(refreshAccessToken).mockRejectedValue(new Error("refresh failed"));
+
+    renderAuthGate();
+    await userEvent.click(await screen.findByRole("button", { name: "계정 관리" }));
+    await userEvent.type(screen.getByLabelText("탈퇴 확인 비밀번호"), "password1");
+    await userEvent.click(screen.getByRole("button", { name: "회원탈퇴" }));
+
+    expect(deleteAccount).toHaveBeenCalledWith({ password: "password1" });
     expect(await screen.findByRole("heading", { name: "로그인" })).toBeInTheDocument();
   });
 });

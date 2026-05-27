@@ -1,7 +1,18 @@
 import { AxiosError, type AxiosAdapter, type AxiosResponse } from "axios";
 import { beforeEach, describe, expect, it } from "vitest";
 import { clearAccessToken, createApiClient, getAccessToken, setAccessToken } from "./api-client";
-import { login, logout, refreshAccessToken, signup } from "./auth-api";
+import {
+  changePassword,
+  deleteAccount,
+  login,
+  logout,
+  refreshAccessToken,
+  requestFindLoginIdCode,
+  requestPasswordResetCode,
+  resetPassword,
+  signup,
+  verifyFindLoginIdCode,
+} from "./auth-api";
 
 function createMockAdapter(response: AxiosAdapter): AxiosAdapter {
   return response;
@@ -107,6 +118,110 @@ describe("auth-api", () => {
     });
 
     await logout(client);
+
+    expect(getAccessToken()).toBeNull();
+  });
+
+  it("아이디 찾기 인증 코드를 요청하고 확인한다", async () => {
+    const requestedUrls: string[] = [];
+    const client = createApiClient();
+    client.defaults.adapter = createMockAdapter(async (config) => {
+      requestedUrls.push(config.url ?? "");
+
+      return {
+        config,
+        data:
+          config.url === "/auth/find-login-id/verify" ? { loginId: "todo_user" } : { sent: true },
+        headers: {},
+        status: 200,
+        statusText: "OK",
+      } as AxiosResponse;
+    });
+
+    await requestFindLoginIdCode({ email: "user@example.com" }, client);
+    await expect(
+      verifyFindLoginIdCode({ email: "user@example.com", code: "333333" }, client),
+    ).resolves.toEqual({ loginId: "todo_user" });
+    expect(requestedUrls).toEqual([
+      "/auth/find-login-id/request-code",
+      "/auth/find-login-id/verify",
+    ]);
+  });
+
+  it("비밀번호 재설정 인증 코드를 요청하고 새 비밀번호를 저장한다", async () => {
+    const requestedUrls: string[] = [];
+    const client = createApiClient();
+    client.defaults.adapter = createMockAdapter(async (config) => {
+      requestedUrls.push(config.url ?? "");
+
+      return {
+        config,
+        data: config.url === "/auth/reset-password/request-code" ? { sent: true } : undefined,
+        headers: {},
+        status: config.url === "/auth/reset-password/verify" ? 204 : 200,
+        statusText: "OK",
+      } as AxiosResponse;
+    });
+
+    await requestPasswordResetCode({ email: "user@example.com" }, client);
+    await resetPassword(
+      {
+        email: "user@example.com",
+        code: "333333",
+        password: "new-password1",
+        passwordConfirm: "new-password1",
+      },
+      client,
+    );
+    expect(requestedUrls).toEqual([
+      "/auth/reset-password/request-code",
+      "/auth/reset-password/verify",
+    ]);
+  });
+
+  it("로그인 후 비밀번호를 변경하면 access token을 지운다", async () => {
+    setAccessToken("access-token");
+    const client = createApiClient();
+    client.defaults.adapter = createMockAdapter(async (config) => {
+      expect(config.url).toBe("/auth/password");
+
+      return {
+        config,
+        data: undefined,
+        headers: {},
+        status: 204,
+        statusText: "No Content",
+      } as AxiosResponse;
+    });
+
+    await changePassword(
+      {
+        currentPassword: "password1",
+        password: "new-password1",
+        passwordConfirm: "new-password1",
+      },
+      client,
+    );
+
+    expect(getAccessToken()).toBeNull();
+  });
+
+  it("회원탈퇴하면 access token을 지운다", async () => {
+    setAccessToken("access-token");
+    const client = createApiClient();
+    client.defaults.adapter = createMockAdapter(async (config) => {
+      expect(config.url).toBe("/auth/account");
+
+      return {
+        config,
+        data: undefined,
+        headers: {},
+        status: 204,
+        statusText: "No Content",
+      } as AxiosResponse;
+    });
+
+    await deleteAccount({ password: "password1" }, client);
 
     expect(getAccessToken()).toBeNull();
   });

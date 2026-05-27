@@ -1115,8 +1115,48 @@ Figma 변경:
 
 커밋:
 
-- 미커밋
+- `a66beb6 feat(api): 계정 관리 API 추가`
 
 남은 리스크:
 
 - Web 화면에서는 아직 아이디 찾기, 비밀번호 재설정, 로그인 후 비밀번호 변경, 회원탈퇴 API를 호출하지 않는다.
+
+## 2026-05-27: Web 계정 복구와 계정 관리 화면 연결
+
+상태: Done
+
+목적:
+
+- 사용자가 웹에서 아이디 찾기, 비밀번호 재설정, 로그인 후 비밀번호 변경, 회원탈퇴를 수행할 수 있게 한다.
+
+변경 파일:
+
+- `apps/web/src/pages/auth-gate.tsx`
+- `apps/web/src/pages/auth-gate.test.tsx`
+- `apps/web/src/pages/todo-page.tsx`
+- `apps/web/src/shared/api/auth-api.ts`
+- `apps/web/src/shared/api/auth-api.test.ts`
+- `apps/web/src/shared/api/index.ts`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- 로그인 화면에 아이디 찾기와 비밀번호 재설정 흐름을 추가했다.
+- 이메일 인증 코드 요청/확인, 비밀번호 재설정, 비밀번호 변경, 회원탈퇴 Web API wrapper를 추가했다.
+- Todo 화면에서 계정 관리 화면으로 이동할 수 있게 했다.
+- 계정 관리 화면에서 로그인 후 비밀번호 변경과 회원탈퇴를 실행하게 했다.
+- 비밀번호 변경 또는 회원탈퇴 후 access token을 지우고 로그인 화면으로 이동하게 했다.
+
+검증:
+
+- `npm run test -- apps/web/src/shared/api/auth-api.test.ts apps/web/src/pages/auth-gate.test.tsx apps/web/src/pages/todo-page.test.tsx apps/web/src/app/app.test.tsx` 통과
+- `npm run check` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- Auth 전체 흐름은 아직 실제 브라우저 E2E로 검증하지 않았다.

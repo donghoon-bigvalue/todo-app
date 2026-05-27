@@ -31,6 +31,29 @@ export type LoginResponse = {
   readonly user: AuthUserDto;
 };
 
+export type EmailRequest = {
+  readonly email: string;
+};
+
+export type VerifyFindLoginIdRequest = EmailRequest & {
+  readonly code: string;
+};
+
+export type ResetPasswordRequest = VerifyFindLoginIdRequest & {
+  readonly password: string;
+  readonly passwordConfirm: string;
+};
+
+export type ChangePasswordRequest = {
+  readonly currentPassword: string;
+  readonly password: string;
+  readonly passwordConfirm: string;
+};
+
+export type DeleteAccountRequest = {
+  readonly password: string;
+};
+
 export async function signup(
   input: SignupRequest,
   client: AxiosInstance = apiClient,
@@ -70,6 +93,61 @@ export async function refreshAccessToken(client: AxiosInstance = apiClient): Pro
 export async function logout(client: AxiosInstance = apiClient): Promise<void> {
   try {
     await client.post("/auth/logout");
+  } finally {
+    clearAccessToken();
+  }
+}
+
+export async function requestFindLoginIdCode(
+  input: EmailRequest,
+  client: AxiosInstance = apiClient,
+): Promise<void> {
+  await client.post("/auth/find-login-id/request-code", input);
+}
+
+export async function verifyFindLoginIdCode(
+  input: VerifyFindLoginIdRequest,
+  client: AxiosInstance = apiClient,
+): Promise<{ readonly loginId: string }> {
+  const response = await client.post<{ readonly loginId: string }>(
+    "/auth/find-login-id/verify",
+    input,
+  );
+
+  return response.data;
+}
+
+export async function requestPasswordResetCode(
+  input: EmailRequest,
+  client: AxiosInstance = apiClient,
+): Promise<void> {
+  await client.post("/auth/reset-password/request-code", input);
+}
+
+export async function resetPassword(
+  input: ResetPasswordRequest,
+  client: AxiosInstance = apiClient,
+): Promise<void> {
+  await client.post("/auth/reset-password/verify", input);
+}
+
+export async function changePassword(
+  input: ChangePasswordRequest,
+  client: AxiosInstance = apiClient,
+): Promise<void> {
+  try {
+    await client.patch("/auth/password", input);
+  } finally {
+    clearAccessToken();
+  }
+}
+
+export async function deleteAccount(
+  input: DeleteAccountRequest,
+  client: AxiosInstance = apiClient,
+): Promise<void> {
+  try {
+    await client.delete("/auth/account", { data: input });
   } finally {
     clearAccessToken();
   }

@@ -19,7 +19,13 @@ const todoFormSchema = z.object({
 
 type TodoFormValues = z.infer<typeof todoFormSchema>;
 
-export function TodoPage({ onLogout }: { readonly onLogout?: () => void | Promise<void> }) {
+export function TodoPage({
+  onLogout,
+  onManageAccount,
+}: {
+  readonly onLogout?: () => void | Promise<void>;
+  readonly onManageAccount?: () => void;
+}) {
   const queryClient = useQueryClient();
   const [editingNoteTodoId, setEditingNoteTodoId] = useState<string | null>(null);
   const [noteDraft, setNoteDraft] = useState("");
@@ -90,11 +96,18 @@ export function TodoPage({ onLogout }: { readonly onLogout?: () => void | Promis
             <h1 className="text-2xl font-semibold">할 일 체크리스트</h1>
             <p className="text-sm text-[#6B7280]">남은 할 일 {remainingCount}개</p>
           </div>
-          {onLogout ? (
-            <Button onClick={() => void onLogout()} size="sm">
-              로그아웃
-            </Button>
-          ) : null}
+          <div className="flex shrink-0 gap-2">
+            {onManageAccount ? (
+              <Button onClick={onManageAccount} size="sm">
+                계정 관리
+              </Button>
+            ) : null}
+            {onLogout ? (
+              <Button onClick={() => void onLogout()} size="sm">
+                로그아웃
+              </Button>
+            ) : null}
+          </div>
         </header>
 
         <form
