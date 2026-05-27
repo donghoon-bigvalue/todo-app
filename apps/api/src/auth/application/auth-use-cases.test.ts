@@ -1,9 +1,13 @@
 import {
   RefreshToken,
   User,
+  type EmailVerification,
+  type EmailVerificationPurpose,
+  type EmailVerificationRepository,
   type RefreshTokenRepository,
   type UserId,
   type UserRepository,
+  createEmailVerificationId,
   createRefreshTokenId,
   createUserId,
 } from "@todo-app/domain";
@@ -15,12 +19,18 @@ import {
   LoginUseCase,
   LogoutUseCase,
   RefreshAccessTokenUseCase,
+  RequestFindLoginIdCodeUseCase,
+  RequestPasswordResetCodeUseCase,
+  ResetPasswordUseCase,
   SignupUseCase,
+  UserEmailNotFoundError,
+  VerifyFindLoginIdCodeUseCase,
   type AuthUseCaseDependencies,
   type PasswordHasher,
   type RefreshTokenHasher,
   type AccessTokenIssuer,
 } from "./auth-use-cases";
+import type { MailSender } from "./mail-sender";
 
 describe("Auth use cases", () => {
   it("회원가입 시 사용자 정보를 검증하고 비밀번호 hash를 저장한다", async () => {
@@ -163,30 +173,178 @@ describe("Auth use cases", () => {
       new Date("2026-05-27T08:00:00.000Z"),
     );
   });
+
+  it("아이디 찾기 인증 코드를 생성하고 메일로 발송한다", async () => {
+    const userRepository = new FakeUserRepository([createUser()]);
+    const emailVerificationRepository = new FakeEmailVerificationRepository();
+    const dependencies = createDependencies();
+    const useCase = new RequestFindLoginIdCodeUseCase(
+      userRepository,
+      emailVerificationRepository,
+      dependencies,
+    );
+
+    await useCase.execute({ email: " USER@example.COM " });
+
+    expect(emailVerificationRepository.verifications[0]?.toSnapshot()).toMatchObject({
+      id: createEmailVerificationId("email-verification-1"),
+      email: "user@example.com",
+      code: "333333",
+      purpose: "find-login-id",
+      expiresAt: new Date("2026-05-27T08:10:00.000Z"),
+    });
+    expect(dependencies.mailSender.sentMessages).toEqual([
+      {
+        to: "user@example.com",
+        code: "333333",
+        purpose: "find-login-id",
+      },
+    ]);
+  });
+
+  it("이메일 인증 후 로그인 ID를 반환한다", async () => {
+    const userRepository = new FakeUserRepository([createUser()]);
+    const emailVerificationRepository = new FakeEmailVerificationRepository();
+    const dependencies = createDependencies();
+    await new RequestFindLoginIdCodeUseCase(
+      userRepository,
+      emailVerificationRepository,
+      dependencies,
+    ).execute({ email: "user@example.com" });
+    const useCase = new VerifyFindLoginIdCodeUseCase(
+      userRepository,
+      emailVerificationRepository,
+      dependencies,
+    );
+
+    await expect(useCase.execute({ email: "user@example.com", code: "333333" })).resolves.toEqual({
+      loginId: "todo_user",
+    });
+    expect(emailVerificationRepository.verifications[0]?.isUsed()).toBe(true);
+  });
+
+  it("비밀번호 재설정 인증 코드를 생성하고 메일로 발송한다", async () => {
+    const userRepository = new FakeUserRepository([createUser()]);
+    const emailVerificationRepository = new FakeEmailVerificationRepository();
+    const dependencies = createDependencies();
+    const useCase = new RequestPasswordResetCodeUseCase(
+      userRepository,
+      emailVerificationRepository,
+      dependencies,
+    );
+
+    await useCase.execute({ email: "user@example.com" });
+
+    expect(emailVerificationRepository.verifications[0]?.toSnapshot()).toMatchObject({
+      email: "user@example.com",
+      code: "333333",
+      purpose: "reset-password",
+    });
+    expect(dependencies.mailSender.sentMessages[0]).toMatchObject({
+      to: "user@example.com",
+      code: "333333",
+      purpose: "reset-password",
+    });
+  });
+
+  it("이메일 인증 후 비밀번호를 재설정하고 기존 refresh token을 무효화한다", async () => {
+    const user = createUser();
+    const userRepository = new FakeUserRepository([user]);
+    const refreshTokenRepository = new FakeRefreshTokenRepository([
+      RefreshToken.create({
+        id: createRefreshTokenId("refresh-token-1"),
+        userId: createUserId("user-1"),
+        tokenHash: "refresh-hash:refresh-token-value",
+        createdAt: new Date("2026-05-27T08:00:00.000Z"),
+        expiresAt: new Date("2026-06-26T08:00:00.000Z"),
+      }),
+    ]);
+    const emailVerificationRepository = new FakeEmailVerificationRepository();
+    const dependencies = createDependencies();
+    await new RequestPasswordResetCodeUseCase(
+      userRepository,
+      emailVerificationRepository,
+      dependencies,
+    ).execute({ email: "user@example.com" });
+    const useCase = new ResetPasswordUseCase(
+      userRepository,
+      refreshTokenRepository,
+      emailVerificationRepository,
+      dependencies,
+    );
+
+    await useCase.execute({
+      email: "user@example.com",
+      code: "333333",
+      password: "new-password1",
+      passwordConfirm: "new-password1",
+    });
+
+    await expect(userRepository.findByEmail("user@example.com")).resolves.toMatchObject({
+      passwordHash: "hashed:new-password1",
+    });
+    expect(refreshTokenRepository.tokens[0]?.revokedAt).toEqual(
+      new Date("2026-05-27T08:00:00.000Z"),
+    );
+  });
+
+  it("가입되지 않은 이메일로 인증 코드를 요청할 수 없다", async () => {
+    const useCase = new RequestFindLoginIdCodeUseCase(
+      new FakeUserRepository(),
+      new FakeEmailVerificationRepository(),
+      createDependencies(),
+    );
+
+    await expect(useCase.execute({ email: "missing@example.com" })).rejects.toThrow(
+      UserEmailNotFoundError,
+    );
+  });
 });
 
-function createUser(): User {
+function createUser(passwordHash = "hashed:password1"): User {
   return User.create({
     id: createUserId("user-1"),
     loginId: "todo_user",
     nickname: "도훈",
     email: "user@example.com",
-    passwordHash: "hashed:password1",
+    passwordHash,
     createdAt: new Date("2026-05-27T08:00:00.000Z"),
   });
 }
 
-function createDependencies(): AuthUseCaseDependencies {
+function createDependencies(): AuthUseCaseDependencies & { readonly mailSender: FakeMailSender } {
+  const mailSender = new FakeMailSender();
+
   return {
     generateUserId: () => createUserId("user-1"),
     generateRefreshTokenId: () => createRefreshTokenId("refresh-token-1"),
+    generateEmailVerificationId: () => createEmailVerificationId("email-verification-1"),
     generateRefreshTokenValue: () => "refresh-token-value",
+    generateEmailVerificationDigit: () => 3,
     now: () => new Date("2026-05-27T08:00:00.000Z"),
     refreshTokenTtlMs: 30 * 24 * 60 * 60 * 1000,
+    emailVerificationTtlMs: 10 * 60 * 1000,
     passwordHasher: new FakePasswordHasher(),
     refreshTokenHasher: new FakeRefreshTokenHasher(),
     accessTokenIssuer: new FakeAccessTokenIssuer(),
+    mailSender,
   };
+}
+
+class FakeMailSender implements MailSender {
+  readonly sentMessages: Array<{
+    readonly to: string;
+    readonly code: string;
+    readonly purpose: EmailVerificationPurpose;
+  }> = [];
+
+  async sendEmailVerificationCode(input: {
+    readonly to: string;
+    readonly code: string;
+    readonly purpose: EmailVerificationPurpose;
+  }): Promise<void> {
+    this.sentMessages.push(input);
+  }
 }
 
 class FakePasswordHasher implements PasswordHasher {
@@ -265,5 +423,38 @@ class FakeRefreshTokenRepository implements RefreshTokenRepository {
         token.revoke(revokedAt);
       }
     }
+  }
+}
+
+class FakeEmailVerificationRepository implements EmailVerificationRepository {
+  constructor(readonly verifications: EmailVerification[] = []) {}
+
+  async findLatestByEmailAndPurpose(
+    email: string,
+    purpose: EmailVerificationPurpose,
+  ): Promise<EmailVerification | null> {
+    return (
+      this.verifications
+        .filter((verification) => {
+          const snapshot = verification.toSnapshot();
+
+          return snapshot.email === email && snapshot.purpose === purpose;
+        })
+        .sort(
+          (left, right) =>
+            right.toSnapshot().createdAt.getTime() - left.toSnapshot().createdAt.getTime(),
+        )[0] ?? null
+    );
+  }
+
+  async create(emailVerification: EmailVerification): Promise<void> {
+    this.verifications.push(emailVerification);
+  }
+
+  async update(emailVerification: EmailVerification): Promise<void> {
+    const index = this.verifications.findIndex(
+      (verification) => verification.toSnapshot().id === emailVerification.toSnapshot().id,
+    );
+    this.verifications[index] = emailVerification;
   }
 }

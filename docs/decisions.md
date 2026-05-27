@@ -165,6 +165,7 @@ Reference:
 - `bcryptjs` 기본 cost는 `12`를 사용한다.
 - access token 기본 만료 시간은 15분으로 한다.
 - refresh token 기본 만료 시간은 30일로 한다.
+- 이메일 인증 코드 기본 만료 시간은 10분으로 한다.
 - 회원탈퇴는 hard delete와 관련 데이터 cascade 삭제로 처리한다.
 
 Reference:

@@ -29,6 +29,7 @@
 - Auth 저장 구조와 repository 확장이 완료되었다.
 - Nodemailer mail sender 구현이 완료되었다.
 - Auth API 기본 인증 흐름 구현이 완료되었다.
+- 아이디 찾기와 비밀번호 재설정 API 구현이 완료되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
@@ -49,23 +50,23 @@ Auth와 계정 관리 확장 진행 중.
 
 추천 task:
 
-아이디 찾기와 비밀번호 재설정 API 구현.
+Todo API 인증 보호와 사용자별 데이터 분리.
 
 목표:
 
-- 이메일 인증 기반 아이디 찾기와 비밀번호 재설정 API를 제공한다.
-- 아이디 찾기 인증 코드 요청 API가 있다.
-- 아이디 찾기 인증 코드 확인 API가 있다.
-- 인증 성공 후 로그인 ID를 반환한다.
-- 비밀번호 재설정 인증 코드 요청 API가 있다.
-- 비밀번호 재설정 인증 코드 확인 API가 있다.
-- 인증 성공 후 새 비밀번호로 변경할 수 있다.
-- 비밀번호 재설정 후 기존 refresh token이 무효화된다.
+- 기존 Todo API가 로그인한 사용자의 Todo만 다루도록 확장한다.
+- Todo API는 access token 인증을 요구한다.
+- Todo 생성 시 현재 사용자 id가 저장된다.
+- 목록 조회는 현재 사용자 Todo만 반환한다.
+- 완료 변경, 메모 수정, 삭제는 현재 사용자 Todo에만 적용된다.
+- 다른 사용자의 Todo id로 접근하면 실패한다.
+- 기존 Todo 기능 요구사항은 로그인 후 유지된다.
 
 검증:
 
 - application test가 통과한다.
 - controller test가 통과한다.
+- 기존 Todo page component test가 필요한 범위에서 갱신되어 통과한다.
 - `npm run check`가 통과한다.
 
 테스트 예외:
@@ -74,32 +75,33 @@ Auth와 계정 관리 확장 진행 중.
 
 ## 최근 완료 Task
 
-Auth API 기본 인증 흐름 구현.
+아이디 찾기와 비밀번호 재설정 API 구현.
 
 완료 조건:
 
-- 회원가입 API가 있다.
-- 로그인 API가 access token을 응답 body로 반환한다.
-- 로그인 API가 refresh token을 HTTP-only cookie로 설정한다.
-- refresh API가 cookie의 refresh token으로 access token을 재발급한다.
-- 로그아웃 API가 refresh token을 무효화하고 cookie를 정리한다.
-- 요청 검증 실패와 인증 실패가 명확한 에러 응답을 반환한다.
-- password hash cost와 token 만료 기본값이 문서화되어 있다.
+- 아이디 찾기 인증 코드 요청 API가 있다.
+- 아이디 찾기 인증 코드 확인 API가 있다.
+- 인증 성공 후 로그인 ID를 반환한다.
+- 비밀번호 재설정 인증 코드 요청 API가 있다.
+- 비밀번호 재설정 인증 코드 확인 API가 있다.
+- 인증 성공 후 새 비밀번호로 변경할 수 있다.
+- 비밀번호 재설정 후 기존 refresh token이 무효화된다.
+- 이메일 인증 코드 만료 기본값이 문서화되어 있다.
 
 검증:
 
-- `npm run test -- apps/api/src/auth/application/auth-use-cases.test.ts apps/api/src/auth/presentation/auth.controller.test.ts apps/api/src/auth/infrastructure/auth-config.test.ts apps/api/src/auth/infrastructure/jwt-access-token-issuer.test.ts apps/api/src/auth/infrastructure/refresh-token-hasher.test.ts apps/api/src/auth/infrastructure/bcrypt-password-hasher.test.ts` 통과
+- `npm run test -- apps/api/src/auth/application/auth-use-cases.test.ts apps/api/src/auth/presentation/auth.controller.test.ts apps/api/src/auth/infrastructure/auth-config.test.ts` 통과
 - `npm run check` 통과
 
 테스트:
 
-- Vitest Auth application/controller/infrastructure unit test
+- Vitest Auth application/controller/config test
 
 ## 다음 Task 후보
 
-1. 아이디 찾기와 비밀번호 재설정 API 구현
-2. Todo API 인증 보호와 사용자별 데이터 분리
-3. Web Auth 화면과 token 흐름 연결
+1. Todo API 인증 보호와 사용자별 데이터 분리
+2. Web Auth 화면과 token 흐름 연결
+3. Web 계정 복구와 계정 관리 화면 연결
 
 ## 중단 조건
 

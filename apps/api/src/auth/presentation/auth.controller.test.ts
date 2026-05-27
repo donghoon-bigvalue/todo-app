@@ -1,6 +1,6 @@
 import { BadRequestException, UnauthorizedException } from "@nestjs/common";
 import { Test, type TestingModule } from "@nestjs/testing";
-import { createRefreshTokenId, createUserId } from "@todo-app/domain";
+import { createEmailVerificationId, createRefreshTokenId, createUserId } from "@todo-app/domain";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { AuthModule } from "../auth.module";
 import {
@@ -14,18 +14,26 @@ import { AuthController } from "./auth.controller";
 describe("AuthController", () => {
   let module: TestingModule;
   let controller: AuthController;
+  let nextRefreshTokenId: number;
+  let nextRefreshTokenValue: number;
 
   beforeEach(async () => {
+    nextRefreshTokenId = 1;
+    nextRefreshTokenValue = 1;
+
     module = await Test.createTestingModule({
       imports: [AuthModule],
     })
       .overrideProvider(AUTH_USE_CASE_DEPENDENCIES)
       .useValue({
         generateUserId: () => createUserId("user-1"),
-        generateRefreshTokenId: () => createRefreshTokenId("refresh-token-1"),
-        generateRefreshTokenValue: () => "refresh-token-value",
+        generateRefreshTokenId: () => createRefreshTokenId(`refresh-token-${nextRefreshTokenId++}`),
+        generateEmailVerificationId: () => createEmailVerificationId("email-verification-1"),
+        generateRefreshTokenValue: () => `refresh-token-value-${nextRefreshTokenValue++}`,
+        generateEmailVerificationDigit: () => 3,
         now: () => new Date("2026-05-27T08:00:00.000Z"),
         refreshTokenTtlMs: 30 * 24 * 60 * 60 * 1000,
+        emailVerificationTtlMs: 10 * 60 * 1000,
         passwordHasher: {
           hash: async (password: string) => `hashed:${password}`,
           verify: async (password: string, passwordHash: string) =>
@@ -36,6 +44,9 @@ describe("AuthController", () => {
         },
         accessTokenIssuer: {
           issue: ({ userId }: { readonly userId: string }) => `access:${userId}`,
+        },
+        mailSender: {
+          sendEmailVerificationCode: async () => {},
         },
       } satisfies AuthUseCaseDependencies)
       .compile();
@@ -88,7 +99,7 @@ describe("AuthController", () => {
     });
     expect(response.cookies[0]).toMatchObject({
       name: REFRESH_TOKEN_COOKIE_NAME,
-      value: "refresh-token-value",
+      value: "refresh-token-value-1",
       options: {
         httpOnly: true,
         sameSite: "strict",
@@ -109,7 +120,7 @@ describe("AuthController", () => {
     await controller.login({ loginId: "todo_user", password: "password1" }, response);
 
     await expect(
-      controller.refresh(`${REFRESH_TOKEN_COOKIE_NAME}=refresh-token-value`),
+      controller.refresh(`${REFRESH_TOKEN_COOKIE_NAME}=refresh-token-value-1`),
     ).resolves.toEqual({
       accessToken: "access:user-1",
     });
@@ -128,11 +139,11 @@ describe("AuthController", () => {
     const logoutResponse = createCookieResponse();
 
     await expect(
-      controller.logout(`${REFRESH_TOKEN_COOKIE_NAME}=refresh-token-value`, logoutResponse),
+      controller.logout(`${REFRESH_TOKEN_COOKIE_NAME}=refresh-token-value-1`, logoutResponse),
     ).resolves.toBeUndefined();
     expect(logoutResponse.clearedCookies).toEqual([REFRESH_TOKEN_COOKIE_NAME]);
     await expect(
-      controller.refresh(`${REFRESH_TOKEN_COOKIE_NAME}=refresh-token-value`),
+      controller.refresh(`${REFRESH_TOKEN_COOKIE_NAME}=refresh-token-value-1`),
     ).rejects.toThrow(UnauthorizedException);
   });
 
@@ -142,6 +153,64 @@ describe("AuthController", () => {
       controller.login({ loginId: "missing", password: "password1" }, createCookieResponse()),
     ).rejects.toThrow(UnauthorizedException);
     await expect(controller.refresh(undefined)).rejects.toThrow(UnauthorizedException);
+  });
+
+  it("이메일 인증으로 로그인 ID를 찾는다", async () => {
+    await controller.signup({
+      loginId: "todo_user",
+      nickname: "도훈",
+      email: "user@example.com",
+      password: "password1",
+      passwordConfirm: "password1",
+    });
+
+    await expect(controller.requestFindLoginIdCode({ email: "user@example.com" })).resolves.toEqual(
+      {
+        sent: true,
+      },
+    );
+    await expect(
+      controller.verifyFindLoginIdCode({ email: "user@example.com", code: "333333" }),
+    ).resolves.toEqual({
+      loginId: "todo_user",
+    });
+  });
+
+  it("이메일 인증으로 비밀번호를 재설정한다", async () => {
+    await controller.signup({
+      loginId: "todo_user",
+      nickname: "도훈",
+      email: "user@example.com",
+      password: "password1",
+      passwordConfirm: "password1",
+    });
+    const loginResponse = createCookieResponse();
+    await controller.login({ loginId: "todo_user", password: "password1" }, loginResponse);
+
+    await expect(
+      controller.requestPasswordResetCode({ email: "user@example.com" }),
+    ).resolves.toEqual({
+      sent: true,
+    });
+    await expect(
+      controller.resetPassword({
+        email: "user@example.com",
+        code: "333333",
+        password: "new-password1",
+        passwordConfirm: "new-password1",
+      }),
+    ).resolves.toBeUndefined();
+    await expect(
+      controller.login({ loginId: "todo_user", password: "password1" }, createCookieResponse()),
+    ).rejects.toThrow(UnauthorizedException);
+    await expect(
+      controller.login({ loginId: "todo_user", password: "new-password1" }, createCookieResponse()),
+    ).resolves.toMatchObject({
+      accessToken: "access:user-1",
+    });
+    await expect(
+      controller.refresh(`${REFRESH_TOKEN_COOKIE_NAME}=refresh-token-value-1`),
+    ).rejects.toThrow(UnauthorizedException);
   });
 });
 

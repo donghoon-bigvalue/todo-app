@@ -33,7 +33,7 @@
 
 커밋:
 
-- 미커밋
+- `4460eaf feat(api): Nodemailer 메일 발송기 추가`
 
 남은 리스크:
 
@@ -64,7 +64,7 @@
 
 커밋:
 
-- 미커밋
+- `a0d3f6c feat(api): Auth 기본 인증 API 추가`
 
 남은 리스크:
 
@@ -940,3 +940,50 @@ Figma 변경:
 
 - Auth module과 Todo module의 DB provider는 아직 분리되어 있다. Task 41에서 Todo API 인증 보호와 사용자별 데이터 분리를 하며 DB provider 공유 구조로 정리해야 한다.
 - 아이디 찾기, 비밀번호 재설정, 로그인 후 비밀번호 변경, 회원탈퇴 API는 이후 task에서 구현한다.
+
+## 2026-05-27: 아이디 찾기와 비밀번호 재설정 API 구현
+
+상태: Done
+
+목적:
+
+- 이메일 인증 기반 아이디 찾기와 비밀번호 재설정 API를 제공한다.
+
+변경 파일:
+
+- `apps/api/src/auth/application/auth-use-cases.ts`
+- `apps/api/src/auth/application/auth-use-case.providers.ts`
+- `apps/api/src/auth/application/auth-use-cases.test.ts`
+- `apps/api/src/auth/presentation/auth.controller.ts`
+- `apps/api/src/auth/presentation/auth.controller.test.ts`
+- `apps/api/src/auth/auth.tokens.ts`
+- `apps/api/src/auth/infrastructure/auth-config.ts`
+- `apps/api/src/auth/infrastructure/auth-config.test.ts`
+- `apps/api/src/auth/infrastructure/auth-database.providers.ts`
+- `docs/development-guide.md`
+- `docs/decisions.md`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- 아이디 찾기 인증 코드 요청/확인 API를 추가했다.
+- 비밀번호 재설정 인증 코드 요청/확인 API를 추가했다.
+- 이메일 인증 코드는 기본 10분 동안 유효하도록 설정했다.
+- 인증 코드 요청 시 `EmailVerificationRepository`에 기록하고 `MailSender`로 실제 발송 경로를 호출한다.
+- 아이디 찾기 인증 성공 시 login ID를 반환한다.
+- 비밀번호 재설정 인증 성공 시 password hash를 변경하고 기존 refresh token을 무효화한다.
+
+검증:
+
+- `npm run test -- apps/api/src/auth/application/auth-use-cases.test.ts apps/api/src/auth/presentation/auth.controller.test.ts apps/api/src/auth/infrastructure/auth-config.test.ts` 통과
+- `npm run check` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- 로그인 후 비밀번호 변경과 회원탈퇴 API는 아직 구현하지 않았다.
+- 실제 SMTP provider 계정과 비밀값은 로컬/배포 환경에서 별도로 주입해야 한다.

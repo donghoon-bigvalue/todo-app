@@ -1,4 +1,5 @@
 import {
+  DrizzleEmailVerificationRepository,
   DrizzleRefreshTokenRepository,
   DrizzleUserRepository,
   applyMigrations,
@@ -7,12 +8,17 @@ import {
   type DrizzleClient,
   type PgliteClient,
 } from "@todo-app/db";
-import type { RefreshTokenRepository, UserRepository } from "@todo-app/domain";
+import type {
+  EmailVerificationRepository,
+  RefreshTokenRepository,
+  UserRepository,
+} from "@todo-app/domain";
 import type { Provider } from "@nestjs/common";
 import { fileURLToPath } from "node:url";
 import {
   AUTH_DRIZZLE_CLIENT,
   AUTH_PGLITE_CLIENT,
+  EMAIL_VERIFICATION_REPOSITORY,
   REFRESH_TOKEN_REPOSITORY,
   USER_REPOSITORY,
 } from "../auth.tokens";
@@ -45,5 +51,11 @@ export const authDatabaseProviders: Provider[] = [
     inject: [AUTH_DRIZZLE_CLIENT],
     useFactory: (db: DrizzleClient): RefreshTokenRepository =>
       new DrizzleRefreshTokenRepository(db),
+  },
+  {
+    provide: EMAIL_VERIFICATION_REPOSITORY,
+    inject: [AUTH_DRIZZLE_CLIENT],
+    useFactory: (db: DrizzleClient): EmailVerificationRepository =>
+      new DrizzleEmailVerificationRepository(db),
   },
 ];

@@ -2,11 +2,13 @@ import { randomBytes } from "node:crypto";
 import { ACCESS_TOKEN_EXPIRES_IN_SECONDS } from "./jwt-access-token-issuer";
 
 export const REFRESH_TOKEN_EXPIRES_IN_DAYS = 30;
+export const EMAIL_VERIFICATION_EXPIRES_IN_MINUTES = 10;
 
 export type AuthConfig = {
   readonly jwtSecret: string;
   readonly accessTokenExpiresInSeconds: number;
   readonly refreshTokenTtlMs: number;
+  readonly emailVerificationTtlMs: number;
 };
 
 export function createAuthConfig(env: NodeJS.ProcessEnv): AuthConfig {
@@ -20,6 +22,13 @@ export function createAuthConfig(env: NodeJS.ProcessEnv): AuthConfig {
       readPositiveInteger(env.AUTH_REFRESH_TOKEN_EXPIRES_IN_DAYS, REFRESH_TOKEN_EXPIRES_IN_DAYS) *
       24 *
       60 *
+      60 *
+      1000,
+    emailVerificationTtlMs:
+      readPositiveInteger(
+        env.AUTH_EMAIL_VERIFICATION_EXPIRES_IN_MINUTES,
+        EMAIL_VERIFICATION_EXPIRES_IN_MINUTES,
+      ) *
       60 *
       1000,
   };

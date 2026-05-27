@@ -5,6 +5,7 @@ import {
   Headers,
   HttpCode,
   Inject,
+  NotFoundException,
   Post,
   Res,
   UnauthorizedException,
@@ -15,12 +16,21 @@ import {
   type LoginUseCase,
   type LogoutUseCase,
   type RefreshAccessTokenUseCase,
+  type RequestFindLoginIdCodeUseCase,
+  type RequestPasswordResetCodeUseCase,
+  type ResetPasswordUseCase,
   type SignupUseCase,
+  type VerifyFindLoginIdCodeUseCase,
   DuplicateEmailError,
   DuplicateLoginIdError,
+  EmailVerificationAlreadyUsedError,
+  EmailVerificationExpiredError,
+  EmailVerificationInvalidCodeError,
+  EmailVerificationNotFoundError,
   InvalidCredentialsError,
   InvalidRefreshTokenError,
   MissingRefreshTokenError,
+  UserEmailNotFoundError,
 } from "../application/auth-use-cases";
 import {
   type CookieResponse,
@@ -28,12 +38,25 @@ import {
   LOGOUT_USE_CASE,
   REFRESH_ACCESS_TOKEN_USE_CASE,
   REFRESH_TOKEN_COOKIE_NAME,
+  REQUEST_FIND_LOGIN_ID_CODE_USE_CASE,
+  REQUEST_PASSWORD_RESET_CODE_USE_CASE,
+  RESET_PASSWORD_USE_CASE,
   SIGNUP_USE_CASE,
+  VERIFY_FIND_LOGIN_ID_CODE_USE_CASE,
 } from "../auth.tokens";
 
 const loginRequestSchema = z.object({
   loginId: z.string(),
   password: z.string(),
+});
+
+const emailRequestSchema = z.object({
+  email: z.string(),
+});
+
+const emailVerificationRequestSchema = z.object({
+  email: z.string(),
+  code: z.string(),
 });
 
 export type AuthUserResponse = {
@@ -58,6 +81,14 @@ export class AuthController {
     private readonly refreshAccessTokenUseCase: RefreshAccessTokenUseCase,
     @Inject(LOGOUT_USE_CASE)
     private readonly logoutUseCase: LogoutUseCase,
+    @Inject(REQUEST_FIND_LOGIN_ID_CODE_USE_CASE)
+    private readonly requestFindLoginIdCodeUseCase: RequestFindLoginIdCodeUseCase,
+    @Inject(VERIFY_FIND_LOGIN_ID_CODE_USE_CASE)
+    private readonly verifyFindLoginIdCodeUseCase: VerifyFindLoginIdCodeUseCase,
+    @Inject(REQUEST_PASSWORD_RESET_CODE_USE_CASE)
+    private readonly requestPasswordResetCodeUseCase: RequestPasswordResetCodeUseCase,
+    @Inject(RESET_PASSWORD_USE_CASE)
+    private readonly resetPasswordUseCase: ResetPasswordUseCase,
   ) {}
 
   @Post("signup")
@@ -132,6 +163,52 @@ export class AuthController {
       throw mapAuthApiError(error);
     }
   }
+
+  @Post("find-login-id/request-code")
+  @HttpCode(200)
+  async requestFindLoginIdCode(@Body() body: unknown): Promise<{ readonly sent: true }> {
+    try {
+      await this.requestFindLoginIdCodeUseCase.execute(emailRequestSchema.parse(body));
+
+      return { sent: true };
+    } catch (error) {
+      throw mapAuthApiError(error);
+    }
+  }
+
+  @Post("find-login-id/verify")
+  @HttpCode(200)
+  async verifyFindLoginIdCode(@Body() body: unknown): Promise<{ readonly loginId: string }> {
+    try {
+      return await this.verifyFindLoginIdCodeUseCase.execute(
+        emailVerificationRequestSchema.parse(body),
+      );
+    } catch (error) {
+      throw mapAuthApiError(error);
+    }
+  }
+
+  @Post("reset-password/request-code")
+  @HttpCode(200)
+  async requestPasswordResetCode(@Body() body: unknown): Promise<{ readonly sent: true }> {
+    try {
+      await this.requestPasswordResetCodeUseCase.execute(emailRequestSchema.parse(body));
+
+      return { sent: true };
+    } catch (error) {
+      throw mapAuthApiError(error);
+    }
+  }
+
+  @Post("reset-password/verify")
+  @HttpCode(204)
+  async resetPassword(@Body() body: unknown): Promise<void> {
+    try {
+      await this.resetPasswordUseCase.execute(body);
+    } catch (error) {
+      throw mapAuthApiError(error);
+    }
+  }
 }
 
 function toSignupResponse(user: User): SignupResponse {
@@ -172,6 +249,19 @@ function mapAuthApiError(error: unknown): Error {
   }
 
   if (error instanceof DuplicateLoginIdError || error instanceof DuplicateEmailError) {
+    return new BadRequestException(error.message);
+  }
+
+  if (error instanceof UserEmailNotFoundError) {
+    return new NotFoundException();
+  }
+
+  if (
+    error instanceof EmailVerificationNotFoundError ||
+    error instanceof EmailVerificationInvalidCodeError ||
+    error instanceof EmailVerificationExpiredError ||
+    error instanceof EmailVerificationAlreadyUsedError
+  ) {
     return new BadRequestException(error.message);
   }
 

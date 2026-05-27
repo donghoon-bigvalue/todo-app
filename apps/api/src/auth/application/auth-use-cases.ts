@@ -1,12 +1,24 @@
 import {
+  EmailVerification,
+  EmailVerificationAlreadyUsedError,
+  EmailVerificationExpiredError,
+  EmailVerificationInvalidCodeError,
+  type EmailVerificationId,
+  type EmailVerificationPurpose,
+  type EmailVerificationRepository,
   RefreshToken,
   User,
   type RefreshTokenId,
   type RefreshTokenRepository,
   type UserId,
   type UserRepository,
+  createEmailVerificationCode,
+  passwordSchema,
   signupSchema,
+  userEmailSchema,
 } from "@todo-app/domain";
+import { z } from "zod";
+import type { MailSender } from "./mail-sender";
 
 export type PasswordHasher = {
   hash(password: string): Promise<string>;
@@ -29,12 +41,16 @@ export type AccessTokenIssuer = {
 export type AuthUseCaseDependencies = {
   readonly generateUserId: () => UserId;
   readonly generateRefreshTokenId: () => RefreshTokenId;
+  readonly generateEmailVerificationId: () => EmailVerificationId;
   readonly generateRefreshTokenValue: () => string;
+  readonly generateEmailVerificationDigit: () => number;
   readonly now: () => Date;
   readonly refreshTokenTtlMs: number;
+  readonly emailVerificationTtlMs: number;
   readonly passwordHasher: PasswordHasher;
   readonly refreshTokenHasher: RefreshTokenHasher;
   readonly accessTokenIssuer: AccessTokenIssuer;
+  readonly mailSender: MailSender;
 };
 
 export type LoginResult = {
@@ -78,6 +94,35 @@ export class InvalidRefreshTokenError extends Error {
     this.name = "InvalidRefreshTokenError";
   }
 }
+
+export class UserEmailNotFoundError extends Error {
+  constructor(readonly email: string) {
+    super(`가입된 이메일을 찾을 수 없습니다: ${email}`);
+    this.name = "UserEmailNotFoundError";
+  }
+}
+
+export class EmailVerificationNotFoundError extends Error {
+  constructor(
+    readonly email: string,
+    readonly purpose: EmailVerificationPurpose,
+  ) {
+    super(`이메일 인증 기록을 찾을 수 없습니다: ${email}, ${purpose}`);
+    this.name = "EmailVerificationNotFoundError";
+  }
+}
+
+const resetPasswordSchema = z
+  .object({
+    email: userEmailSchema,
+    code: z.string(),
+    password: passwordSchema,
+    passwordConfirm: passwordSchema,
+  })
+  .refine((input) => input.password === input.passwordConfirm, {
+    message: "비밀번호 확인이 일치하지 않습니다.",
+    path: ["passwordConfirm"],
+  });
 
 export class SignupUseCase {
   constructor(
@@ -196,6 +241,101 @@ export class LogoutUseCase {
   }
 }
 
+export class RequestFindLoginIdCodeUseCase {
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly emailVerificationRepository: EmailVerificationRepository,
+    private readonly dependencies: AuthUseCaseDependencies,
+  ) {}
+
+  async execute(input: { readonly email: string }): Promise<void> {
+    await requestEmailVerificationCode(
+      "find-login-id",
+      input,
+      this.userRepository,
+      this.emailVerificationRepository,
+      this.dependencies,
+    );
+  }
+}
+
+export class VerifyFindLoginIdCodeUseCase {
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly emailVerificationRepository: EmailVerificationRepository,
+    private readonly dependencies: AuthUseCaseDependencies,
+  ) {}
+
+  async execute(input: { readonly email: string; readonly code: string }): Promise<{
+    readonly loginId: string;
+  }> {
+    const email = userEmailSchema.parse(input.email);
+    const user = await findUserByEmailOrThrow(this.userRepository, email);
+    const verification = await findLatestVerificationOrThrow(
+      this.emailVerificationRepository,
+      email,
+      "find-login-id",
+    );
+
+    verification.use({
+      code: input.code,
+      usedAt: this.dependencies.now(),
+    });
+    await this.emailVerificationRepository.update(verification);
+
+    return {
+      loginId: user.loginId,
+    };
+  }
+}
+
+export class RequestPasswordResetCodeUseCase {
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly emailVerificationRepository: EmailVerificationRepository,
+    private readonly dependencies: AuthUseCaseDependencies,
+  ) {}
+
+  async execute(input: { readonly email: string }): Promise<void> {
+    await requestEmailVerificationCode(
+      "reset-password",
+      input,
+      this.userRepository,
+      this.emailVerificationRepository,
+      this.dependencies,
+    );
+  }
+}
+
+export class ResetPasswordUseCase {
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly refreshTokenRepository: RefreshTokenRepository,
+    private readonly emailVerificationRepository: EmailVerificationRepository,
+    private readonly dependencies: AuthUseCaseDependencies,
+  ) {}
+
+  async execute(input: unknown): Promise<void> {
+    const request = resetPasswordSchema.parse(input);
+    const user = await findUserByEmailOrThrow(this.userRepository, request.email);
+    const verification = await findLatestVerificationOrThrow(
+      this.emailVerificationRepository,
+      request.email,
+      "reset-password",
+    );
+
+    verification.use({
+      code: request.code,
+      usedAt: this.dependencies.now(),
+    });
+    user.changePasswordHash(await this.dependencies.passwordHasher.hash(request.password));
+
+    await this.emailVerificationRepository.update(verification);
+    await this.userRepository.updatePasswordHash(user);
+    await this.refreshTokenRepository.revokeAllByUserId(user.id, this.dependencies.now());
+  }
+}
+
 async function issueLoginResult(
   user: User,
   refreshTokenRepository: RefreshTokenRepository,
@@ -231,3 +371,69 @@ function issueAccessToken(user: User, dependencies: AuthUseCaseDependencies): st
     email: user.email,
   });
 }
+
+async function requestEmailVerificationCode(
+  purpose: EmailVerificationPurpose,
+  input: { readonly email: string },
+  userRepository: UserRepository,
+  emailVerificationRepository: EmailVerificationRepository,
+  dependencies: AuthUseCaseDependencies,
+): Promise<void> {
+  const email = userEmailSchema.parse(input.email);
+  await findUserByEmailOrThrow(userRepository, email);
+
+  const now = dependencies.now();
+  const code = createEmailVerificationCode(dependencies.generateEmailVerificationDigit);
+
+  await emailVerificationRepository.create(
+    EmailVerification.create({
+      id: dependencies.generateEmailVerificationId(),
+      email,
+      code,
+      purpose,
+      createdAt: now,
+      expiresAt: new Date(now.getTime() + dependencies.emailVerificationTtlMs),
+    }),
+  );
+  await dependencies.mailSender.sendEmailVerificationCode({
+    to: email,
+    code,
+    purpose,
+  });
+}
+
+async function findUserByEmailOrThrow(
+  userRepository: UserRepository,
+  email: string,
+): Promise<User> {
+  const user = await userRepository.findByEmail(email);
+
+  if (!user) {
+    throw new UserEmailNotFoundError(email);
+  }
+
+  return user;
+}
+
+async function findLatestVerificationOrThrow(
+  emailVerificationRepository: EmailVerificationRepository,
+  email: string,
+  purpose: EmailVerificationPurpose,
+): Promise<EmailVerification> {
+  const verification = await emailVerificationRepository.findLatestByEmailAndPurpose(
+    email,
+    purpose,
+  );
+
+  if (!verification) {
+    throw new EmailVerificationNotFoundError(email, purpose);
+  }
+
+  return verification;
+}
+
+export {
+  EmailVerificationAlreadyUsedError,
+  EmailVerificationExpiredError,
+  EmailVerificationInvalidCodeError,
+};
