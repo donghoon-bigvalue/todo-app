@@ -885,3 +885,58 @@ Figma 변경:
 
 - 실제 SMTP provider 계정과 비밀값은 로컬/배포 환경에서 별도로 주입해야 한다.
 - Auth API use case와 controller는 아직 mail sender를 호출하지 않는다.
+
+## 2026-05-27: Auth API 기본 인증 흐름 구현
+
+상태: Done
+
+목적:
+
+- 회원가입, 로그인, refresh, 로그아웃 API와 JWT/refresh token 기반 인증 흐름을 제공한다.
+
+변경 파일:
+
+- `apps/api/package.json`
+- `package-lock.json`
+- `apps/api/src/app.module.ts`
+- `apps/api/src/auth/auth.module.ts`
+- `apps/api/src/auth/auth.tokens.ts`
+- `apps/api/src/auth/application/auth-use-cases.ts`
+- `apps/api/src/auth/application/auth-use-case.providers.ts`
+- `apps/api/src/auth/presentation/auth.controller.ts`
+- `apps/api/src/auth/infrastructure/auth-database.providers.ts`
+- `apps/api/src/auth/infrastructure/auth-config.ts`
+- `apps/api/src/auth/infrastructure/bcrypt-password-hasher.ts`
+- `apps/api/src/auth/infrastructure/jwt-access-token-issuer.ts`
+- `apps/api/src/auth/infrastructure/refresh-token-hasher.ts`
+- `docs/adr/0003-auth-account-strategy.md`
+- `docs/decisions.md`
+- `docs/development-guide.md`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- `POST /auth/signup`, `POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout` controller를 추가했다.
+- 회원가입에서 `loginId`, `nickname`, `email`, `password`를 검증하고 bcrypt password hash를 저장한다.
+- 로그인에서 access token을 응답 body로 반환하고 refresh token을 HTTP-only cookie로 설정한다.
+- refresh token 원문은 SHA-256 hash로 저장하고, refresh/logout 시 hash로 조회한다.
+- JWT access token 발급을 추가하고 기본 만료 시간을 15분으로 정했다.
+- refresh token 기본 만료 시간을 30일로 정했다.
+- `bcryptjs` 기본 cost를 `12`로 정했다.
+- 요청 검증 실패는 `BadRequestException`, 인증 실패는 `UnauthorizedException`으로 변환한다.
+
+검증:
+
+- `npm run test -- apps/api/src/auth/application/auth-use-cases.test.ts apps/api/src/auth/presentation/auth.controller.test.ts apps/api/src/auth/infrastructure/auth-config.test.ts apps/api/src/auth/infrastructure/jwt-access-token-issuer.test.ts apps/api/src/auth/infrastructure/refresh-token-hasher.test.ts apps/api/src/auth/infrastructure/bcrypt-password-hasher.test.ts` 통과
+- `npm run test -- packages/db/src/todo-repository.test.ts` 통과
+- `npm run check` 재실행 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- Auth module과 Todo module의 DB provider는 아직 분리되어 있다. Task 41에서 Todo API 인증 보호와 사용자별 데이터 분리를 하며 DB provider 공유 구조로 정리해야 한다.
+- 아이디 찾기, 비밀번호 재설정, 로그인 후 비밀번호 변경, 회원탈퇴 API는 이후 task에서 구현한다.

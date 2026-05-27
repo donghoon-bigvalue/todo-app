@@ -28,6 +28,7 @@
 - Auth domain model과 schema 정의가 완료되었다.
 - Auth 저장 구조와 repository 확장이 완료되었다.
 - Nodemailer mail sender 구현이 완료되었다.
+- Auth API 기본 인증 흐름 구현이 완료되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
@@ -48,16 +49,18 @@ Auth와 계정 관리 확장 진행 중.
 
 추천 task:
 
-Auth API 기본 인증 흐름 구현.
+아이디 찾기와 비밀번호 재설정 API 구현.
 
 목표:
 
-- 회원가입, 로그인, refresh, 로그아웃 API를 제공한다.
-- 회원가입 API가 로그인 ID, 닉네임, 이메일, 비밀번호를 받아 사용자를 생성한다.
-- 로그인 API가 access token을 응답 body로 반환하고 refresh token을 HTTP-only cookie로 설정한다.
-- refresh API가 cookie의 refresh token으로 access token을 재발급한다.
-- 로그아웃 API가 refresh token을 무효화하고 cookie를 정리한다.
-- 요청 검증 실패와 인증 실패가 명확한 에러 응답을 반환한다.
+- 이메일 인증 기반 아이디 찾기와 비밀번호 재설정 API를 제공한다.
+- 아이디 찾기 인증 코드 요청 API가 있다.
+- 아이디 찾기 인증 코드 확인 API가 있다.
+- 인증 성공 후 로그인 ID를 반환한다.
+- 비밀번호 재설정 인증 코드 요청 API가 있다.
+- 비밀번호 재설정 인증 코드 확인 API가 있다.
+- 인증 성공 후 새 비밀번호로 변경할 수 있다.
+- 비밀번호 재설정 후 기존 refresh token이 무효화된다.
 
 검증:
 
@@ -71,34 +74,34 @@ Auth API 기본 인증 흐름 구현.
 
 ## 최근 완료 Task
 
-Nodemailer mail sender 구현.
+Auth API 기본 인증 흐름 구현.
 
 완료 조건:
 
-- mail sender interface가 있다.
-- Nodemailer 기반 구현이 있다.
-- SMTP 환경변수 설정이 문서화되어 있다.
-- 테스트에서는 fake transporter를 사용해 실제 외부 발송 없이 검증한다.
-- 메일 발송 실패를 application 계층에서 다룰 수 있는 에러로 변환한다.
+- 회원가입 API가 있다.
+- 로그인 API가 access token을 응답 body로 반환한다.
+- 로그인 API가 refresh token을 HTTP-only cookie로 설정한다.
+- refresh API가 cookie의 refresh token으로 access token을 재발급한다.
+- 로그아웃 API가 refresh token을 무효화하고 cookie를 정리한다.
+- 요청 검증 실패와 인증 실패가 명확한 에러 응답을 반환한다.
+- password hash cost와 token 만료 기본값이 문서화되어 있다.
 
 검증:
 
-- `npm run test -- apps/api/src/auth/infrastructure/nodemailer-mail-sender.test.ts apps/api/src/auth/infrastructure/smtp-mail-config.test.ts` 통과
+- `npm run test -- apps/api/src/auth/application/auth-use-cases.test.ts apps/api/src/auth/presentation/auth.controller.test.ts apps/api/src/auth/infrastructure/auth-config.test.ts apps/api/src/auth/infrastructure/jwt-access-token-issuer.test.ts apps/api/src/auth/infrastructure/refresh-token-hasher.test.ts apps/api/src/auth/infrastructure/bcrypt-password-hasher.test.ts` 통과
 - `npm run check` 통과
 
 테스트:
 
-- Vitest mail sender unit/integration seam test
+- Vitest Auth application/controller/infrastructure unit test
 
 ## 다음 Task 후보
 
-1. Auth API 기본 인증 흐름 구현
-2. 아이디 찾기와 비밀번호 재설정 API 구현
-3. Todo API 인증 보호와 사용자별 데이터 분리
+1. 아이디 찾기와 비밀번호 재설정 API 구현
+2. Todo API 인증 보호와 사용자별 데이터 분리
+3. Web Auth 화면과 token 흐름 연결
 
 ## 중단 조건
 
-- password hash 라이브러리 또는 비용 설정을 결정해야 하는 경우.
 - 실제 SMTP provider, 계정, 환경변수 정책을 확정해야 하는 경우.
-- refresh token 만료 시간이나 access token 만료 시간을 확정해야 하는 경우.
 - 회원탈퇴를 hard delete가 아니라 soft delete로 바꿔야 하는 경우.

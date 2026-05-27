@@ -5,6 +5,8 @@
   "dependencies": {
     "@todo-app/db": "0.0.0",
     "@todo-app/domain": "0.0.0",
+    "bcryptjs": "^3.0.3",
+    "jsonwebtoken": "^9.0.3",
     "nodemailer": "^8.0.9"
   },
   "scripts": {
@@ -12,6 +14,7 @@
     "start": "tsx src/main.ts"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/nodemailer": "^8.0.0"
   }
 }

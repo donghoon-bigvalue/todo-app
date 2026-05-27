@@ -162,6 +162,9 @@ Reference:
 - refresh token 원문은 DB에 저장하지 않고 hash로 저장한다.
 - 메일 발송은 Nodemailer를 사용한다.
 - password hash는 `bcryptjs`를 사용한다.
+- `bcryptjs` 기본 cost는 `12`를 사용한다.
+- access token 기본 만료 시간은 15분으로 한다.
+- refresh token 기본 만료 시간은 30일로 한다.
 - 회원탈퇴는 hard delete와 관련 데이터 cascade 삭제로 처리한다.
 
 Reference:

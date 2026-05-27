@@ -29,6 +29,8 @@ Todo App은 MVP와 Todo 메모 확장을 완료한 뒤, 사용자별 Todo 데이
 - refresh token 원문은 DB에 저장하지 않고 hash로 저장한다.
 - 로그아웃하면 현재 refresh token을 무효화한다.
 - 비밀번호 변경이나 비밀번호 재설정 이후 기존 refresh token은 무효화한다.
+- access token 기본 만료 시간은 15분이다.
+- refresh token 기본 만료 시간은 30일이다.
 
 ### 이메일 인증과 메일 발송
 
@@ -43,7 +45,7 @@ Todo App은 MVP와 Todo 메모 확장을 완료한 뒤, 사용자별 Todo 데이
 - 비밀번호는 평문으로 저장하지 않는다.
 - 비밀번호 저장에는 단방향 password hash를 사용한다.
 - MVP 구현에서는 `bcryptjs`를 사용한다.
-- 비용 설정은 password hash 구현 task에서 테스트 실행 시간과 보안 기준을 함께 고려해 확정한다.
+- 기본 cost는 `12`를 사용한다.
 
 ### 회원탈퇴
 

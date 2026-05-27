@@ -120,6 +120,18 @@ API 서버에서 실제 메일을 발송하려면 다음 환경변수를 설정�
 
 테스트에서는 실제 SMTP server에 연결하지 않고 fake transporter 또는 fake mail sender를 사용한다.
 
+## Auth token 설정
+
+Auth API는 JWT access token과 HTTP-only cookie refresh token을 사용한다.
+
+API 서버에서 token 설정을 바꾸려면 다음 환경변수를 설정한다.
+
+- `AUTH_JWT_SECRET`: JWT access token 서명 secret. 생략하면 로컬 개발용 기본값을 사용한다.
+- `AUTH_ACCESS_TOKEN_EXPIRES_IN_SECONDS`: access token 만료 시간. 기본값은 `900`초다.
+- `AUTH_REFRESH_TOKEN_EXPIRES_IN_DAYS`: refresh token 만료 일수. 기본값은 `30`일이다.
+
+비밀번호 hash는 `bcryptjs`를 사용하고 기본 cost는 `12`다. 테스트에서는 실행 시간을 줄이기 위해 낮은 cost를 주입할 수 있다.
+
 ## 테스트
 
 단위, 컴포넌트, 통합 테스트를 실행한다.
