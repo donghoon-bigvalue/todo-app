@@ -885,6 +885,56 @@ Figma 변경:
 
 - 실제 SMTP provider 계정과 비밀값은 로컬/배포 환경에서 별도로 주입해야 한다.
 
+## 2026-05-28: Auth Form Controls shared UI와 showcase 수습
+
+상태: Done
+
+목적:
+
+- Figma Auth Components에 추가된 인증 form 요소가 shared UI와 `/showcase`를 거치지 않고 화면에만 구현된 누락을 수습한다.
+- 앞으로 Figma Components 변경 시 shared UI와 `/showcase` 반영을 workflow 게이트로 명시한다.
+
+참고 Figma:
+
+- `COA4ynKukuVp6aqqe1ECPM` / `Auth Components(2006:2)`
+
+변경 파일:
+
+- `apps/web/src/shared/ui/auth-form-controls.tsx`
+- `apps/web/src/shared/ui/auth-form-controls.test.tsx`
+- `apps/web/src/shared/ui/index.ts`
+- `apps/web/src/pages/showcase-page.tsx`
+- `apps/web/src/app/app.test.tsx`
+- `apps/web/src/pages/auth-gate.tsx`
+- `AGENTS.md`
+- `.codex/skills/agent-work-loop/SKILL.md`
+- `.codex/skills/design-system-showcase/SKILL.md`
+- `docs/agent-workflow.md`
+- `docs/adr/0002-development-architecture.md`
+- `docs/decisions.md`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- `FormField`, `PasswordInput`, `TextAction`을 shared UI로 추가했다.
+- `/showcase`에 `Auth Form Controls`와 로그인 form 조합 예시를 추가했다.
+- `AuthGate`가 inline Field/TextAction 구현 대신 shared UI를 재사용하게 했다.
+- workflow 문서와 skill에 Figma Components 변경 시 shared UI, `/showcase`, 실제 화면 재사용을 완료 조건으로 명시했다.
+
+검증:
+
+- `npm run test -- apps/web/src/shared/ui/auth-form-controls.test.tsx apps/web/src/app/app.test.tsx apps/web/src/pages/auth-gate.test.tsx` 통과
+- `npm run check` 통과
+
+커밋:
+
+- 이번 task 커밋에 포함
+
+남은 리스크:
+
+- 이전 Auth 작업에서 이미 커밋된 이력은 유지하고, 이번 task에서 구조를 수습했다.
+
 ## 2026-05-28: 아이디 찾기와 비밀번호 재설정 인증 화면 로그인 복귀 UX 보강
 
 상태: Done

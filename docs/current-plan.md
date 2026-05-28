@@ -42,6 +42,7 @@
 - Figma Components page title과 첫 section 간격 보정이 완료되었다.
 - Auth 입력 placeholder와 비밀번호 표시 토글의 Figma 정합성 보정이 완료되었다.
 - 아이디 찾기와 비밀번호 재설정 인증 화면의 로그인 복귀 UX 보강이 완료되었다.
+- Auth Form Controls의 shared UI와 showcase 수습이 완료되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
@@ -58,30 +59,50 @@ Auth와 계정 관리 확장 완료.
 
 ## 현재 Task
 
-아이디 찾기와 비밀번호 재설정 인증 화면의 로그인 복귀 UX 보강 완료.
+Auth Form Controls의 shared UI와 showcase 수습 완료.
 
 완료 조건:
 
-- Figma `Auth Screen / 아이디 찾기(2006:106)`에 `로그인으로 돌아가기` 액션을 추가한다.
-- Figma `Auth Screen / 비밀번호 재설정 인증(2006:126)`에 `로그인으로 돌아가기` 액션을 추가한다.
-- Web 아이디 찾기 화면에서 로그인 화면으로 돌아갈 수 있다.
-- Web 비밀번호 재설정 인증 화면에서 로그인 화면으로 돌아갈 수 있다.
+- Figma `Auth Components(2006:2)` 기준 form field, password input, text action을 shared UI로 승격한다.
+- `/showcase`에 Auth Form Controls와 실제 로그인 form 조합을 추가한다.
+- `AuthGate`는 inline Field/TextAction 대신 shared UI를 재사용한다.
+- workflow 문서와 skill에 Figma Components 변경 시 shared UI와 `/showcase` 반영 게이트를 명시한다.
 
 검증:
 
+- `npm run test -- apps/web/src/shared/ui/auth-form-controls.test.tsx apps/web/src/app/app.test.tsx apps/web/src/pages/auth-gate.test.tsx`가 통과한다.
 - `npm run test -- apps/web/src/pages/auth-gate.test.tsx`가 통과한다.
 - `npm run check`가 통과한다.
-- Figma metadata로 `2006:110`, `2006:130`에 `Secondary Actions`가 추가된 것을 확인한다.
 
 테스트:
 
-- AuthGate component test에 아이디 찾기와 비밀번호 재설정 인증 화면의 로그인 복귀 동작을 추가했다.
+- Auth form controls component test와 showcase routing test를 추가했다.
 
 다음:
 
 - 다음 UX/UI 보강 task는 새 플랜을 작성한 뒤 승인받고 진행한다.
 
 ## 최근 완료 Task
+
+Auth Form Controls의 shared UI와 showcase 수습.
+
+완료 조건:
+
+- Figma `Auth Components(2006:2)` 기준 form field, password input, text action을 shared UI로 승격한다.
+- `/showcase`에 Auth Form Controls와 실제 로그인 form 조합을 추가한다.
+- `AuthGate`는 inline Field/TextAction 대신 shared UI를 재사용한다.
+- workflow 문서와 skill에 Figma Components 변경 시 shared UI와 `/showcase` 반영 게이트를 명시한다.
+
+검증:
+
+- `npm run test -- apps/web/src/shared/ui/auth-form-controls.test.tsx apps/web/src/app/app.test.tsx apps/web/src/pages/auth-gate.test.tsx`가 통과한다.
+- `npm run check`가 통과한다.
+
+테스트:
+
+- Auth form controls component test와 showcase routing test를 추가했다.
+
+이전 완료 Task:
 
 아이디 찾기와 비밀번호 재설정 인증 화면의 로그인 복귀 UX 보강.
 

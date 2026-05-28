@@ -110,6 +110,7 @@ Reference:
 - 기능 구현은 TDD 흐름을 기본으로 한다.
 - Figma Components 페이지를 코드 디자인 시스템의 기준으로 삼는다.
 - 코드 컴포넌트는 showcase 페이지에서 확인할 수 있게 한다.
+- Figma Components에 새 컴포넌트나 상태가 추가되면 실제 화면 구현 전에 shared UI와 `/showcase`를 먼저 갱신하고, 실제 화면은 해당 shared UI를 재사용한다.
 
 Reference:
 

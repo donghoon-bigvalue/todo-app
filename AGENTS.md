@@ -110,6 +110,14 @@ Figma 컴포넌트를 코드 디자인 시스템으로 옮기거나 showcase 페
 
 - `.codex/skills/design-system-showcase/SKILL.md`
 
+Figma `Components` 페이지에 새 컴포넌트, component group, variant, form control, reusable action이 추가되거나 기존 컴포넌트의 상태가 확장되면 실제 화면 구현 전에 다음을 완료해야 한다.
+
+- `apps/web/src/shared/ui`에 대응 코드 컴포넌트 또는 variant를 만든다.
+- `/showcase`에 상태별 예시와 실제 화면에서 쓰는 조합을 추가한다.
+- 실제 화면은 `/showcase`에 등록된 shared UI 컴포넌트를 재사용한다.
+- component test 또는 routing/component test로 showcase 노출과 실제 화면 재사용 동작을 검증한다.
+- 위 항목을 건너뛰면 해당 UI task는 완료로 보고하지 않는다.
+
 ## 완료 보고 규칙
 
 작업을 마칠 때는 다음을 포함한다.

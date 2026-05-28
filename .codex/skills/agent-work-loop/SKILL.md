@@ -73,6 +73,14 @@ description: Use in this Todo App project when turning chat ideas into product d
 
 새 화면, 새 컴포넌트, 기존 컴포넌트의 새 상태나 variant, 새 interaction이 생기면 코드 구현 전에 Figma 작업 task가 있는지 확인한다. 없으면 `docs/agent-harness.md`의 UI 영향도 판정 기준에 따라 Figma 작업을 먼저 제안한다.
 
+Figma `Components` 페이지에 새 컴포넌트, component group, variant, form control, reusable action이 생겼거나 기존 컴포넌트 상태가 확장되었다면 실제 화면 구현 전에 `design-system-showcase` 흐름을 먼저 완료해야 한다.
+
+- `apps/web/src/shared/ui`에 대응 컴포넌트 또는 variant를 만든다.
+- `/showcase`에 상태별 예시와 실제 화면에서 쓰는 조합을 추가한다.
+- 실제 화면은 showcase에 등록된 shared UI 컴포넌트를 재사용한다.
+- 완료 조건과 검증 명령에 showcase 노출 검증과 실제 화면 재사용 검증을 포함한다.
+- 이 흐름을 건너뛴 UI task는 완료로 보지 않는다.
+
 이미 Figma 화면이나 컴포넌트가 있는 UI 작업은 Figma 정합성 확인을 작업 착수 조건으로 본다.
 
 - 코드 구현 전에 해당 Figma URL 또는 node id를 확인한다.

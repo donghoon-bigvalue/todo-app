@@ -1,4 +1,13 @@
-import { Button, Checkbox, EmptyState, ErrorMessage, TextInput, TodoItem } from "../shared/ui";
+import {
+  Button,
+  Checkbox,
+  EmptyState,
+  ErrorMessage,
+  FormField,
+  TextAction,
+  TextInput,
+  TodoItem,
+} from "../shared/ui";
 
 export function ShowcasePage() {
   return (
@@ -57,6 +66,91 @@ export function ShowcasePage() {
                 state="error"
               />
               <p className="text-[13px] text-[#DC2626]">할 일을 입력해주세요.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <div>
+            <h2 className="text-base font-semibold">Auth Form Controls</h2>
+            <p className="mt-1 text-sm text-[#6B7280]">
+              인증 화면에서 사용하는 입력, 비밀번호 표시 토글, 보조 액션 조합
+            </p>
+          </div>
+
+          <div className="rounded-[8px] border border-[#E5E7EB] bg-white p-[21px]">
+            <div className="grid gap-[14px] lg:grid-cols-3">
+              <FormField
+                label="로그인 ID"
+                onChange={() => undefined}
+                placeholder="todo_user"
+                value=""
+              />
+              <FormField
+                label="비밀번호"
+                onChange={() => undefined}
+                placeholder="비밀번호"
+                type="password"
+                value=""
+              />
+              <FormField
+                errorMessage="입력값을 확인해주세요."
+                label="이메일"
+                onChange={() => undefined}
+                placeholder="name@example.com"
+                value=""
+              />
+            </div>
+
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <Button
+                className="h-7 rounded-[6px] text-[12px] leading-[17px]"
+                size="sm"
+                variant="primary"
+              >
+                로그인
+              </Button>
+              <Button className="h-7 rounded-[6px] text-[12px] leading-[17px]" size="sm">
+                인증 코드 발송
+              </Button>
+              <Button
+                className="h-7 rounded-[6px] text-[12px] leading-[17px]"
+                size="sm"
+                variant="dangerSoft"
+              >
+                회원탈퇴
+              </Button>
+              <TextAction onClick={() => undefined}>로그인으로 돌아가기</TextAction>
+            </div>
+          </div>
+
+          <div className="w-full max-w-[342px] rounded-[8px] border border-[#E5E7EB] bg-white p-4">
+            <div className="space-y-3">
+              <FormField
+                label="로그인 ID"
+                onChange={() => undefined}
+                placeholder="todo_user"
+                value=""
+              />
+              <FormField
+                label="비밀번호"
+                onChange={() => undefined}
+                placeholder="비밀번호"
+                type="password"
+                value=""
+              />
+              <Button
+                className="h-7 w-full rounded-[6px] text-[12px] leading-[17px]"
+                size="sm"
+                variant="primary"
+              >
+                로그인
+              </Button>
+              <div className="mt-4 space-y-2">
+                <TextAction onClick={() => undefined}>회원가입</TextAction>
+                <TextAction onClick={() => undefined}>아이디 찾기</TextAction>
+                <TextAction onClick={() => undefined}>비밀번호 재설정</TextAction>
+              </div>
             </div>
           </div>
         </section>

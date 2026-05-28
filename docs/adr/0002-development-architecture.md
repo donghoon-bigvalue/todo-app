@@ -102,9 +102,11 @@ Figma의 Components 페이지를 코드 디자인 시스템의 기준으로 삼�
 showcase 페이지는 다음 목적을 가진다.
 
 - Figma 컴포넌트를 코드로 옮긴 결과를 한 곳에서 확인한다.
-- Button, Text Input, Checkbox, Todo Item, Empty State, Error Message의 상태별 예시를 보여준다.
-- 실제 Todo 화면은 showcase에 있는 컴포넌트를 재사용한다.
+- Button, Text Input, Checkbox, Todo Item, Empty State, Error Message, Auth Form Controls의 상태별 예시를 보여준다.
+- 실제 Todo/Auth 화면은 showcase에 있는 컴포넌트를 재사용한다.
 - AI Agent가 UI를 수정할 때 Figma와 showcase를 비교할 수 있게 한다.
+
+Figma Components에 새 컴포넌트, component group, variant, form control, reusable action이 추가되거나 기존 컴포넌트 상태가 확장되면 실제 화면 구현 전에 `apps/web/src/shared/ui`와 `/showcase`를 먼저 갱신한다. 이 단계 없이 화면 내부에만 inline 구현한 UI task는 완료로 보지 않는다.
 
 라우팅:
 

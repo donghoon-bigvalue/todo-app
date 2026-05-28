@@ -47,6 +47,14 @@
 
 새 화면, 새 컴포넌트, 새 UI 상태, 새 interaction이 생기는 task는 코드 구현 전에 Figma 작업 task가 plan에 있는지 확인한다. Figma 작업이 없으면 `docs/agent-harness.md`의 UI 영향도 판정 기준에 따라 먼저 Figma task를 제안한다.
 
+Figma `Components` 페이지에 새 컴포넌트, component group, variant, form control, reusable action이 생기거나 기존 컴포넌트 상태가 확장되면 실제 화면 구현 전에 디자인 시스템 반영을 먼저 완료한다.
+
+- `apps/web/src/shared/ui`에 대응 컴포넌트 또는 variant를 만든다.
+- `/showcase`에 상태별 예시와 실제 화면에서 쓰는 조합을 추가한다.
+- 실제 화면은 showcase에 등록한 shared UI 컴포넌트를 재사용한다.
+- 검증에는 component test와 showcase 노출 검증을 포함한다.
+- 이 게이트를 통과하지 못한 UI task는 완료로 기록하지 않는다.
+
 ### 3. Red
 
 기능 구현 또는 동작 변경은 실패하는 테스트를 먼저 작성한다.

@@ -13,7 +13,7 @@ import {
   verifyFindLoginIdCode,
 } from "../shared/api";
 import { cn } from "../shared/lib/cn";
-import { Button, ErrorMessage, TextInput } from "../shared/ui";
+import { Button, ErrorMessage, FormField, TextAction } from "../shared/ui";
 import { TodoPage } from "./todo-page";
 
 type AuthMode = "login" | "signup" | "find-login-id" | "reset-password";
@@ -139,7 +139,7 @@ function AuthForm({ onAuthenticated }: { readonly onAuthenticated: () => void })
       {mode === "login" || mode === "signup" ? (
         <AuthCard>
           <form className="space-y-3" onSubmit={submit}>
-            <Field
+            <FormField
               label="로그인 ID"
               onChange={(value) => updateField("loginId", value)}
               placeholder="todo_user"
@@ -147,13 +147,13 @@ function AuthForm({ onAuthenticated }: { readonly onAuthenticated: () => void })
             />
             {mode === "signup" ? (
               <>
-                <Field
+                <FormField
                   label="닉네임"
                   onChange={(value) => updateField("nickname", value)}
                   placeholder="도훈"
                   value={form.nickname}
                 />
-                <Field
+                <FormField
                   label="이메일"
                   onChange={(value) => updateField("email", value)}
                   placeholder="name@example.com"
@@ -162,7 +162,7 @@ function AuthForm({ onAuthenticated }: { readonly onAuthenticated: () => void })
                 />
               </>
             ) : null}
-            <Field
+            <FormField
               label="비밀번호"
               onChange={(value) => updateField("password", value)}
               placeholder="비밀번호"
@@ -170,7 +170,7 @@ function AuthForm({ onAuthenticated }: { readonly onAuthenticated: () => void })
               value={form.password}
             />
             {mode === "signup" ? (
-              <Field
+              <FormField
                 label="비밀번호 확인"
                 onChange={(value) => updateField("passwordConfirm", value)}
                 placeholder="비밀번호 확인"
@@ -229,7 +229,7 @@ function FindLoginIdForm({ onBackToLogin }: { readonly onBackToLogin: () => void
 
   return (
     <AuthCard>
-      <Field
+      <FormField
         label="이메일"
         onChange={setEmail}
         placeholder="name@example.com"
@@ -239,7 +239,7 @@ function FindLoginIdForm({ onBackToLogin }: { readonly onBackToLogin: () => void
       <FormButton onClick={() => void requestCode()} type="button" variant="default">
         인증 코드 발송
       </FormButton>
-      <Field label="인증 코드" onChange={setCode} placeholder="333333" value={code} />
+      <FormField label="인증 코드" onChange={setCode} placeholder="333333" value={code} />
       {loginId ? (
         <div className="rounded-[6px] bg-[#EFF6FF] p-3">
           <p className="text-[13px] font-semibold leading-[18px] text-[#2563EB]">찾은 로그인 ID</p>
@@ -310,7 +310,7 @@ function PasswordResetForm({ onBackToLogin }: { readonly onBackToLogin: () => vo
   if (!verified) {
     return (
       <AuthCard>
-        <Field
+        <FormField
           label="이메일"
           onChange={(value) => updateField("email", value)}
           placeholder="name@example.com"
@@ -320,7 +320,7 @@ function PasswordResetForm({ onBackToLogin }: { readonly onBackToLogin: () => vo
         <FormButton onClick={() => void requestCode()} type="button" variant="default">
           인증 코드 발송
         </FormButton>
-        <Field
+        <FormField
           label="인증 코드"
           onChange={(value) => updateField("code", value)}
           placeholder="333333"
@@ -340,14 +340,14 @@ function PasswordResetForm({ onBackToLogin }: { readonly onBackToLogin: () => vo
       <AuthHeader subtitle="이메일 인증이 완료되었습니다." title="새 비밀번호 설정" />
       <AuthCard>
         <form className="space-y-3" onSubmit={submit}>
-          <Field
+          <FormField
             label="새 비밀번호"
             onChange={(value) => updateField("password", value)}
             placeholder="새 비밀번호"
             type="password"
             value={form.password}
           />
-          <Field
+          <FormField
             label="새 비밀번호 확인"
             onChange={(value) => updateField("passwordConfirm", value)}
             placeholder="새 비밀번호 확인"
@@ -427,7 +427,7 @@ function AccountManagement({
         />
         <AuthCard>
           <form className="space-y-3" onSubmit={submitDelete}>
-            <Field
+            <FormField
               label="탈퇴 확인 비밀번호"
               onChange={setDeletePassword}
               placeholder="비밀번호"
@@ -464,21 +464,21 @@ function AccountManagement({
 
       <AuthCard>
         <form className="space-y-3" onSubmit={submitPassword}>
-          <Field
+          <FormField
             label="현재 비밀번호"
             onChange={(value) => updatePasswordField("currentPassword", value)}
             placeholder="현재 비밀번호"
             type="password"
             value={passwordForm.currentPassword}
           />
-          <Field
+          <FormField
             label="새 비밀번호"
             onChange={(value) => updatePasswordField("password", value)}
             placeholder="새 비밀번호"
             type="password"
             value={passwordForm.password}
           />
-          <Field
+          <FormField
             label="새 비밀번호 확인"
             onChange={(value) => updatePasswordField("passwordConfirm", value)}
             placeholder="새 비밀번호 확인"
@@ -510,55 +510,6 @@ function AccountManagement({
         </div>
       </AuthCard>
     </AuthShell>
-  );
-}
-
-function Field({
-  label,
-  onChange,
-  placeholder,
-  type = "text",
-  value,
-}: {
-  readonly label: string;
-  readonly onChange: (value: string) => void;
-  readonly placeholder?: string;
-  readonly type?: string;
-  readonly value: string;
-}) {
-  const id = `auth-${label}`;
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const isPassword = type === "password";
-  const inputType = isPassword && isPasswordVisible ? "text" : type;
-
-  return (
-    <div className="space-y-[6px]">
-      <label className="text-[13px] font-semibold leading-[18px]" htmlFor={id}>
-        {label}
-      </label>
-      <div className="relative">
-        <TextInput
-          className={cn(
-            "h-[42px] rounded-[6px] px-3 text-[14px] leading-5 placeholder:text-[#9CA3AF]",
-            isPassword ? "pr-12" : undefined,
-          )}
-          id={id}
-          onChange={(event) => onChange(event.target.value)}
-          placeholder={placeholder}
-          type={inputType}
-          value={value}
-        />
-        {isPassword ? (
-          <button
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] font-semibold leading-[17px] text-[#6B7280] hover:text-[#1F2937] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2563EB]"
-            onClick={() => setIsPasswordVisible((current) => !current)}
-            type="button"
-          >
-            {isPasswordVisible ? "숨김" : "표시"}
-          </button>
-        ) : null}
-      </div>
-    </div>
   );
 }
 
@@ -608,24 +559,6 @@ function FormButton({ className, ...props }: React.ComponentProps<typeof Button>
       size="sm"
       {...props}
     />
-  );
-}
-
-function TextAction({
-  children,
-  onClick,
-}: {
-  readonly children: React.ReactNode;
-  readonly onClick: () => void;
-}) {
-  return (
-    <button
-      className="block text-left text-[13px] font-semibold leading-[18px] text-[#2563EB] hover:text-[#1D4ED8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2563EB]"
-      onClick={onClick}
-      type="button"
-    >
-      {children}
-    </button>
   );
 }
 
