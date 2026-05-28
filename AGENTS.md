@@ -79,6 +79,18 @@ Figma 파일을 생성, 수정, 검토할 때는 로컬 skill 문서를 따른�
 
 - `.codex/skills/figma-design-sync/SKILL.md`
 
+## UI 구현과 Figma 정합성 규칙
+
+새 화면, 새 컴포넌트, 새 form 상태, 새 navigation, 기존 화면의 시각적 변경이 포함된 코드 작업은 Figma 기준 확인을 작업 착수 조건으로 본다.
+
+- 이미 Figma 화면이나 컴포넌트가 있는 경우, 코드 구현 전에 해당 Figma URL 또는 node id를 확인한다.
+- `get_design_context`, `get_metadata`, `get_screenshot` 중 현재 작업에 필요한 최소 read-only 확인을 먼저 수행한다.
+- 작업 계획 또는 중간 보고에 참고한 Figma node와 코드 화면의 대응 관계를 남긴다.
+- Figma 기준과 다르게 구현할 필요가 있으면 코드 작성 전에 이유와 차이를 사용자에게 설명한다.
+- Figma 확인 없이 UI 구현을 진행해야 하는 경우에는 사용자에게 먼저 명시적으로 확인받는다.
+- UI 작업 완료 보고에는 참고한 Figma URL/node id, 구현한 화면과 Figma 화면의 대응 관계, 의도적으로 다르게 만든 부분, 실행한 검증을 포함한다.
+- 위 항목이 없으면 UI task는 완료로 보지 않는다.
+
 ## 구현 작업 규칙
 
 기능 구현, 버그 수정, 리팩터링을 할 때는 TDD와 클린 아키텍처 로컬 skill 문서를 따른다.

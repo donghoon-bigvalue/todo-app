@@ -62,6 +62,9 @@ description: Use in this Todo App project when turning chat ideas into product d
 - 목표
 - 변경 예상 파일
 - UI 영향 여부와 Figma 선행 작업 필요 여부
+- UI 작업이면 참고할 Figma URL 또는 node id
+- UI 작업이면 Figma 화면과 코드 화면의 대응 관계
+- UI 작업이면 Figma 기준과 다르게 구현할 가능성이 있는 부분
 - 테스트 전략
 - 검증 명령
 - 범위 밖 항목
@@ -69,6 +72,15 @@ description: Use in this Todo App project when turning chat ideas into product d
 범위가 모호하면 먼저 묻는다.
 
 새 화면, 새 컴포넌트, 기존 컴포넌트의 새 상태나 variant, 새 interaction이 생기면 코드 구현 전에 Figma 작업 task가 있는지 확인한다. 없으면 `docs/agent-harness.md`의 UI 영향도 판정 기준에 따라 Figma 작업을 먼저 제안한다.
+
+이미 Figma 화면이나 컴포넌트가 있는 UI 작업은 Figma 정합성 확인을 작업 착수 조건으로 본다.
+
+- 코드 구현 전에 해당 Figma URL 또는 node id를 확인한다.
+- `figma-design-sync` skill을 함께 사용한다.
+- `get_design_context`, `get_metadata`, `get_screenshot` 중 현재 작업에 필요한 최소 read-only 확인을 먼저 수행한다.
+- 확인한 Figma node와 구현할 코드 화면의 대응 관계를 작업 계획 또는 중간 보고에 남긴다.
+- Figma 기준과 다르게 구현해야 하면 이유와 차이를 사용자에게 먼저 설명한다.
+- Figma 확인 없이 UI 구현을 진행해야 할 때는 사용자에게 명시적으로 확인받는다.
 
 ## 실행 루프
 
@@ -122,3 +134,12 @@ description: Use in this Todo App project when turning chat ideas into product d
 - 실행한 검증
 - 실행하지 못한 검증과 이유
 - 다음에 논의할 task 후보
+
+UI 작업 완료 보고에는 추가로 다음을 포함한다.
+
+- 참고한 Figma URL 또는 node id
+- 구현한 코드 화면과 Figma 화면의 대응 관계
+- Figma 기준과 의도적으로 다르게 만든 부분
+- 시각 정합성을 확인한 방법
+
+위 항목이 없으면 UI task를 완료로 보지 않는다.

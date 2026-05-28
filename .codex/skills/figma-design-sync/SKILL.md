@@ -26,6 +26,24 @@ description: Use for this project when creating, updating, or reviewing Figma de
 8. 수정 후 대표 노드 metadata를 다시 읽어 좌표와 크기를 검증한다.
 9. 사용자가 보는 시각적 어색함은 수치 검증과 별개로 피드백을 받는다.
 
+## 코드 UI 구현 전 게이트
+
+Figma에 이미 기준 화면이나 컴포넌트가 있는 UI를 코드로 구현하거나 수정할 때는 다음을 작업 착수 조건으로 본다.
+
+- 코드 작성 전에 Figma URL 또는 node id를 확인한다.
+- 대상 node의 `get_design_context` 또는 `get_metadata`를 먼저 읽는다.
+- 화면 fidelity가 중요한 경우 `get_screenshot`도 확인한다.
+- 참고한 Figma node와 구현할 코드 파일/화면의 대응 관계를 작업 계획에 남긴다.
+- Figma와 다르게 구현할 부분이 있으면 사용자에게 먼저 차이와 이유를 설명한다.
+- Figma 확인을 건너뛸 수 있는 경우는 사용자가 명시적으로 승인한 경우뿐이다.
+
+코드 UI 작업 완료 보고에는 다음을 포함한다.
+
+- 참고한 Figma URL 또는 node id
+- 구현한 코드 화면과 Figma 화면의 대응 관계
+- Figma 기준과 다르게 구현한 부분
+- component test, screenshot, E2E 등 시각/행동 정합성 검증 방법
+
 ## 쓰기 전 필수 inventory
 
 Figma에 쓰기 작업을 하기 전에는 반드시 read-only 단계로 다음을 확인한다.
