@@ -936,6 +936,53 @@ Figma 변경:
 
 - Figma와 완전 일치하는 닉네임 표시를 위해서는 로그인/refresh 후 사용자 profile을 Web 상태에 보존하는 후속 task가 필요하다.
 
+## 2026-05-28: Auth/Todo 화면 1차 UX 보정
+
+상태: Done
+
+목적:
+
+- Figma를 그대로 옮기면서 생긴 어색한 회원가입 보조 문구와 Todo 추가 버튼 크기 불일치를 먼저 정리한다.
+
+참고 Figma:
+
+- 기존 Todo Screens: `Screens(4:5)`, 대표 화면 `01 빈 상태(4:138)`
+- Auth Screens: `Auth Screen / 회원가입(2006:97)`, `Auth Screen / 로그인 후 Todo(2006:209)`
+
+변경 파일:
+
+- `apps/web/src/pages/auth-gate.tsx`
+- `apps/web/src/pages/auth-gate.test.tsx`
+- `apps/web/src/pages/todo-page.tsx`
+- `apps/web/src/pages/todo-page.test.tsx`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+Figma 변경:
+
+- `Auth Screen / 회원가입(2006:97)`의 보조 문구를 `이미 계정이 있습니다`에서 `로그인으로 돌아가기`로 변경했다.
+- `Auth Screen / 로그인 후 Todo(2006:209)`의 Todo 입력 행을 기존 Todo Screens와 같은 `316x48` 행, `250x48` 입력, `58x37` 추가 버튼 기준으로 맞췄다.
+
+핵심 변경:
+
+- Web 회원가입 화면의 하단 보조 action 문구를 `로그인으로 돌아가기`로 변경해, 사용자가 아직 아무것도 입력하지 않은 상태에서 계정 보유를 단정하지 않게 했다.
+- Web Todo 화면의 추가 버튼을 기존 Todo Screens 기준인 `37px` 높이로 되돌렸다.
+- 관련 component test 기대값을 갱신했다.
+
+검증:
+
+- `npm run test -- apps/web/src/pages/auth-gate.test.tsx apps/web/src/pages/todo-page.test.tsx` 통과
+- `npm run check` 통과
+- Figma metadata로 `2006:209`의 Todo 입력 행이 `316x48`, 입력이 `250x48`, 추가 버튼이 `58x37`로 변경된 것을 확인했다.
+
+커밋:
+
+- 이번 task 커밋에 포함
+
+남은 리스크:
+
+- 나머지 UX/UI 보강은 별도 플랜에서 화면별 우선순위와 Figma/코드 동기화 기준을 다시 잡아야 한다.
+
 ## 2026-05-27: Auth와 계정 관리 확장 phase 정리
 
 상태: Done

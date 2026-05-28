@@ -37,6 +37,7 @@
 - Auth E2E 확장이 완료되었다.
 - Auth와 계정 관리 확장 phase 정리가 완료되었다.
 - Auth Web 화면의 Figma 정합성 보정이 완료되었다.
+- Auth/Todo 화면의 1차 UX 보정이 완료되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
@@ -74,6 +75,23 @@ Auth와 계정 관리 확장 완료.
 - 문서 정리 task라 새 테스트는 추가하지 않는다.
 
 ## 최근 완료 Task
+
+Auth/Todo 화면 1차 UX 보정.
+
+완료 조건:
+
+- 회원가입 화면의 `이미 계정이 있습니다` 문구를 사용자를 단정하지 않는 문구로 바꾼다.
+- Todo 화면의 `추가` 버튼 크기를 기존 Todo Screens 기준으로 되돌리고, Auth Screens의 로그인 후 Todo 화면도 같은 기준으로 맞춘다.
+
+검증:
+
+- `npm run check`가 통과한다.
+
+테스트:
+
+- Auth/Todo page component test를 갱신했다.
+
+이전 완료 Task:
 
 Auth Web 화면 Figma 정합성 보정.
 

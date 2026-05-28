@@ -116,6 +116,10 @@ describe("AuthGate", () => {
     await userEvent.type(screen.getByLabelText("이메일"), "user@example.com");
     await userEvent.type(screen.getByLabelText("비밀번호"), "password1");
     await userEvent.type(screen.getByLabelText("비밀번호 확인"), "password1");
+
+    expect(screen.queryByText("이미 계정이 있습니다")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "로그인으로 돌아가기" })).toBeInTheDocument();
+
     await userEvent.click(screen.getByRole("button", { name: "회원가입" }));
 
     expect(signup).toHaveBeenCalled();

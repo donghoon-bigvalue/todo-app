@@ -184,7 +184,7 @@ function AuthForm({ onAuthenticated }: { readonly onAuthenticated: () => void })
             </div>
           ) : (
             <div className="mt-4">
-              <TextAction onClick={() => switchMode("login")}>이미 계정이 있습니다</TextAction>
+              <TextAction onClick={() => switchMode("login")}>로그인으로 돌아가기</TextAction>
             </div>
           )}
         </AuthCard>

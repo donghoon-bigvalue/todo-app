@@ -123,14 +123,14 @@ export function TodoPage({
           onSubmit={form.handleSubmit((values) => createTodoMutation.mutate(values))}
         >
           <div className="flex items-start gap-2">
-            <div className="w-[276px] shrink-0">
+            <div className="w-[250px] shrink-0">
               <label className="sr-only" htmlFor="todo-title">
                 할 일
               </label>
               <TextInput
                 aria-describedby={titleError ? "todo-title-error" : undefined}
                 aria-invalid={Boolean(titleError)}
-                className="h-[42px] rounded-[6px] px-3 text-[14px] leading-5"
+                className="h-12 rounded-[8px] px-[14px] text-[15px]"
                 id="todo-title"
                 placeholder="할 일을 입력하세요"
                 state={titleError ? "error" : "default"}
@@ -138,9 +138,8 @@ export function TodoPage({
               />
             </div>
             <Button
-              className="mt-[7px] h-7 w-[58px] shrink-0 rounded-[6px] px-0 text-[12px] leading-[17px]"
+              className="mt-[6px] h-[37px] w-[58px] shrink-0 rounded-[8px] px-0 text-[14px] leading-[17px]"
               disabled={createTodoMutation.isPending}
-              size="sm"
               type="submit"
               variant="primary"
             >
