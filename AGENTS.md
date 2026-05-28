@@ -92,6 +92,7 @@ Figma에서 새 section, component group, screen group, 화면 frame을 추가�
 
 새 화면, 새 컴포넌트, 새 form 상태, 새 navigation, 기존 화면의 시각적 변경이 포함된 코드 작업은 Figma 기준 확인을 작업 착수 조건으로 본다.
 
+- UI 작업을 시작하고 완료하기 전에는 `docs/ui-task-checklist.md`의 Preflight, Design System Gate, 완료 전 Audit을 확인한다.
 - 이미 Figma 화면이나 컴포넌트가 있는 경우, 코드 구현 전에 해당 Figma URL 또는 node id를 확인한다.
 - `get_design_context`, `get_metadata`, `get_screenshot` 중 현재 작업에 필요한 최소 read-only 확인을 먼저 수행한다.
 - 작업 계획 또는 중간 보고에 참고한 Figma node와 코드 화면의 대응 관계를 남긴다.

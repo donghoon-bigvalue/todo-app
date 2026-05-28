@@ -43,6 +43,8 @@
 - 완료 후 실행할 검증 명령
 - 범위 밖으로 남길 항목
 
+UI 작업이면 `docs/ui-task-checklist.md`의 Preflight와 Task Template을 사용한다.
+
 범위가 모호하거나 새 의사결정이 필요하면 사용자에게 먼저 묻는다.
 
 새 화면, 새 컴포넌트, 새 UI 상태, 새 interaction이 생기는 task는 코드 구현 전에 Figma 작업 task가 plan에 있는지 확인한다. Figma 작업이 없으면 `docs/agent-harness.md`의 UI 영향도 판정 기준에 따라 먼저 Figma task를 제안한다.
@@ -107,6 +109,8 @@ Figma `Components` 페이지에 새 컴포넌트, component group, variant, form
 - 실행하지 못한 검증과 이유
 - 남은 리스크
 - 다음 task 후보
+
+UI 작업이면 `docs/ui-task-checklist.md`의 완료 전 Audit을 통과했는지 확인하고, 참고한 Figma node, showcase 반영 여부, shared UI 재사용 여부를 기록한다.
 
 문서 변경이 필요한 결정이 생겼다면 코드만 바꾸지 않고 관련 문서도 업데이트한다.
 

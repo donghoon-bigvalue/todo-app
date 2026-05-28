@@ -885,6 +885,43 @@ Figma 변경:
 
 - 실제 SMTP provider 계정과 비밀값은 로컬/배포 환경에서 별도로 주입해야 한다.
 
+## 2026-05-28: UI task 체크리스트와 완료 전 Audit 문서화
+
+상태: Done
+
+목적:
+
+- UI 작업에서 Figma, shared UI, `/showcase`, 실제 화면 재사용, 완료 전 증거 확인을 반복적으로 놓치지 않도록 단일 체크리스트를 추가한다.
+
+변경 파일:
+
+- `docs/ui-task-checklist.md`
+- `AGENTS.md`
+- `.codex/skills/agent-work-loop/SKILL.md`
+- `docs/agent-workflow.md`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- UI 작업 전 Preflight 질문을 문서화했다.
+- Figma 확인 기준과 Design System Gate를 단일 문서로 모았다.
+- 구현 전 Task Template을 추가했다.
+- 완료 전 Audit 기준을 추가했다.
+- Agent 지침과 작업 루프 skill이 checklist를 참조하도록 연결했다.
+
+검증:
+
+- `npm run check` 통과
+
+커밋:
+
+- 이번 task 커밋에 포함
+
+남은 리스크:
+
+- checklist 준수 여부를 자동으로 검사하는 script나 hook은 아직 없다.
+
 ## 2026-05-28: Auth Form Controls shared UI와 showcase 수습
 
 상태: Done

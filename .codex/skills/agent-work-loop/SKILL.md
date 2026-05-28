@@ -17,6 +17,7 @@ description: Use in this Todo App project when turning chat ideas into product d
 - `docs/agent-harness.md`
 - `docs/implementation-plan.md`
 - `docs/agent-workflow.md`
+- UI 작업이면 `docs/ui-task-checklist.md`
 - 존재한다면 `docs/project-brief.md`, `docs/current-plan.md`, `docs/decisions.md`, `docs/task-log.md`
 - 관련 제품 문서와 ADR
 - 현재 git 상태
@@ -72,6 +73,8 @@ description: Use in this Todo App project when turning chat ideas into product d
 범위가 모호하면 먼저 묻는다.
 
 새 화면, 새 컴포넌트, 기존 컴포넌트의 새 상태나 variant, 새 interaction이 생기면 코드 구현 전에 Figma 작업 task가 있는지 확인한다. 없으면 `docs/agent-harness.md`의 UI 영향도 판정 기준에 따라 Figma 작업을 먼저 제안한다.
+
+UI 작업은 `docs/ui-task-checklist.md`의 Preflight와 Task Template을 기준으로 계획하고, 완료 전 Audit을 통과해야 완료로 보고한다.
 
 Figma `Components` 페이지에 새 컴포넌트, component group, variant, form control, reusable action이 생겼거나 기존 컴포넌트 상태가 확장되었다면 실제 화면 구현 전에 `design-system-showcase` 흐름을 먼저 완료해야 한다.
 
@@ -149,5 +152,6 @@ UI 작업 완료 보고에는 추가로 다음을 포함한다.
 - 구현한 코드 화면과 Figma 화면의 대응 관계
 - Figma 기준과 의도적으로 다르게 만든 부분
 - 시각 정합성을 확인한 방법
+- `docs/ui-task-checklist.md`의 완료 전 Audit을 통과했다는 근거
 
 위 항목이 없으면 UI task를 완료로 보지 않는다.
