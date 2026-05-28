@@ -78,6 +78,24 @@ inventory 결과에서 문서와 실제 Figma 구조가 다르면 쓰기 작업�
 
 기존 노드를 수정해야 하는 경우에는 수정 대상 node id, 수정 이유, 되돌릴 수 있는 기준을 먼저 보고한다.
 
+## 배치 충돌 방지 규칙
+
+새 section, component group, screen group, 화면 frame을 추가하거나 이동할 때는 기존 sibling node와 겹치지 않는 좌표를 먼저 계산해야 한다.
+
+쓰기 작업 전:
+
+- 같은 page 또는 같은 section의 주요 sibling node id, `x`, `y`, `width`, `height`를 inventory로 확인한다.
+- 기존 row 또는 column의 간격을 계산한다. Screens처럼 반복 frame이면 기존 간격을 우선한다.
+- 새 영역은 기존 sibling bounding box와 겹치지 않는 다음 slot에 배치한다.
+- 기존 간격을 알 수 없으면 최소 gutter는 screen frame 사이 `40px`, 큰 section 사이 `80px`로 둔다.
+
+쓰기 작업 후:
+
+- `get_metadata`로 이동한 대표 node의 `x`, `y`, `width`, `height`를 다시 확인한다.
+- 같은 parent 안의 sibling bounding box와 겹치지 않는지 확인한다.
+- row 배치인 경우 기준 row의 `y`가 맞는지 확인한다.
+- 겹침 또는 기준 row 이탈이 남아 있으면 Figma 작업을 완료로 보고하지 않는다.
+
 ## 기존 스타일 유지 규칙
 
 새 컴포넌트나 화면은 기존 디자인 시스템의 시각 언어를 유지해야 한다.
@@ -146,6 +164,8 @@ textAlignHorizontal: CENTER
 - 대상 노드가 실제로 존재하는가
 - 예상한 자식 노드가 남아 있는가
 - `x`, `y`, `width`, `height`가 기준과 맞는가
+- 새로 추가하거나 이동한 section/frame이 sibling node와 겹치지 않는가
+- 반복 화면 row의 `y` 좌표와 frame 간격이 기존 화면들과 맞는가
 - Components와 Screens가 같은 기준으로 맞춰졌는가
 - 제거하기로 한 상태나 문구가 Figma에 남아 있지 않은가
 

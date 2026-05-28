@@ -983,6 +983,55 @@ Figma 변경:
 
 - 나머지 UX/UI 보강은 별도 플랜에서 화면별 우선순위와 Figma/코드 동기화 기준을 다시 잡아야 한다.
 
+## 2026-05-28: Figma Auth section 배치와 겹침 방지 규칙 보강
+
+상태: Done
+
+목적:
+
+- Figma Components와 Screens 페이지에서 Auth section이 기존 section/screen과 겹치거나 행 기준에서 벗어난 상태를 정리한다.
+- 앞으로 새 section이나 screen을 만들 때 같은 문제가 반복되지 않도록 작업 규칙을 보강한다.
+
+참고 Figma:
+
+- Components page: `4:4`
+- `Auth Components`: `2006:2`
+- Screens page: `4:5`
+- `Auth Screens`: `2006:51`
+
+Figma 변경:
+
+- `Auth Components(2006:2)`를 `x=1022, y=150`으로 이동했다.
+- 기존 `Form Controls`는 `x=80, width=862`이므로 오른쪽 끝 `942`에서 `80px` gutter를 둔 위치다.
+- `Auth Screens(2006:51)`를 `x=2660, y=150`으로 이동했다.
+- 기존 Screens row는 `390px` frame과 `40px` gutter를 쓰고, 직전 `06 메모 편집 상태`가 `x=2230`이므로 다음 slot `2660`에 맞췄다.
+
+변경 파일:
+
+- `AGENTS.md`
+- `.codex/skills/figma-design-sync/SKILL.md`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- Figma 작업 규칙에 sibling node bounding box 확인, 기존 row/column 간격 계산, 최소 gutter 기준, 쓰기 후 metadata 검증을 추가했다.
+- 겹침이나 기준 row 이탈이 남아 있으면 Figma 작업을 완료로 보고하지 않도록 명시했다.
+
+검증:
+
+- Figma metadata로 `Auth Components(2006:2)`가 `x=1022, y=150`에 있는 것을 확인했다.
+- Figma metadata로 `Auth Screens(2006:51)`가 `x=2660, y=150`에 있는 것을 확인했다.
+- `npm run check` 통과.
+
+커밋:
+
+- 이번 task 커밋에 포함
+
+남은 리스크:
+
+- Figma MCP metadata 기반 검증은 좌표와 크기 중심이다. 최종 시각적 어색함은 사용자가 Figma 화면에서 한 번 더 확인하는 것이 좋다.
+
 ## 2026-05-27: Auth와 계정 관리 확장 phase 정리
 
 상태: Done

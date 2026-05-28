@@ -38,6 +38,7 @@
 - Auth와 계정 관리 확장 phase 정리가 완료되었다.
 - Auth Web 화면의 Figma 정합성 보정이 완료되었다.
 - Auth/Todo 화면의 1차 UX 보정이 완료되었다.
+- Figma Auth section 배치와 겹침 방지 규칙 보강이 완료되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
@@ -75,6 +76,25 @@ Auth와 계정 관리 확장 완료.
 - 문서 정리 task라 새 테스트는 추가하지 않는다.
 
 ## 최근 완료 Task
+
+Figma Auth section 배치와 겹침 방지 규칙 보강.
+
+완료 조건:
+
+- Components 페이지의 `Auth Components` 영역이 기존 component section과 겹치지 않는다.
+- Screens 페이지의 `Auth Screens` 영역이 기존 screen row와 같은 `y` 기준에 맞는다.
+- 앞으로 Figma section/frame 추가나 이동 시 sibling bounding box 겹침 검사를 강제하는 규칙이 문서화되어 있다.
+
+검증:
+
+- Figma metadata로 대표 node 좌표를 확인한다.
+- `npm run check`가 통과한다.
+
+테스트:
+
+- Figma 배치와 운영 규칙 보강 task라 새 product test는 추가하지 않는다.
+
+이전 완료 Task:
 
 Auth/Todo 화면 1차 UX 보정.
 

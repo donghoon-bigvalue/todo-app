@@ -79,6 +79,14 @@ Figma 파일을 생성, 수정, 검토할 때는 로컬 skill 문서를 따른�
 
 - `.codex/skills/figma-design-sync/SKILL.md`
 
+Figma에서 새 section, component group, screen group, 화면 frame을 추가하거나 이동할 때는 기존 sibling node와의 배치 충돌 검사를 필수로 한다.
+
+- 쓰기 전 같은 page 또는 같은 section의 주요 sibling node 좌표와 크기를 확인한다.
+- 기존 row/column 간격을 따라 다음 slot에 배치한다.
+- 기존 간격을 알 수 없으면 screen frame 사이 최소 `40px`, 큰 section 사이 최소 `80px` gutter를 둔다.
+- 쓰기 후 `get_metadata`로 이동한 node의 좌표와 크기를 다시 확인한다.
+- sibling bounding box와 겹치거나 기준 row에서 벗어난 상태면 완료로 보고하지 않는다.
+
 ## UI 구현과 Figma 정합성 규칙
 
 새 화면, 새 컴포넌트, 새 form 상태, 새 navigation, 기존 화면의 시각적 변경이 포함된 코드 작업은 Figma 기준 확인을 작업 착수 조건으로 본다.
