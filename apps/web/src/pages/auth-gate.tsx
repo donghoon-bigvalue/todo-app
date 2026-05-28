@@ -104,8 +104,13 @@ function AuthForm({ onAuthenticated }: { readonly onAuthenticated: () => void })
         password: form.password,
       });
       onAuthenticated();
-    } catch {
-      setError(mode === "login" ? "로그인하지 못했습니다." : "회원가입하지 못했습니다.");
+    } catch (error) {
+      setError(
+        toErrorMessage(
+          error,
+          mode === "login" ? "로그인하지 못했습니다." : "회원가입하지 못했습니다.",
+        ),
+      );
     }
   }
 
@@ -202,8 +207,8 @@ function FindLoginIdForm() {
 
     try {
       await requestFindLoginIdCode({ email });
-    } catch {
-      setError("인증 코드를 발송하지 못했습니다.");
+    } catch (error) {
+      setError(toErrorMessage(error, "인증 코드를 발송하지 못했습니다."));
     }
   }
 
@@ -213,8 +218,8 @@ function FindLoginIdForm() {
     try {
       const result = await verifyFindLoginIdCode({ email, code });
       setLoginId(result.loginId);
-    } catch {
-      setError("로그인 ID를 확인하지 못했습니다.");
+    } catch (error) {
+      setError(toErrorMessage(error, "로그인 ID를 확인하지 못했습니다."));
     }
   }
 
@@ -258,8 +263,8 @@ function PasswordResetForm() {
 
     try {
       await requestPasswordResetCode({ email: form.email });
-    } catch {
-      setError("인증 코드를 발송하지 못했습니다.");
+    } catch (error) {
+      setError(toErrorMessage(error, "인증 코드를 발송하지 못했습니다."));
     }
   }
 
@@ -271,8 +276,8 @@ function PasswordResetForm() {
     try {
       await resetPassword(form);
       setDone(true);
-    } catch {
-      setError("비밀번호를 변경하지 못했습니다.");
+    } catch (error) {
+      setError(toErrorMessage(error, "비밀번호를 변경하지 못했습니다."));
     }
   }
 
@@ -340,8 +345,8 @@ function AccountManagement({
     try {
       await changePassword(passwordForm);
       onSessionEnded();
-    } catch {
-      setError("비밀번호를 변경하지 못했습니다.");
+    } catch (error) {
+      setError(toErrorMessage(error, "비밀번호를 변경하지 못했습니다."));
     }
   }
 
@@ -352,8 +357,8 @@ function AccountManagement({
     try {
       await deleteAccount({ password: deletePassword });
       onSessionEnded();
-    } catch {
-      setError("회원탈퇴를 완료하지 못했습니다.");
+    } catch (error) {
+      setError(toErrorMessage(error, "회원탈퇴를 완료하지 못했습니다."));
     }
   }
 
@@ -437,4 +442,8 @@ function Field({
       />
     </div>
   );
+}
+
+function toErrorMessage(error: unknown, fallback: string): string {
+  return error instanceof Error && error.message ? error.message : fallback;
 }

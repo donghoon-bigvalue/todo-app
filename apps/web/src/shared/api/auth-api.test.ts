@@ -57,6 +57,40 @@ describe("auth-api", () => {
     ).resolves.toMatchObject({ loginId: "todo_user" });
   });
 
+  it("회원가입 검증 실패 메시지를 유지한다", async () => {
+    const client = createApiClient();
+    client.defaults.adapter = createMockAdapter(async (config) => {
+      const response = {
+        config,
+        data: {
+          message: [
+            {
+              message: "로그인 ID는 영문, 숫자, _, -만 사용할 수 있습니다.",
+            },
+          ],
+        },
+        headers: {},
+        status: 400,
+        statusText: "Bad Request",
+      } as AxiosResponse;
+
+      throw AxiosError.from(new Error("Bad Request"), undefined, config, undefined, response);
+    });
+
+    await expect(
+      signup(
+        {
+          loginId: "user@example.com",
+          nickname: "도훈",
+          email: "user@example.com",
+          password: "password1",
+          passwordConfirm: "password1",
+        },
+        client,
+      ),
+    ).rejects.toThrow("로그인 ID는 영문, 숫자, _, -만 사용할 수 있습니다.");
+  });
+
   it("로그인하면 access token을 저장한다", async () => {
     const client = createApiClient();
     client.defaults.adapter = createMockAdapter(async (config) => {

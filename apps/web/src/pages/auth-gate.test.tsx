@@ -122,6 +122,27 @@ describe("AuthGate", () => {
     expect(await screen.findByRole("heading", { name: "할 일 체크리스트" })).toBeInTheDocument();
   });
 
+  it("회원가입 실패 시 API 검증 메시지를 보여준다", async () => {
+    vi.mocked(getAccessToken).mockReturnValue(null);
+    vi.mocked(refreshAccessToken).mockRejectedValue(new Error("refresh failed"));
+    vi.mocked(signup).mockRejectedValue(
+      new Error("로그인 ID는 영문, 숫자, _, -만 사용할 수 있습니다."),
+    );
+
+    renderAuthGate();
+    await userEvent.click(await screen.findByRole("button", { name: "회원가입" }));
+    await userEvent.type(screen.getByLabelText("로그인 ID"), "user@example.com");
+    await userEvent.type(screen.getByLabelText("닉네임"), "도훈");
+    await userEvent.type(screen.getByLabelText("이메일"), "user@example.com");
+    await userEvent.type(screen.getByLabelText("비밀번호"), "password1");
+    await userEvent.type(screen.getByLabelText("비밀번호 확인"), "password1");
+    await userEvent.click(screen.getByRole("button", { name: "계정 만들기" }));
+
+    expect(
+      await screen.findByText("로그인 ID는 영문, 숫자, _, -만 사용할 수 있습니다."),
+    ).toBeInTheDocument();
+  });
+
   it("로그아웃하면 로그인 화면으로 돌아간다", async () => {
     vi.mocked(getAccessToken).mockReturnValue("access-token");
     vi.mocked(listTodos).mockResolvedValue([]);
