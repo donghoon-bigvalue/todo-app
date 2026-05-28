@@ -39,6 +39,7 @@
 - Auth Web 화면의 Figma 정합성 보정이 완료되었다.
 - Auth/Todo 화면의 1차 UX 보정이 완료되었다.
 - Figma Auth section 배치와 겹침 방지 규칙 보강이 완료되었다.
+- Figma Components page title과 첫 section 간격 보정이 완료되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
@@ -76,6 +77,24 @@ Auth와 계정 관리 확장 완료.
 - 문서 정리 task라 새 테스트는 추가하지 않는다.
 
 ## 최근 완료 Task
+
+Figma Components page title과 첫 section 간격 보정.
+
+완료 조건:
+
+- Components page의 page title과 첫 content section 사이 여백을 충분히 확보한다.
+- 앞으로 page title 아래 첫 section 배치 시 최소 여백 기준을 적용하도록 규칙을 보강한다.
+
+검증:
+
+- Figma metadata로 Components page 주요 section 좌표를 확인한다.
+- `npm run check`가 통과한다.
+
+테스트:
+
+- Figma 배치와 운영 규칙 보강 task라 새 product test는 추가하지 않는다.
+
+이전 완료 Task:
 
 Figma Auth section 배치와 겹침 방지 규칙 보강.
 

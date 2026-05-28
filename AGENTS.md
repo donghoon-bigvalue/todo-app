@@ -84,6 +84,7 @@ Figma에서 새 section, component group, screen group, 화면 frame을 추가�
 - 쓰기 전 같은 page 또는 같은 section의 주요 sibling node 좌표와 크기를 확인한다.
 - 기존 row/column 간격을 따라 다음 slot에 배치한다.
 - 기존 간격을 알 수 없으면 screen frame 사이 최소 `40px`, 큰 section 사이 최소 `80px` gutter를 둔다.
+- page title 또는 page intro frame 아래 첫 content section은 title frame 하단과 최소 `56px` 이상 떨어뜨린다.
 - 쓰기 후 `get_metadata`로 이동한 node의 좌표와 크기를 다시 확인한다.
 - sibling bounding box와 겹치거나 기준 row에서 벗어난 상태면 완료로 보고하지 않는다.
 

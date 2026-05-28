@@ -1032,6 +1032,58 @@ Figma 변경:
 
 - Figma MCP metadata 기반 검증은 좌표와 크기 중심이다. 최종 시각적 어색함은 사용자가 Figma 화면에서 한 번 더 확인하는 것이 좋다.
 
+## 2026-05-28: Figma Components page title과 첫 section 간격 보정
+
+상태: Done
+
+목적:
+
+- Components page의 page title 영역이 바로 아래 Form Controls section을 침범하는 것처럼 보이는 배치를 정리한다.
+- 앞으로 page title 아래 첫 content section을 배치할 때 최소 여백을 강제한다.
+
+참고 Figma:
+
+- Components page: `4:4`
+- Page title frame: `Components(4:83)`
+- `Form Controls`: `13:2`
+- `Todo Components`: `13:7`
+- `Feedback Components`: `13:12`
+- `Auth Components`: `2006:2`
+
+Figma 변경:
+
+- `Form Controls(13:2)`를 `y=150`에서 `y=180`으로 이동했다.
+- `Auth Components(2006:2)`를 `y=150`에서 `y=180`으로 이동했다.
+- 기존 vertical flow를 유지하기 위해 `Todo Components(13:7)`와 `Feedback Components(13:12)`도 각각 `30px` 아래로 이동했다.
+- Page title frame 하단은 `y=119`이고 첫 content section은 `y=180`이므로 title과 본문 사이 여백은 `61px`이다.
+
+변경 파일:
+
+- `AGENTS.md`
+- `.codex/skills/figma-design-sync/SKILL.md`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- Figma 배치 규칙에 page title 또는 page intro frame 아래 첫 content section은 title frame 하단과 최소 `56px` 이상 떨어뜨리도록 추가했다.
+- 쓰기 후 metadata 검증 항목에도 page title 아래 첫 section 최소 여백 확인을 추가했다.
+
+검증:
+
+- Figma metadata로 `Form Controls(13:2)`가 `x=80, y=180`에 있는 것을 확인했다.
+- Figma metadata로 `Auth Components(2006:2)`가 `x=1022, y=180`에 있는 것을 확인했다.
+- Figma metadata로 `Todo Components(13:7)`와 `Feedback Components(13:12)`가 기존 흐름을 유지하며 각각 `30px` 아래로 이동한 것을 확인했다.
+- `npm run check` 통과.
+
+커밋:
+
+- 이번 task 커밋에 포함
+
+남은 리스크:
+
+- Screens page 등 기존 페이지 중 title 아래 여백이 더 좁은 곳은 별도 UX/UI 보강 플랜에서 함께 정리할 수 있다.
+
 ## 2026-05-27: Auth와 계정 관리 확장 phase 정리
 
 상태: Done

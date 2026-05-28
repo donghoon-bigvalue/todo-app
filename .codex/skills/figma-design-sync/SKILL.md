@@ -88,12 +88,14 @@ inventory 결과에서 문서와 실제 Figma 구조가 다르면 쓰기 작업�
 - 기존 row 또는 column의 간격을 계산한다. Screens처럼 반복 frame이면 기존 간격을 우선한다.
 - 새 영역은 기존 sibling bounding box와 겹치지 않는 다음 slot에 배치한다.
 - 기존 간격을 알 수 없으면 최소 gutter는 screen frame 사이 `40px`, 큰 section 사이 `80px`로 둔다.
+- page title 또는 page intro frame 아래에 첫 content section을 둘 때는 title frame 하단과 첫 section 상단 사이를 최소 `56px` 이상으로 둔다.
 
 쓰기 작업 후:
 
 - `get_metadata`로 이동한 대표 node의 `x`, `y`, `width`, `height`를 다시 확인한다.
 - 같은 parent 안의 sibling bounding box와 겹치지 않는지 확인한다.
 - row 배치인 경우 기준 row의 `y`가 맞는지 확인한다.
+- page title 아래 첫 content section을 이동했으면 title frame 하단과 첫 section 상단 사이가 최소 `56px`인지 확인한다.
 - 겹침 또는 기준 row 이탈이 남아 있으면 Figma 작업을 완료로 보고하지 않는다.
 
 ## 기존 스타일 유지 규칙
