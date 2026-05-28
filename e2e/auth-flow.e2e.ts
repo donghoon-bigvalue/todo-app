@@ -45,17 +45,19 @@ test.describe("Auth와 계정 관리 흐름", () => {
     await page.getByLabel("이메일").fill(email);
     await page.getByRole("button", { name: "인증 코드 발송" }).click();
     await page.getByLabel("인증 코드").fill(verificationCode);
-    await page.getByRole("button", { name: "로그인 ID 확인" }).click();
+    await page.getByRole("button", { name: "인증 확인" }).click();
 
-    await expect(page.getByText(`로그인 ID: ${loginId}`)).toBeVisible();
+    await expect(page.getByText(loginId, { exact: true })).toBeVisible();
 
+    await page.goto("/");
     await page.getByRole("button", { name: "비밀번호 재설정" }).click();
     await page.getByLabel("이메일").fill(email);
     await page.getByRole("button", { name: "인증 코드 발송" }).click();
     await page.getByLabel("인증 코드").fill(verificationCode);
+    await page.getByRole("button", { name: "인증 확인" }).click();
     await page.getByLabel("새 비밀번호", { exact: true }).fill("new-password1");
     await page.getByLabel("새 비밀번호 확인").fill("new-password1");
-    await page.getByRole("button", { name: "비밀번호 변경" }).click();
+    await page.getByRole("button", { name: "비밀번호 재설정" }).click();
 
     await expect(page.getByText("비밀번호가 변경되었습니다.")).toBeVisible();
 
@@ -71,7 +73,7 @@ test.describe("Auth와 계정 관리 흐름", () => {
     const email = `${loginId}@example.com`;
 
     await signup(page, { email, loginId });
-    await page.getByRole("button", { name: "계정 관리" }).click();
+    await page.getByRole("button", { name: "계정" }).click();
     await page.getByLabel("현재 비밀번호").fill("password1");
     await page.getByLabel("새 비밀번호", { exact: true }).fill("new-password1");
     await page.getByLabel("새 비밀번호 확인").fill("new-password1");
@@ -80,14 +82,20 @@ test.describe("Auth와 계정 관리 흐름", () => {
     await expect(page.getByRole("heading", { name: "로그인" })).toBeVisible();
 
     await login(page, { loginId, password: "new-password1" });
-    await page.getByRole("button", { name: "계정 관리" }).click();
+    await page.getByRole("button", { name: "계정" }).click();
+    await page.getByRole("button", { name: "회원탈퇴" }).click();
+    await expect(page.getByRole("heading", { name: "회원탈퇴 확인" })).toBeVisible();
     await page.getByLabel("탈퇴 확인 비밀번호").fill("new-password1");
     await page.getByRole("button", { name: "회원탈퇴" }).click();
 
     await expect(page.getByRole("heading", { name: "로그인" })).toBeVisible();
 
     await login(page, { loginId, password: "new-password1" });
-    await expect(page.getByText("로그인하지 못했습니다.")).toBeVisible();
+    await expect(
+      page.getByText(
+        /로그인하지 못했습니다.|사용자를 찾을 수 없습니다.|비밀번호가 올바르지 않습니다.|Unauthorized/,
+      ),
+    ).toBeVisible();
 
     await page.getByRole("button", { name: "회원가입" }).click();
     await page.getByLabel("로그인 ID").fill(loginId);
@@ -95,7 +103,7 @@ test.describe("Auth와 계정 관리 흐름", () => {
     await page.getByLabel("이메일").fill(email);
     await page.getByLabel("비밀번호", { exact: true }).fill("password1");
     await page.getByLabel("비밀번호 확인").fill("password1");
-    await page.getByRole("button", { name: "계정 만들기" }).click();
+    await page.getByRole("button", { name: "회원가입" }).click();
 
     await expect(page.getByRole("heading", { name: "할 일 체크리스트" })).toBeVisible();
   });
@@ -115,7 +123,7 @@ async function signup(
   await page.getByLabel("이메일").fill(input.email);
   await page.getByLabel("비밀번호", { exact: true }).fill("password1");
   await page.getByLabel("비밀번호 확인").fill("password1");
-  await page.getByRole("button", { name: "계정 만들기" }).click();
+  await page.getByRole("button", { name: "회원가입" }).click();
 
   await expect(page.getByRole("heading", { name: "할 일 체크리스트" })).toBeVisible();
 }

@@ -36,6 +36,7 @@
 - Web 계정 복구와 계정 관리 화면 연결이 완료되었다.
 - Auth E2E 확장이 완료되었다.
 - Auth와 계정 관리 확장 phase 정리가 완료되었다.
+- Auth Web 화면의 Figma 정합성 보정이 완료되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
@@ -73,6 +74,25 @@ Auth와 계정 관리 확장 완료.
 - 문서 정리 task라 새 테스트는 추가하지 않는다.
 
 ## 최근 완료 Task
+
+Auth Web 화면 Figma 정합성 보정.
+
+완료 조건:
+
+- Figma `Auth Screens(2006:51)` 기준으로 로그인, 회원가입, 아이디 찾기, 비밀번호 재설정, 계정 관리, 회원탈퇴 확인 화면 구조를 맞춘다.
+- Todo 화면의 계정/로그아웃 버튼과 입력 행 폭을 Figma 기준에 맞춘다.
+- 변경된 화면 흐름의 component test와 Auth E2E가 통과한다.
+
+검증:
+
+- `npm run check`가 통과한다.
+- `npm run e2e -- e2e/auth-flow.e2e.ts`가 통과한다.
+
+테스트:
+
+- Auth/Todo page component test와 Auth E2E selector를 Figma 화면 흐름 기준으로 갱신했다.
+
+이전 완료 Task:
 
 Auth와 계정 관리 확장 phase 정리.
 

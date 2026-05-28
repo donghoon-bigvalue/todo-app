@@ -116,7 +116,7 @@ describe("AuthGate", () => {
     await userEvent.type(screen.getByLabelText("이메일"), "user@example.com");
     await userEvent.type(screen.getByLabelText("비밀번호"), "password1");
     await userEvent.type(screen.getByLabelText("비밀번호 확인"), "password1");
-    await userEvent.click(screen.getByRole("button", { name: "계정 만들기" }));
+    await userEvent.click(screen.getByRole("button", { name: "회원가입" }));
 
     expect(signup).toHaveBeenCalled();
     expect(await screen.findByRole("heading", { name: "할 일 체크리스트" })).toBeInTheDocument();
@@ -136,7 +136,7 @@ describe("AuthGate", () => {
     await userEvent.type(screen.getByLabelText("이메일"), "user@example.com");
     await userEvent.type(screen.getByLabelText("비밀번호"), "password1");
     await userEvent.type(screen.getByLabelText("비밀번호 확인"), "password1");
-    await userEvent.click(screen.getByRole("button", { name: "계정 만들기" }));
+    await userEvent.click(screen.getByRole("button", { name: "회원가입" }));
 
     expect(
       await screen.findByText("로그인 ID는 영문, 숫자, _, -만 사용할 수 있습니다."),
@@ -166,14 +166,14 @@ describe("AuthGate", () => {
     await userEvent.type(screen.getByLabelText("이메일"), "user@example.com");
     await userEvent.click(screen.getByRole("button", { name: "인증 코드 발송" }));
     await userEvent.type(screen.getByLabelText("인증 코드"), "333333");
-    await userEvent.click(screen.getByRole("button", { name: "로그인 ID 확인" }));
+    await userEvent.click(screen.getByRole("button", { name: "인증 확인" }));
 
     expect(requestFindLoginIdCode).toHaveBeenCalledWith({ email: "user@example.com" });
     expect(verifyFindLoginIdCode).toHaveBeenCalledWith({
       email: "user@example.com",
       code: "333333",
     });
-    expect(await screen.findByText("로그인 ID: todo_user")).toBeInTheDocument();
+    expect(await screen.findByText("todo_user")).toBeInTheDocument();
   });
 
   it("이메일 인증으로 비밀번호를 재설정한다", async () => {
@@ -187,9 +187,10 @@ describe("AuthGate", () => {
     await userEvent.type(screen.getByLabelText("이메일"), "user@example.com");
     await userEvent.click(screen.getByRole("button", { name: "인증 코드 발송" }));
     await userEvent.type(screen.getByLabelText("인증 코드"), "333333");
+    await userEvent.click(screen.getByRole("button", { name: "인증 확인" }));
     await userEvent.type(screen.getByLabelText("새 비밀번호"), "new-password1");
     await userEvent.type(screen.getByLabelText("새 비밀번호 확인"), "new-password1");
-    await userEvent.click(screen.getByRole("button", { name: "비밀번호 변경" }));
+    await userEvent.click(screen.getByRole("button", { name: "비밀번호 재설정" }));
 
     expect(requestPasswordResetCode).toHaveBeenCalledWith({ email: "user@example.com" });
     expect(resetPassword).toHaveBeenCalledWith({
@@ -208,7 +209,7 @@ describe("AuthGate", () => {
     vi.mocked(refreshAccessToken).mockRejectedValue(new Error("refresh failed"));
 
     renderAuthGate();
-    await userEvent.click(await screen.findByRole("button", { name: "계정 관리" }));
+    await userEvent.click(await screen.findByRole("button", { name: "계정" }));
     await userEvent.type(screen.getByLabelText("현재 비밀번호"), "password1");
     await userEvent.type(screen.getByLabelText("새 비밀번호"), "new-password1");
     await userEvent.type(screen.getByLabelText("새 비밀번호 확인"), "new-password1");
@@ -229,7 +230,9 @@ describe("AuthGate", () => {
     vi.mocked(refreshAccessToken).mockRejectedValue(new Error("refresh failed"));
 
     renderAuthGate();
-    await userEvent.click(await screen.findByRole("button", { name: "계정 관리" }));
+    await userEvent.click(await screen.findByRole("button", { name: "계정" }));
+    await userEvent.click(await screen.findByRole("button", { name: "회원탈퇴" }));
+    expect(await screen.findByRole("heading", { name: "회원탈퇴 확인" })).toBeInTheDocument();
     await userEvent.type(screen.getByLabelText("탈퇴 확인 비밀번호"), "password1");
     await userEvent.click(screen.getByRole("button", { name: "회원탈퇴" }));
 

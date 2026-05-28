@@ -164,7 +164,7 @@
 
 커밋:
 
-- 미커밋
+- 이번 task 커밋에 포함
 
 남은 리스크:
 
@@ -884,6 +884,57 @@ Figma 변경:
 남은 리스크:
 
 - 실제 SMTP provider 계정과 비밀값은 로컬/배포 환경에서 별도로 주입해야 한다.
+
+## 2026-05-28: Auth Web 화면 Figma 정합성 보정
+
+상태: Done
+
+목적:
+
+- Figma에 복원된 Auth 화면 구조와 실제 Web 구현의 차이를 줄인다.
+
+참고 Figma:
+
+- 파일: `COA4ynKukuVp6aqqe1ECPM`
+- 기준 node: `Auth Screens(2006:51)`
+
+변경 파일:
+
+- `apps/web/src/pages/auth-gate.tsx`
+- `apps/web/src/pages/auth-gate.test.tsx`
+- `apps/web/src/pages/todo-page.tsx`
+- `apps/web/src/pages/todo-page.test.tsx`
+- `e2e/auth-flow.e2e.ts`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- 로그인 화면의 segmented mode 버튼을 제거하고, Figma처럼 card 내부 text action으로 회원가입/아이디 찾기/비밀번호 재설정 흐름을 연결했다.
+- Auth 화면 공통 shell, header, card, field, form button 스타일을 Figma의 `390px` 화면, `342px` content, `8px` radius, `42px` input, `28px` button 기준으로 맞췄다.
+- 아이디 찾기 결과를 Figma의 blue result box로 표시하고, 확인 버튼 문구를 `인증 확인`으로 맞췄다.
+- 비밀번호 재설정은 이메일 인증 단계와 새 비밀번호 설정 단계를 분리했다.
+- 계정 관리는 비밀번호 변경 card와 회원탈퇴 section으로 나누고, 회원탈퇴 확인 화면을 별도 단계로 분리했다.
+- Todo 화면의 `계정 관리` 버튼을 `계정`으로 줄이고, Todo 입력 행 폭을 Figma 기준인 `276px + 8px + 58px`에 맞췄다.
+
+의도적으로 다르게 둔 부분:
+
+- Todo header의 사용자 닉네임 표시는 현재 Web session 상태가 사용자 profile을 보존하지 않기 때문에 기존 남은 할 일 카운트를 유지했다.
+- 비밀번호 재설정의 `인증 확인` 단계는 현재 별도 코드 검증 API가 없어 화면 단계 전환만 수행하고, 실제 코드 검증은 `비밀번호 재설정` 제출 시 서버에서 수행한다.
+
+검증:
+
+- `npm run test -- apps/web/src/pages/auth-gate.test.tsx apps/web/src/pages/todo-page.test.tsx` 통과
+- `npm run check` 통과
+- `npm run e2e -- e2e/auth-flow.e2e.ts` 통과
+
+커밋:
+
+- 미커밋
+
+남은 리스크:
+
+- Figma와 완전 일치하는 닉네임 표시를 위해서는 로그인/refresh 후 사용자 profile을 Web 상태에 보존하는 후속 task가 필요하다.
 
 ## 2026-05-27: Auth와 계정 관리 확장 phase 정리
 

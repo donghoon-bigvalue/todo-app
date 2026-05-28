@@ -89,21 +89,29 @@ export function TodoPage({
   }
 
   return (
-    <main className="min-h-screen bg-[#F7F8FA] px-6 py-10 text-[#1F2937]">
-      <div className="mx-auto max-w-[390px] space-y-6">
+    <main className="min-h-screen bg-[#F7F8FA] px-6 py-6 text-[#1F2937]">
+      <div className="mx-auto max-w-[342px] space-y-5">
         <header className="flex items-start justify-between gap-4">
-          <div className="space-y-2">
-            <h1 className="text-2xl font-semibold">할 일 체크리스트</h1>
-            <p className="text-sm text-[#6B7280]">남은 할 일 {remainingCount}개</p>
+          <div className="space-y-1">
+            <h1 className="text-[24px] font-semibold leading-[35px]">할 일 체크리스트</h1>
+            <p className="text-[14px] leading-5 text-[#6B7280]">남은 할 일 {remainingCount}개</p>
           </div>
           <div className="flex shrink-0 gap-2">
             {onManageAccount ? (
-              <Button onClick={onManageAccount} size="sm">
-                계정 관리
+              <Button
+                className="h-7 w-[54px] rounded-[6px] px-0 text-[12px] leading-[17px]"
+                onClick={onManageAccount}
+                size="sm"
+              >
+                계정
               </Button>
             ) : null}
             {onLogout ? (
-              <Button onClick={() => void onLogout()} size="sm">
+              <Button
+                className="h-7 w-[70px] rounded-[6px] px-0 text-[12px] leading-[17px]"
+                onClick={() => void onLogout()}
+                size="sm"
+              >
                 로그아웃
               </Button>
             ) : null}
@@ -114,14 +122,15 @@ export function TodoPage({
           className="space-y-2"
           onSubmit={form.handleSubmit((values) => createTodoMutation.mutate(values))}
         >
-          <div className="flex w-[316px] items-start gap-2">
-            <div className="w-[250px] shrink-0">
+          <div className="flex items-start gap-2">
+            <div className="w-[276px] shrink-0">
               <label className="sr-only" htmlFor="todo-title">
                 할 일
               </label>
               <TextInput
                 aria-describedby={titleError ? "todo-title-error" : undefined}
                 aria-invalid={Boolean(titleError)}
+                className="h-[42px] rounded-[6px] px-3 text-[14px] leading-5"
                 id="todo-title"
                 placeholder="할 일을 입력하세요"
                 state={titleError ? "error" : "default"}
@@ -129,8 +138,9 @@ export function TodoPage({
               />
             </div>
             <Button
-              className="mt-[6px] w-[58px] shrink-0"
+              className="mt-[7px] h-7 w-[58px] shrink-0 rounded-[6px] px-0 text-[12px] leading-[17px]"
               disabled={createTodoMutation.isPending}
+              size="sm"
               type="submit"
               variant="primary"
             >

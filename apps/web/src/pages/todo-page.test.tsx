@@ -88,8 +88,8 @@ describe("TodoPage", () => {
     const submitButton = screen.getByRole("button", { name: "추가" });
 
     expect(await screen.findByText("아직 할 일이 없습니다.")).toBeInTheDocument();
-    expect(titleInput.parentElement).toHaveClass("w-[250px]");
-    expect(submitButton).toHaveClass("mt-[6px]", "w-[58px]");
+    expect(titleInput.parentElement).toHaveClass("w-[276px]");
+    expect(submitButton).toHaveClass("mt-[7px]", "w-[58px]");
   });
 
   it("유효한 제목을 제출하면 Todo를 생성하고 목록을 다시 조회한다", async () => {
