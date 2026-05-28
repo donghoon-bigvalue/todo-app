@@ -885,6 +885,53 @@ Figma 변경:
 
 - 실제 SMTP provider 계정과 비밀값은 로컬/배포 환경에서 별도로 주입해야 한다.
 
+## 2026-05-28: 아이디 찾기와 비밀번호 재설정 인증 화면 로그인 복귀 UX 보강
+
+상태: Done
+
+목적:
+
+- 아이디 찾기와 비밀번호 재설정 인증 화면에서 사용자가 로그인 화면으로 돌아갈 수 있게 한다.
+
+참고 Figma:
+
+- `COA4ynKukuVp6aqqe1ECPM` / `Auth Screen / 아이디 찾기(2006:106)`
+- `COA4ynKukuVp6aqqe1ECPM` / `Auth Screen / 비밀번호 재설정 인증(2006:126)`
+
+Figma 변경:
+
+- `Email Verification Form(2006:110)`에 `Secondary Actions`와 `로그인으로 돌아가기` 링크를 추가했다.
+- `Email Verification Form(2006:130)`에 `Secondary Actions`와 `로그인으로 돌아가기` 링크를 추가했다.
+- 기존 node 삭제, 이름 변경, page 비우기는 하지 않았다.
+
+변경 파일:
+
+- `apps/web/src/pages/auth-gate.tsx`
+- `apps/web/src/pages/auth-gate.test.tsx`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- `FindLoginIdForm`에 로그인 화면 복귀 callback을 연결했다.
+- 비밀번호 재설정 인증 단계에도 `로그인으로 돌아가기` 액션을 추가했다.
+- AuthGate component test에 두 화면의 로그인 복귀 동작 검증을 추가했다.
+
+검증:
+
+- Figma metadata로 `2006:110`에 `Secondary Actions(2026:2)`가 추가된 것을 확인했다.
+- Figma metadata로 `2006:130`에 `Secondary Actions(2026:4)`가 추가된 것을 확인했다.
+- `npm run test -- apps/web/src/pages/auth-gate.test.tsx` 통과
+- `npm run check` 통과
+
+커밋:
+
+- 이번 task 커밋에 포함
+
+남은 리스크:
+
+- 다른 UX/UI 보강 항목은 새 플랜을 작성한 뒤 별도 task로 진행해야 한다.
+
 ## 2026-05-28: Auth 입력 placeholder와 비밀번호 표시 토글 보강
 
 상태: Done

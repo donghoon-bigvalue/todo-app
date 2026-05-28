@@ -129,7 +129,9 @@ function AuthForm({ onAuthenticated }: { readonly onAuthenticated: () => void })
     <AuthShell>
       <AuthHeader subtitle={subtitleByMode[mode]} title={titleByMode[mode]} />
 
-      {mode === "find-login-id" ? <FindLoginIdForm /> : null}
+      {mode === "find-login-id" ? (
+        <FindLoginIdForm onBackToLogin={() => switchMode("login")} />
+      ) : null}
       {mode === "reset-password" ? (
         <PasswordResetForm onBackToLogin={() => switchMode("login")} />
       ) : null}
@@ -198,7 +200,7 @@ function AuthForm({ onAuthenticated }: { readonly onAuthenticated: () => void })
   );
 }
 
-function FindLoginIdForm() {
+function FindLoginIdForm({ onBackToLogin }: { readonly onBackToLogin: () => void }) {
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [loginId, setLoginId] = useState<string | null>(null);
@@ -248,6 +250,7 @@ function FindLoginIdForm() {
       <FormButton onClick={() => void verifyCode()} type="button" variant="primary">
         인증 확인
       </FormButton>
+      <TextAction onClick={onBackToLogin}>로그인으로 돌아가기</TextAction>
     </AuthCard>
   );
 }
@@ -327,6 +330,7 @@ function PasswordResetForm({ onBackToLogin }: { readonly onBackToLogin: () => vo
         <FormButton onClick={confirmCode} type="button" variant="primary">
           인증 확인
         </FormButton>
+        <TextAction onClick={onBackToLogin}>로그인으로 돌아가기</TextAction>
       </AuthCard>
     );
   }

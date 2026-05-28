@@ -207,6 +207,20 @@ describe("AuthGate", () => {
     expect(await screen.findByText("todo_user")).toBeInTheDocument();
   });
 
+  it("아이디 찾기 화면에서 로그인으로 돌아간다", async () => {
+    vi.mocked(getAccessToken).mockReturnValue(null);
+    vi.mocked(refreshAccessToken).mockRejectedValue(new Error("refresh failed"));
+
+    renderAuthGate();
+    await userEvent.click(await screen.findByRole("button", { name: "아이디 찾기" }));
+
+    expect(await screen.findByRole("heading", { name: "아이디 찾기" })).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "로그인으로 돌아가기" }));
+
+    expect(await screen.findByRole("heading", { name: "로그인" })).toBeInTheDocument();
+  });
+
   it("이메일 인증으로 비밀번호를 재설정한다", async () => {
     vi.mocked(getAccessToken).mockReturnValue(null);
     vi.mocked(refreshAccessToken).mockRejectedValue(new Error("refresh failed"));
@@ -231,6 +245,20 @@ describe("AuthGate", () => {
       passwordConfirm: "new-password1",
     });
     expect(await screen.findByText("비밀번호가 변경되었습니다.")).toBeInTheDocument();
+  });
+
+  it("비밀번호 재설정 인증 화면에서 로그인으로 돌아간다", async () => {
+    vi.mocked(getAccessToken).mockReturnValue(null);
+    vi.mocked(refreshAccessToken).mockRejectedValue(new Error("refresh failed"));
+
+    renderAuthGate();
+    await userEvent.click(await screen.findByRole("button", { name: "비밀번호 재설정" }));
+
+    expect(await screen.findByRole("heading", { name: "비밀번호 재설정" })).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "로그인으로 돌아가기" }));
+
+    expect(await screen.findByRole("heading", { name: "로그인" })).toBeInTheDocument();
   });
 
   it("로그인 후 비밀번호를 변경하면 로그인 화면으로 돌아간다", async () => {
