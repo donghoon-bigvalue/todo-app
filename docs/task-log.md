@@ -885,6 +885,45 @@ Figma 변경:
 
 - 실제 SMTP provider 계정과 비밀값은 로컬/배포 환경에서 별도로 주입해야 한다.
 
+## 2026-05-28: Auth 입력 placeholder와 비밀번호 표시 토글 보강
+
+상태: Done
+
+목적:
+
+- Figma Auth 화면에 있는 입력 placeholder와 비밀번호 `표시` 동작을 Web Auth 화면에 반영한다.
+
+변경 파일:
+
+- `apps/web/src/pages/auth-gate.tsx`
+- `apps/web/src/pages/auth-gate.test.tsx`
+- `docs/current-plan.md`
+- `docs/task-log.md`
+
+핵심 변경:
+
+- 공통 `Field` 컴포넌트가 placeholder를 받을 수 있게 했다.
+- 비밀번호 입력에 `표시`/`숨김` 토글을 추가했다.
+- 회원가입, 아이디 찾기, 비밀번호 재설정, 계정 관리 입력에 Figma 기준 예시 문구를 연결했다.
+- AuthGate component test에 회원가입 placeholder와 비밀번호 표시 토글 검증을 추가했다.
+
+참고 Figma:
+
+- `COA4ynKukuVp6aqqe1ECPM` / `Auth Screen / 회원가입(2006:97)`
+
+검증:
+
+- `npm run test -- apps/web/src/pages/auth-gate.test.tsx` 통과
+- `npm run check` 통과
+
+커밋:
+
+- 이번 task 커밋에 포함
+
+남은 리스크:
+
+- 다른 UX/UI 보강 항목은 새 플랜을 작성한 뒤 별도 task로 진행해야 한다.
+
 ## 2026-05-28: Auth Web 화면 Figma 정합성 보정
 
 상태: Done

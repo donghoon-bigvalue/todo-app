@@ -40,6 +40,7 @@
 - Auth/Todo 화면의 1차 UX 보정이 완료되었다.
 - Figma Auth section 배치와 겹침 방지 규칙 보강이 완료되었다.
 - Figma Components page title과 첫 section 간격 보정이 완료되었다.
+- Auth 입력 placeholder와 비밀번호 표시 토글의 Figma 정합성 보정이 완료되었다.
 - 기존 제품/설계/개발 문서는 아직 이동하거나 archive하지 않는다.
 
 ## 현재 Phase
@@ -56,27 +57,47 @@ Auth와 계정 관리 확장 완료.
 
 ## 현재 Task
 
-다음 task 승인 대기.
+Auth 입력 placeholder와 비밀번호 표시 토글의 Figma 정합성 보정 완료.
 
-추천 task:
+완료 조건:
 
-- 다음 제품 개선 또는 운영 설정 task를 사용자 승인 후 선택한다.
-
-목표:
-
-- 실제 SMTP provider 설정은 로컬/배포 환경에서 주입해야 하는 항목으로 남아 있다.
-- 기존 제품/설계/개발 문서 archive 여부는 별도 승인 전까지 유지한다.
-- 새 기능은 승인된 제품 초안과 task 단위로 진행한다.
+- Figma `Auth Screen / 회원가입(2006:97)` 기준으로 회원가입 입력 placeholder를 코드 화면에 반영한다.
+- 비밀번호 입력에 `표시`/`숨김` 토글을 제공한다.
+- 아이디 찾기, 비밀번호 재설정, 계정 관리 입력도 같은 Field 기준을 재사용한다.
 
 검증:
 
+- `npm run test -- apps/web/src/pages/auth-gate.test.tsx`가 통과한다.
 - `npm run check`가 통과한다.
 
-테스트 예외:
+테스트:
 
-- 문서 정리 task라 새 테스트는 추가하지 않는다.
+- AuthGate component test에 회원가입 placeholder와 비밀번호 표시 토글 검증을 추가했다.
+
+다음:
+
+- 다음 UX/UI 보강 task는 새 플랜을 작성한 뒤 승인받고 진행한다.
 
 ## 최근 완료 Task
+
+Auth 입력 placeholder와 비밀번호 표시 토글의 Figma 정합성 보정.
+
+완료 조건:
+
+- Figma `Auth Screen / 회원가입(2006:97)` 기준으로 회원가입 입력 placeholder를 코드 화면에 반영한다.
+- 비밀번호 입력에 `표시`/`숨김` 토글을 제공한다.
+- 아이디 찾기, 비밀번호 재설정, 계정 관리 입력도 같은 Field 기준을 재사용한다.
+
+검증:
+
+- `npm run test -- apps/web/src/pages/auth-gate.test.tsx`가 통과한다.
+- `npm run check`가 통과한다.
+
+테스트:
+
+- AuthGate component test에 회원가입 placeholder와 비밀번호 표시 토글 검증을 추가했다.
+
+이전 완료 Task:
 
 Figma Components page title과 첫 section 간격 보정.
 

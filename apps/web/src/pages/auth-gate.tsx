@@ -140,6 +140,7 @@ function AuthForm({ onAuthenticated }: { readonly onAuthenticated: () => void })
             <Field
               label="로그인 ID"
               onChange={(value) => updateField("loginId", value)}
+              placeholder="todo_user"
               value={form.loginId}
             />
             {mode === "signup" ? (
@@ -147,11 +148,13 @@ function AuthForm({ onAuthenticated }: { readonly onAuthenticated: () => void })
                 <Field
                   label="닉네임"
                   onChange={(value) => updateField("nickname", value)}
+                  placeholder="도훈"
                   value={form.nickname}
                 />
                 <Field
                   label="이메일"
                   onChange={(value) => updateField("email", value)}
+                  placeholder="name@example.com"
                   type="email"
                   value={form.email}
                 />
@@ -160,6 +163,7 @@ function AuthForm({ onAuthenticated }: { readonly onAuthenticated: () => void })
             <Field
               label="비밀번호"
               onChange={(value) => updateField("password", value)}
+              placeholder="비밀번호"
               type="password"
               value={form.password}
             />
@@ -167,6 +171,7 @@ function AuthForm({ onAuthenticated }: { readonly onAuthenticated: () => void })
               <Field
                 label="비밀번호 확인"
                 onChange={(value) => updateField("passwordConfirm", value)}
+                placeholder="비밀번호 확인"
                 type="password"
                 value={form.passwordConfirm}
               />
@@ -222,11 +227,17 @@ function FindLoginIdForm() {
 
   return (
     <AuthCard>
-      <Field label="이메일" onChange={setEmail} type="email" value={email} />
+      <Field
+        label="이메일"
+        onChange={setEmail}
+        placeholder="name@example.com"
+        type="email"
+        value={email}
+      />
       <FormButton onClick={() => void requestCode()} type="button" variant="default">
         인증 코드 발송
       </FormButton>
-      <Field label="인증 코드" onChange={setCode} value={code} />
+      <Field label="인증 코드" onChange={setCode} placeholder="333333" value={code} />
       {loginId ? (
         <div className="rounded-[6px] bg-[#EFF6FF] p-3">
           <p className="text-[13px] font-semibold leading-[18px] text-[#2563EB]">찾은 로그인 ID</p>
@@ -299,6 +310,7 @@ function PasswordResetForm({ onBackToLogin }: { readonly onBackToLogin: () => vo
         <Field
           label="이메일"
           onChange={(value) => updateField("email", value)}
+          placeholder="name@example.com"
           type="email"
           value={form.email}
         />
@@ -308,6 +320,7 @@ function PasswordResetForm({ onBackToLogin }: { readonly onBackToLogin: () => vo
         <Field
           label="인증 코드"
           onChange={(value) => updateField("code", value)}
+          placeholder="333333"
           value={form.code}
         />
         {error ? <ErrorMessage>{error}</ErrorMessage> : null}
@@ -326,12 +339,14 @@ function PasswordResetForm({ onBackToLogin }: { readonly onBackToLogin: () => vo
           <Field
             label="새 비밀번호"
             onChange={(value) => updateField("password", value)}
+            placeholder="새 비밀번호"
             type="password"
             value={form.password}
           />
           <Field
             label="새 비밀번호 확인"
             onChange={(value) => updateField("passwordConfirm", value)}
+            placeholder="새 비밀번호 확인"
             type="password"
             value={form.passwordConfirm}
           />
@@ -411,6 +426,7 @@ function AccountManagement({
             <Field
               label="탈퇴 확인 비밀번호"
               onChange={setDeletePassword}
+              placeholder="비밀번호"
               type="password"
               value={deletePassword}
             />
@@ -447,18 +463,21 @@ function AccountManagement({
           <Field
             label="현재 비밀번호"
             onChange={(value) => updatePasswordField("currentPassword", value)}
+            placeholder="현재 비밀번호"
             type="password"
             value={passwordForm.currentPassword}
           />
           <Field
             label="새 비밀번호"
             onChange={(value) => updatePasswordField("password", value)}
+            placeholder="새 비밀번호"
             type="password"
             value={passwordForm.password}
           />
           <Field
             label="새 비밀번호 확인"
             onChange={(value) => updatePasswordField("passwordConfirm", value)}
+            placeholder="새 비밀번호 확인"
             type="password"
             value={passwordForm.passwordConfirm}
           />
@@ -493,28 +512,48 @@ function AccountManagement({
 function Field({
   label,
   onChange,
+  placeholder,
   type = "text",
   value,
 }: {
   readonly label: string;
   readonly onChange: (value: string) => void;
+  readonly placeholder?: string;
   readonly type?: string;
   readonly value: string;
 }) {
   const id = `auth-${label}`;
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const isPassword = type === "password";
+  const inputType = isPassword && isPasswordVisible ? "text" : type;
 
   return (
     <div className="space-y-[6px]">
       <label className="text-[13px] font-semibold leading-[18px]" htmlFor={id}>
         {label}
       </label>
-      <TextInput
-        className="h-[42px] rounded-[6px] px-3 text-[14px] leading-5"
-        id={id}
-        onChange={(event) => onChange(event.target.value)}
-        type={type}
-        value={value}
-      />
+      <div className="relative">
+        <TextInput
+          className={cn(
+            "h-[42px] rounded-[6px] px-3 text-[14px] leading-5 placeholder:text-[#9CA3AF]",
+            isPassword ? "pr-12" : undefined,
+          )}
+          id={id}
+          onChange={(event) => onChange(event.target.value)}
+          placeholder={placeholder}
+          type={inputType}
+          value={value}
+        />
+        {isPassword ? (
+          <button
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[12px] font-semibold leading-[17px] text-[#6B7280] hover:text-[#1F2937] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2563EB]"
+            onClick={() => setIsPasswordVisible((current) => !current)}
+            type="button"
+          >
+            {isPasswordVisible ? "숨김" : "표시"}
+          </button>
+        ) : null}
+      </div>
     </div>
   );
 }

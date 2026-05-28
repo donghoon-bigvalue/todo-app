@@ -126,6 +126,33 @@ describe("AuthGate", () => {
     expect(await screen.findByRole("heading", { name: "할 일 체크리스트" })).toBeInTheDocument();
   });
 
+  it("회원가입 화면은 Figma 기준 placeholder와 비밀번호 표시 토글을 제공한다", async () => {
+    vi.mocked(getAccessToken).mockReturnValue(null);
+    vi.mocked(refreshAccessToken).mockRejectedValue(new Error("refresh failed"));
+
+    renderAuthGate();
+    await userEvent.click(await screen.findByRole("button", { name: "회원가입" }));
+
+    expect(screen.getByPlaceholderText("todo_user")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("도훈")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("name@example.com")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("비밀번호")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("비밀번호 확인")).toBeInTheDocument();
+
+    const passwordInput = screen.getByLabelText("비밀번호");
+    expect(passwordInput).toHaveAttribute("type", "password");
+
+    const [firstPasswordToggle] = screen.getAllByRole("button", { name: "표시" });
+    if (!firstPasswordToggle) {
+      throw new Error("비밀번호 표시 토글을 찾지 못했습니다.");
+    }
+
+    await userEvent.click(firstPasswordToggle);
+
+    expect(passwordInput).toHaveAttribute("type", "text");
+    expect(screen.getByRole("button", { name: "숨김" })).toBeInTheDocument();
+  });
+
   it("회원가입 실패 시 API 검증 메시지를 보여준다", async () => {
     vi.mocked(getAccessToken).mockReturnValue(null);
     vi.mocked(refreshAccessToken).mockRejectedValue(new Error("refresh failed"));
